@@ -1,0 +1,17 @@
+html {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0px;
+    height: 100%;
+    
+    color-scheme: dark light;
+    &[data-theme=light] { color-scheme: light; }
+    &[data-theme=dark] { color-scheme: dark; }
+}
+
+body {
+    background: radial-gradient(circle at 50% 100%, #5a83c2 0%, #90b7e2 60%);
+    /* background: radial-gradient(circle at 50% 100%, #7dd675 0%, #9be29b 60%); */
+    /* background: radial-gradient(circle at 50% 100%, #d67391 0%, #d884a0 60%); */
+    margin: 0;
+    background-attachment: fixed;
+}

@@ -1,0 +1,101 @@
+.notifications {
+    position: fixed;
+    width: 320px;
+    z-index: 10;
+    top: 0;
+    margin: 10px 10px auto auto;
+    right: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.notifications-container {
+    background-color: #fff;
+    width: 100%;
+    margin-bottom: 10px;
+    height: 70px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.247);
+    backdrop-filter: blur( 10px );
+    -webkit-backdrop-filter: blur( 10px );
+    display: flex;
+    overflow: hidden;
+    animation: notifications 10s ease-in-out forwards;
+}
+
+.notifications-c-side {
+    width: 70px;
+    height: 100%;
+    border-radius: 15px 0px 0px 15px;
+    align-items: center;
+    display: flex;
+}
+
+.notifications-c-side-green {
+    background-color: #51cc4d;
+}
+
+.notifications-c-side-blue {
+    background-color: #51a0e9;
+}
+
+.notifications-c-side-red {
+    background-color: #e95151;
+}
+
+.notifications-c-img {
+    width: 50px;
+    height: 50px;
+    margin: auto;
+}
+
+.notifications-c-span {
+    overflow: hidden;
+    width: 250px;
+    padding: 2px 10px;
+    text-shadow: 0px 0px 10px #00000028;
+    align-items: center;
+    display: flex;
+    font-weight: 400;
+}
+
+@keyframes notifications {
+    0% {opacity: 0;}
+    5% {opacity: 1;}
+    80% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0;
+        height: 70px;
+        margin-bottom: 10px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        margin-bottom: 0px;
+    }
+}
+
+.notifications-c-timeout {
+    position: absolute;
+    height: 3px;
+    width: 0px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin: auto auto 0px 0px;
+    border-radius: 5px;
+    animation: notifications-timeout 10s ease-in-out forwards;
+}
+
+@keyframes notifications-timeout {
+    from {
+        width: 0px;
+    }
+
+    to {
+        width: 100%;
+    }
+}
