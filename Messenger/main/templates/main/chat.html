@@ -1,0 +1,52 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/chat.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<main class="chat">
+    <aside class="chat-contacts">
+        <header class="chat-contacts-header">
+            Chat
+        </header>
+        <section class="chat-contacts-section">
+            <div chat-id="23" class="chat-contacts-section-container">
+                <a href="#" class="ccs-container-story">
+                    <div chat-id="23" class="ccs-container-online" title="Online"></div>
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}">
+                </a>
+            <!-- <div class="ccs-container-avatar-container">
+                    <div chat-id="23" class="ccs-container-online"></div>
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}">
+                </div> -->
+
+                <div class="ccs-container-info">
+                    <div chat-id="23" class="ccs-container-info-name">
+                        Emmanuel Shamsulin
+                        <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
+                    </div>
+                    <div class="ccs-container-info-message-container">
+                        <div chat-id="23" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
+                        <div chat-id="23" class="ccs-container-info-message-count">2</div>
+                    </div>
+                </div>
+
+                <div chat-id="23" class="ccs-container-info-message-time">20:40</div>
+
+            </div>
+            <div chat-id="24" class="chat-contacts-section-container">
+
+            </div>
+            <div chat-id="25" class="chat-contacts-section-container">
+
+            </div>
+        </section>
+        <footer class="chat-contacts-footer"></footer>
+    </aside>
+</main>
+
+<script src="{% static 'main/JS/chat.js' %}"></script>
+{% endblock %}
