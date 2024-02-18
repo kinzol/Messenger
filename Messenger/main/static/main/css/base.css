@@ -15,3 +15,76 @@ body {
     margin: 0;
     background-attachment: fixed;
 }
+
+.full-screen-photo {
+    display: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #00000077;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 7;
+    backdrop-filter: blur( 3px );
+    -webkit-backdrop-filter: blur( 3px );
+}
+
+.full-screen-span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    margin: 10px auto;
+    height: 20px;
+    justify-content: center;
+    color: #ffffff2c;
+    font-weight: 600;
+    object-fit: cover;
+}
+
+.full-screen-content {
+    position: absolute;
+    height: auto;
+    width: auto;
+    max-height: 90%;
+    max-width: 90%;
+    min-width: 20%;
+    min-height: 20%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 15px;
+    z-index: 8;
+}
+
+.full-screen-mode-show {
+    display: flex; 
+    animation: fullScreenModeShow 250ms linear forwards;
+}
+  
+@keyframes fullScreenModeShow {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.full-screen-mode-hide {
+    display: flex;
+    animation: fullScreenModeHide 250ms linear forwards;
+}
+  
+@keyframes fullScreenModeHide {
+  0% {opacity: 1;}
+  100% {opacity: 0; display: none;}
+}
+
+.user-verify {
+    height: 25px;
+    width: 25px;
+    margin: 5px;
+}

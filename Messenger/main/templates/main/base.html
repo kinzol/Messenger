@@ -6,13 +6,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'main/css/notification.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/popup.css' %}" type="text/css">
     <title>{{title}}</title>
     {% block head %}
     {% endblock %}
 </head>
 <body>
+    <div class="notifications"></div>
+
+    <div class="full-screen-photo" onclick="offFullScreenPhoto(this)">
+        <span class="full-screen-span">Full screen mode</span>
+        <img class="full-screen-content" onclick="event.stopPropagation()">
+    </div>
+
+    <div class="confirm-dialog">
+        <div class="confirm-dialog-cancel"></div>
+        <div class="confirm-dialog-container">
+            <span class="confirm-dialog-header">Сonfirm the action</span>
+            <span class="confirm-dialog-span"></span>
+            <div class="confirm-dialog-buttons">
+                <div class="confirm-dialog-buttons-yes">Yes</div>
+                <div class="confirm-dialog-buttons-no">No</div>
+            </div>
+        </div>
+    </div>
+    
     {% block body %}
     {% endblock %}
 </body>
+
+<script>
+    const notificationImgs = ["{% static 'main/svg/tick.svg' %}",
+                              "{% static 'main/svg/exclamation.svg' %}",
+                              "{% static 'main/svg/cross.svg' %}"];
+</script>
+
 </html>

@@ -32,6 +32,7 @@
 
 .mc-profile-user-avatar {
     position: relative;
+    width: fit-content;
 }
 
 .mc-profile-user-avatar-online {
@@ -58,6 +59,8 @@
 .mc-profile-user-username {
     color: #fff;
     margin-left: 20px;
+    display: flex;
+    align-items: center;
 }
 
 .mc-profile-user-second-username {
@@ -108,7 +111,7 @@
     bottom: 0;
     left: 0;
     margin: auto;
-    margin-right: 140px;
+    margin-right: 10px;
     height: 40px;
     width: 120px;
     font-size: 25px;
@@ -129,7 +132,7 @@
     bottom: 0;
     left: 0;
     margin: auto;
-    margin-right: 140px;
+    margin-right: 10px;
     height: 40px;
     width: 120px;
     font-size: 25px;
@@ -153,7 +156,7 @@
     bottom: 0;
     left: 0;
     margin: auto;
-    margin-right: 10px;
+    margin-right: 140px;
     height: 40px;
     width: 120px;
     font-size: 25px;
@@ -218,10 +221,12 @@
     border-radius: 13px;
     opacity: 0.6;
     cursor: pointer;
+    transition: all 250ms ease-in-out;
 }
 
 .cs-articles-mini {
     opacity: 1;
+    transition: all 250ms ease-in-out;
 }
 
 
@@ -316,12 +321,12 @@
     .mc-profile-user-follow, .mc-profile-user-unfollow {
         font-size: 16px;
         width: 80px;
-        margin-right: 100px;
     }
 
     .mc-profile-user-message {
         font-size: 16px;
         width: 80px;
+        margin-right: 100px;
     }
 }
 
@@ -329,12 +334,12 @@
     .mc-profile-user-follow, .mc-profile-user-unfollow {
         font-size: 14px;
         width: 70px;
-        margin-right: 90px;
     }
 
     .mc-profile-user-message {
         font-size: 14px;
         width: 70px;
+        margin-right: 90px;
     }
 }
 
@@ -395,26 +400,6 @@
 }
 }
 
-.full-screen-mode-show {
-    display: flex;
-    animation: fullScreenModeShow 250ms linear forwards;
-}
-  
-@keyframes fullScreenModeShow {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
-}
-
-.full-screen-mode-hide {
-    display: flex;
-    animation: fullScreenModeHide 250ms linear forwards;
-}
-  
-@keyframes fullScreenModeHide {
-  0% {opacity: 1;}
-  100% {opacity: 0; display: none;}
-}
-
 .mc-profile-user-avatar-story {
     height: 110px;
     width: 110px;
@@ -454,4 +439,15 @@
     margin: auto;
     align-items: center;
     display: flex;
+}
+
+.mc-profile-user-lock-img {
+    height: 150px;
+    width: 150px;
+}
+
+.mc-profile-user-lock-span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

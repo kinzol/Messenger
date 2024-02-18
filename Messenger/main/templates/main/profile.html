@@ -7,13 +7,6 @@
 {% endblock %}
 
 {% block body %}
-<div class="notifications"></div>
-
-<div class="full-screen-photo" onclick="offFullScreenPhoto(this)">
-    <span class="full-screen-span">Full screen mode</span>
-    <img class="full-screen-content" onclick="event.stopPropagation()">
-</div>
-
 <div class="mobile-buttons">
     <a class="m-buttons-link" href="#">
         <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}">
@@ -109,7 +102,10 @@
                 <!-- <span class="mc-profile-user-online-time">Last seen at 18:50</span> -->
                 <span class="mc-profile-user-online-time">Online</span>
             </div>
-            <h1 class="mc-profile-user-username">Emmanuel Shamsulin</h1>
+            <h1 class="mc-profile-user-username">
+                Emmanuel Shamsulin
+                <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
+            </h1>
             <h2 class="mc-profile-user-second-username">shamsulin</h2>
             <span class="mc-profile-user-description">Гений, богатый, денег не дам не проси Гений, богатый, денег не дам не проси Гений, богатый, денег не дам не проси :) И просто крутой!</span>
         </div>
@@ -124,6 +120,24 @@
             <a href="#" class="mc-profile-user-stat-container">Following
                 <span class="mc-profile-user-stat-span">2304</span>
             </a>
+        </div>
+
+        <!-- ЕСЛИ БУДЕТ ЗАКРЫТЫЙ АКК -->
+        <div class="mc-profile-user-content-stat-container">
+            <div href="#" class="mc-profile-user-stat-container">Posts
+                <span class="mc-profile-user-stat-span">2304</span>
+            </div>
+            <div class="mc-profile-user-stat-container">Followers
+                <span class="mc-profile-user-stat-span">222304</span>
+            </div>
+            <div class="mc-profile-user-stat-container">Following
+                <span class="mc-profile-user-stat-span">2304</span>
+            </div>
+        </div>
+
+        <div class="mc-profile-user-content-stat-container">
+            <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}">
+            <span class="mc-profile-user-lock-span">This account is private</span>
         </div>
 
         <div class="change-style-articles">
@@ -161,8 +175,8 @@
 
         <div class="mc-feed-article-container">
 
-            <article class="mc-feed-article">
-
+            <article data-id="126" class="mc-feed-article">
+        
                 <div data-id="126" class="mc-feed-article-share-container">
                     <header class="mc-feed-article-share-header">
                         Share
@@ -178,7 +192,7 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                         <div class="mc-feed-article-share-user">
                             <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}">
                             <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
@@ -186,10 +200,10 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                     </div>
                 </div>
-
+        
                 <div class="mc-feed-article-userinfo">
                     <a href="#">
                         <div class="mc-feed-article-story">
@@ -197,8 +211,8 @@
                         </div>
                     </a>
                     <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}"></a> -->
-                    <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
-                    <span class="mc-feed-article-time">18:40</span>
+                    <a href="#"><h2 class="mc-feed-article-username">Emmanuel Shamsulin</h2></a>
+                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
                     <img data-id="126" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)">
                     <div data-id="126" class="mc-feed-article-menu">
                         <div data-id="126" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
@@ -231,11 +245,12 @@
                 <div class="display-grid">
                     <span class="mc-feed-article-text-count">Likes: <span data-id="126" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
                     <span class="mc-feed-article-text-count">Comments: <span data-id="126" class="mc-feed-article-count">1123</span></span>
+                    <span class="mc-feed-article-time">18:40</span>
                 </div>
             </article>
-
-
-            <article class="mc-feed-article">
+        
+        
+            <article data-id="125" class="mc-feed-article">
                 <div data-id="125" class="mc-feed-article-share-container">
                     <header class="mc-feed-article-share-header">
                         Share
@@ -251,7 +266,7 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                         <div class="mc-feed-article-share-user">
                             <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}">
                             <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
@@ -259,10 +274,10 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                     </div>
                 </div>
-
+        
                 <div class="mc-feed-article-userinfo">
                     <a href="#">
                         <div class="mc-feed-article-story">
@@ -270,8 +285,8 @@
                         </div>
                     </a>
                     <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}"></a> -->
-                    <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
-                    <span class="mc-feed-article-time">18:40</span>
+                    <a href="#"><h2 class="mc-feed-article-username">Radmir Shamsulin</h2></a>
+                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
                     <img data-id="125" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)">
                     <div data-id="125" class="mc-feed-article-menu">
                         <div data-id="125" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
@@ -294,10 +309,11 @@
                 <div class="display-grid">
                     <span class="mc-feed-article-text-count">Likes: <span data-id="125" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
                     <span class="mc-feed-article-text-count">Comments: <span data-id="125" class="mc-feed-article-count">1123</span></span>
+                    <span class="mc-feed-article-time">18:40</span>
                 </div>
             </article>
-
-            <article class="mc-feed-article">
+        
+            <article data-id="124" class="mc-feed-article">
                 <div data-id="124" class="mc-feed-article-share-container">
                     <header class="mc-feed-article-share-header">
                         Share
@@ -313,7 +329,7 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                         <div class="mc-feed-article-share-user">
                             <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}">
                             <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
@@ -321,10 +337,10 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                     </div>
                 </div>
-
+        
                 <div class="mc-feed-article-userinfo">
                     <a href="#">
                         <div class="mc-feed-article-story">
@@ -333,7 +349,7 @@
                     </a>
                     <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}"></a> -->
                     <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
-                    <span class="mc-feed-article-time">18:40</span>
+                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
                     <img data-id="124" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)">
                     <div data-id="124" class="mc-feed-article-menu">
                         <div data-id="124" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
@@ -359,10 +375,11 @@
                 <div class="display-grid">
                     <span class="mc-feed-article-text-count">Likes: <span data-id="124" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
                     <span class="mc-feed-article-text-count">Comments: <span data-id="124" class="mc-feed-article-count">1123</span></span>
+                    <span class="mc-feed-article-time">18:40</span>
                 </div>
             </article>
-
-            <article class="mc-feed-article">
+        
+            <article data-id="123" class="mc-feed-article">
                 <div data-id="123" class="mc-feed-article-share-container">
                     <header class="mc-feed-article-share-header">
                         Share
@@ -378,7 +395,7 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                         <div class="mc-feed-article-share-user">
                             <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}">
                             <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
@@ -386,10 +403,10 @@
                             </div></a>
                             <div class="mc-feed-article-share-user-share">Share</div>
                         </div>
-
+        
                     </div>
                 </div>
-
+        
                 <div class="mc-feed-article-userinfo">
                     <a href="#">
                         <div class="mc-feed-article-story">
@@ -398,7 +415,7 @@
                     </a>
                     <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}"></a> -->
                     <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
-                    <span class="mc-feed-article-time">18:40</span>
+                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
                     <img data-id="123" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)">
                     <div data-id="123" class="mc-feed-article-menu">
                         <div data-id="123" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
@@ -422,15 +439,20 @@
                 <div class="display-grid">
                     <span class="mc-feed-article-text-count">Likes: <span data-id="123" class="mc-feed-article-count mc-fd-art-c-like">4539604</span></span>
                     <span class="mc-feed-article-text-count">Comments: <span data-id="123" class="mc-feed-article-count">1123</span></span>
+                    <span class="mc-feed-article-time">18:40</span>
                 </div>
             </article>
         </div>
     </main>
     <div class="mc-container-second-sidebar-container">
         <aside class="mc-second-sidebar-container">
-            <a href="#"><img class="mc-second-sidebar-container-avatar" src="{% static 'main/images/ilon.jpg' %}" onclick="OnFullScreenPhoto(this)"></a>
-            <a href="#"><h1 class="mc-second-sidebar-container-username">Elon Musk</h1></a>
+            <a href="#"><img class="mc-second-sidebar-container-avatar" src="{% static 'main/images/ilon.jpg' %}"></a>
+            <a href="#"><h1 class="mc-second-sidebar-container-username">Emmanuel Shamsulin</h1></a>
             <h2 class="mc-second-sidebar-container-userid">shamsulin</h2>
+            <div class="mc-second-sidebar-container-verify">
+                Verified profile
+                <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
+            </div>
             <div class="mc-second-sidebar-container-description">Гений, богатый, денег не дам не проси :) И просто крутой!</div>
             <a class="mc-sb-c-links-a" href="#">
                 <img class="mc-sb-c-links-img" src="{% static 'main/svg/profile.svg' %}">
@@ -452,11 +474,6 @@
     </div>
 </div>
 
-<script>
-    const notificationImgs = ["{% static 'main/svg/tick.svg' %}",
-                              "{% static 'main/svg/exclamation.svg' %}",
-                              "{% static 'main/svg/cross.svg' %}"];
-</script>
 <script src="{% static 'main/JS/home.js' %}"></script>
 <script src="{% static 'main/JS/profile.js' %}"></script>
 {% endblock %}

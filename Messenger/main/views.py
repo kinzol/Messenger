@@ -2,4 +2,4 @@ from django.views.generic import TemplateView
 
 
 class Home(TemplateView):
-    template_name = 'main/profile.html'
+    template_name = 'main/chat.html'

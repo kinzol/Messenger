@@ -3,25 +3,23 @@ function changeSpanStat() {
         var elements = document.querySelectorAll('.mc-profile-user-stat-span');
 
         elements.forEach(function(element) {
-            element.innerHTML = element.innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+            element.innerHTML = element.innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         });
     });
 };
+
 
 changeSpanStat();
 
 
 function changeStyleArticlesMini() {
-    miniButton = document.querySelector('.cs-articles-mini');
-    fullButton = document.querySelector('.cs-articles-full');
-    miniContainer = document.querySelector('.mc-feed-article-container-mini');
-    fullContainer = document.querySelector('.mc-feed-article-container');
+    var miniButton = document.querySelector('.cs-articles-mini');
+    var fullButton = document.querySelector('.cs-articles-full');
+    var miniContainer = document.querySelector('.mc-feed-article-container-mini');
+    var fullContainer = document.querySelector('.mc-feed-article-container');
 
     miniButton.style.opacity = 1;
     fullButton.style.opacity = 0.6;
-
-    // miniContainer.style.display = 'flex';
-    // fullContainer.style.display = 'none';
 
     fullContainer.classList.remove('block-show-articles');
     fullContainer.classList.add('block-hide-articles');
@@ -33,16 +31,15 @@ function changeStyleArticlesMini() {
     }, 250);
 };
 
+
 function changeStyleArticlesFull() {
-    miniButton = document.querySelector('.cs-articles-mini');
-    fullButton = document.querySelector('.cs-articles-full');
-    miniContainer = document.querySelector('.mc-feed-article-container-mini');
-    fullContainer = document.querySelector('.mc-feed-article-container');
+    var miniButton = document.querySelector('.cs-articles-mini');
+    var fullButton = document.querySelector('.cs-articles-full');
+    var miniContainer = document.querySelector('.mc-feed-article-container-mini');
+    var fullContainer = document.querySelector('.mc-feed-article-container');
 
     fullButton.style.opacity = 1;
     miniButton.style.opacity = 0.6;
-
-    // miniContainer.style.display = 'none';
 
     miniContainer.classList.remove('block-show-articles');
     miniContainer.classList.add('block-hide-articles');
@@ -56,12 +53,12 @@ function changeStyleArticlesFull() {
 
 
 function profileFollow() {
-    followButton = document.querySelector('.mc-profile-user-follow');
-    unfollowButton = document.querySelector('.mc-profile-user-unfollow');
+    var followButton = document.querySelector('.mc-profile-user-follow');
+    var unfollowButton = document.querySelector('.mc-profile-user-unfollow');
 
     followButton.style.display = 'none';
     unfollowButton.style.display = 'flex';
-}
+};
 
 
 function profileUnfollow() {
@@ -95,7 +92,7 @@ function notification(type, message) {
 
     var notificationTimeout = document.createElement('div');
     notificationContainer.appendChild(notificationTimeout);
-    notificationTimeout.classList.add('notifications-c-timeout')
+    notificationTimeout.classList.add('notifications-c-timeout');
 
     if (type == 1) {
         notificationSide.classList.add('notifications-c-side-green');
@@ -113,10 +110,44 @@ function notification(type, message) {
         console.error()
         notifications.removeChild(notificationContainer);
         throw new Error('Incorrect type id specified');
-    }
+    };
 
     setTimeout(() => {
         notifications.removeChild(notificationContainer);
     }, 10000);
-}
+};
 
+
+function confirmationDialog(message){
+    var confirmDialog = document.querySelector('.confirm-dialog');
+    var confirmContainerCancel = document.querySelector('.confirm-dialog-cancel');
+    var confirmSpan = document.querySelector('.confirm-dialog-span');
+    var confirmButtomYes = document.querySelector('.confirm-dialog-buttons-yes');
+    var confirmButtomNo = document.querySelector('.confirm-dialog-buttons-no');
+
+    confirmSpan.innerHTML = message;
+    confirmDialog.classList.add('confirm-dialog-show');
+    
+    return new Promise((resolve, reject) => {
+        confirmButtomYes.onclick = function() {
+            confirmDialog.classList.remove('confirm-dialog-show');
+            confirmDialog.classList.add('confirm-dialog-hide');
+          resolve(true);
+        };
+    
+        confirmButtomNo.onclick = function() {
+            confirmDialog.classList.remove('confirm-dialog-show');
+            confirmDialog.classList.add('confirm-dialog-hide');
+          resolve(false);
+        };
+
+        confirmContainerCancel.onclick = function() {
+            confirmDialog.classList.remove('confirm-dialog-show');
+            confirmDialog.classList.add('confirm-dialog-hide');
+          resolve(false);
+        };
+
+    });
+};
+
+// confirmationDialog("Are you sure you want to remove the post?").then((value) => {console.log(value);});

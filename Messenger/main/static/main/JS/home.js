@@ -3,7 +3,6 @@ var storiesContainer = document.querySelector('.mc-feed-stories-story-container'
 var statusBlockMenu = false;
 var statusBlockShare = false;
 
-
 if (storiesContainer != null) {
     if (storiesContainer.scrollWidth > storiesContainer.clientWidth) {
         var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
@@ -32,6 +31,7 @@ if (storiesContainer != null) {
     };
 };
 
+
 function scrollContainerLeft() {
     var storiesContainer = document.querySelector('.mc-feed-stories-story-container');
     const containerWidth = storiesContainer.clientWidth;
@@ -40,7 +40,8 @@ function scrollContainerLeft() {
         left: containerWidth,
         behavior: 'smooth'
     });
-}
+};
+
 
 function scrollContainerRight() {
     var storiesContainer = document.querySelector('.mc-feed-stories-story-container');
@@ -50,19 +51,21 @@ function scrollContainerRight() {
         left: -containerWidth,
         behavior: 'smooth'
     });
-}
+};
+
 
 function changeLikeCount() {
     document.addEventListener("DOMContentLoaded", function() {
         var elements = document.querySelectorAll('.mc-feed-article-count');
 
         elements.forEach(function(element) {
-            element.innerHTML = element.innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+            element.innerHTML = element.innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         });
     });
-}
+};
 
-changeLikeCount()
+
+changeLikeCount();
 
 
 function addLikeArticle(thisElement) {
@@ -74,7 +77,8 @@ function addLikeArticle(thisElement) {
     var likeCount = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-fd-art-c-like`);
     var likeCountNew = parseInt(likeCount.innerHTML.replace(/ /g, '', 10)) + 1;
     likeCount.innerHTML = likeCountNew.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
+};
+
 
 function removeLikeArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-like`);
@@ -84,20 +88,21 @@ function removeLikeArticle(thisElement) {
     var likeCount = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-fd-art-c-like`);
     var likeCountNew = parseInt(likeCount.innerHTML.replace(/ /g, '', 10)) - 1;
     likeCount.innerHTML = likeCountNew.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
+};
+
 
 function addSaveArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-save-filled`);
     element.style.display = 'block';
     thisElement.style.display = 'none';
-}
+};
 
 
 function removerSaveArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-save`);
     element.style.display = 'block';
     thisElement.style.display = 'none';
-}
+};
 
 
 function shareFilter(inputFields) {
@@ -115,7 +120,7 @@ function shareFilter(inputFields) {
                     user.style.display = 'none';
                 }
             });
-}
+};
 
 
 function showShareContainer(thisArticle) {
@@ -123,7 +128,7 @@ function showShareContainer(thisArticle) {
     shareContainer.classList.remove('block-hide-share');
     shareContainer.classList.add('block-show-share');
     statusBlockShare = true;
-}
+};
 
 
 function hideShareContainer(thisArticle) {
@@ -131,17 +136,17 @@ function hideShareContainer(thisArticle) {
     shareContainer.classList.remove('block-show-share');
     shareContainer.classList.add('block-hide-share');
     statusBlockShare = false;
-}
+};
 
 
 document.addEventListener('click', function(event) {
     var targetElement = event.target;
     
     var articlesMenu = document.querySelectorAll('.mc-feed-article-menu');
-    var articlesMenuButtons = document.querySelectorAll('.mc-feed-article-menu-img')
+    var articlesMenuButtons = document.querySelectorAll('.mc-feed-article-menu-img');
 
     var shareContainer = document.querySelectorAll('.mc-feed-article-share-container');
-    var shareButton = document.querySelectorAll('.mc-feed-article-share')
+    var shareButton = document.querySelectorAll('.mc-feed-article-share');
 
     var mobileFullButtons = document.querySelector('.mobile-full-buttons');
     var mobileButtons = document.querySelector('.mobile-buttons');
@@ -175,7 +180,7 @@ document.addEventListener('click', function(event) {
             if (articleMenu.classList.contains('block-show-article-menu')) {
                 articleMenu.classList.remove('block-show-article-menu');
                 articleMenu.classList.add('block-hide-article-menu');
-            }
+            };
         };
     });
 
@@ -184,7 +189,7 @@ document.addEventListener('click', function(event) {
         mobileFullButtons.classList.remove('block-show-menu');
         mobileFullButtons.classList.add('block-hide-menu');
         statusBlockMenu = false;
-    }
+    };
 
     if (!isClickInsideShareButton && !isClickInsideShareContainer && statusBlockShare) {
         shareContainer.forEach(function(block) {
@@ -192,9 +197,9 @@ document.addEventListener('click', function(event) {
                 block.classList.remove('block-show-share');
                 block.classList.add('block-hide-share');
                 statusBlockShare = false;
-            }
+            };
         });
-    }
+    };
 });
 
 
@@ -203,15 +208,15 @@ function showMobileMenu() {
     mobileMenu.classList.remove('block-hide-menu');
     mobileMenu.classList.add('block-show-menu');
     statusBlockMenu = true;
-}
+};
 
 
 function openArticleMenu(element) {
-    articleMenu = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article-menu`);
+    var articleMenu = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article-menu`);
     
     articleMenu.classList.remove('block-hide-article-menu');
-    articleMenu.classList.add('block-show-article-menu')
-}
+    articleMenu.classList.add('block-show-article-menu');
+};
 
 
 function notification(type, message) {
@@ -236,7 +241,7 @@ function notification(type, message) {
 
     var notificationTimeout = document.createElement('div');
     notificationContainer.appendChild(notificationTimeout);
-    notificationTimeout.classList.add('notifications-c-timeout')
+    notificationTimeout.classList.add('notifications-c-timeout');
 
     if (type == 1) {
         notificationSide.classList.add('notifications-c-side-green');
@@ -254,28 +259,74 @@ function notification(type, message) {
         console.error()
         notifications.removeChild(notificationContainer);
         throw new Error('Incorrect type id specified');
-    }
+    };
 
     setTimeout(() => {
         notifications.removeChild(notificationContainer);
     }, 10000);
-}
+};
+
+
+function confirmationDialog(message){
+    var confirmDialog = document.querySelector('.confirm-dialog');
+    var confirmContainerCancel = document.querySelector('.confirm-dialog-cancel');
+    var confirmSpan = document.querySelector('.confirm-dialog-span');
+    var confirmButtomYes = document.querySelector('.confirm-dialog-buttons-yes');
+    var confirmButtomNo = document.querySelector('.confirm-dialog-buttons-no');
+
+    confirmSpan.innerHTML = message;
+    confirmDialog.classList.add('confirm-dialog-show');
+    
+    return new Promise((resolve, reject) => {
+        confirmButtomYes.onclick = function() {
+            confirmDialog.classList.remove('confirm-dialog-show');
+            confirmDialog.classList.add('confirm-dialog-hide');
+          resolve(true);
+        };
+    
+        confirmButtomNo.onclick = function() {
+            confirmDialog.classList.remove('confirm-dialog-show');
+            confirmDialog.classList.add('confirm-dialog-hide');
+          resolve(false);
+        };
+
+        confirmContainerCancel.onclick = function() {
+            confirmDialog.classList.remove('confirm-dialog-show');
+            confirmDialog.classList.add('confirm-dialog-hide');
+          resolve(false);
+        };
+
+    });
+};
+// confirmationDialog("Are you sure you want to remove the post?").then((value) => {console.log(value);});
+
 
 function articleCopyLink(element) {
     navigator.clipboard.writeText(`${window.location.origin}/post/${element.getAttribute('data-id')}`);
     notification(1, "Link successfully copied");
-}
+};
+
 
 function offFullScreenPhoto(element) {
     element.classList.remove('full-screen-mode-show');
     element.classList.add('full-screen-mode-hide');
-}
+};
+
 
 function OnFullScreenPhoto(element) {
-    fullScreen = document.querySelector('.full-screen-photo');
-    fullScreenImg = document.querySelector('.full-screen-content');
+    var fullScreen = document.querySelector('.full-screen-photo');
+    var fullScreenImg = document.querySelector('.full-screen-content');
 
     fullScreenImg.src = element.src;
     fullScreen.classList.remove('full-screen-mode-hide');
     fullScreen.classList.add('full-screen-mode-show');
-}
+};
+
+
+function articleNotInterested(element) {
+    var getArticle = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article`);
+    getArticle.classList.add('mc-feed-article-show-less');
+    setTimeout(() => {
+        getArticle.innerHTML = '<div class="mc-feed-article-not-interested">We will show less of content like this</div>';
+    }, 500);
+};
