@@ -14,6 +14,7 @@ body {
     /* background: radial-gradient(circle at 50% 100%, #d67391 0%, #d884a0 60%); */
     margin: 0;
     background-attachment: fixed;
+    color: #fff;
 }
 
 .full-screen-photo {
@@ -67,7 +68,7 @@ body {
     display: flex; 
     animation: fullScreenModeShow 250ms linear forwards;
 }
-  
+
 @keyframes fullScreenModeShow {
   0% {opacity: 0;}
   100% {opacity: 1;}

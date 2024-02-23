@@ -12,41 +12,353 @@
         <header class="chat-contacts-header">
             Chat
         </header>
-        <section class="chat-contacts-section">
-            <div chat-id="23" class="chat-contacts-section-container">
+
+        
+        <section class="chat-contacts-section custom-scrollbar">
+
+            <!-- <span class="chat-contacts-section-null">You have no active chat now</span> -->
+
+            <div chat-id="23" class="chat-contacts-section-container chat-contacts-unselected">
                 <a href="#" class="ccs-container-story">
                     <div chat-id="23" class="ccs-container-online" title="Online"></div>
-                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}">
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}"  alt="user's avatar">
                 </a>
             <!-- <div class="ccs-container-avatar-container">
                     <div chat-id="23" class="ccs-container-online"></div>
-                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}">
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
                 </div> -->
 
                 <div class="ccs-container-info">
-                    <div chat-id="23" class="ccs-container-info-name">
-                        Emmanuel Shamsulin
-                        <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}">
+                    <div class="ccs-container-info-message-container">
+                        <div chat-id="23" class="ccs-container-info-name">
+                            Emmanuel Shamsulin
+                            <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+                        </div>
+                        <div chat-id="23" class="ccs-container-info-message-time">20:40</div>
                     </div>
                     <div class="ccs-container-info-message-container">
                         <div chat-id="23" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
                         <div chat-id="23" class="ccs-container-info-message-count">2</div>
                     </div>
                 </div>
-
-                <div chat-id="23" class="ccs-container-info-message-time">20:40</div>
-
             </div>
-            <div chat-id="24" class="chat-contacts-section-container">
 
+
+
+            <div chat-id="23" class="chat-contacts-section-container chat-contacts-selected">
+                <!-- <a href="#" class="ccs-container-story">
+                    <div chat-id="23" class="ccs-container-online" title="Online"></div>
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
+                </a> -->
+            <div class="ccs-container-avatar-container">
+                    <div chat-id="23" class="ccs-container-online"></div>
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
+                </div>
+
+                <div class="ccs-container-info">
+                    <div class="ccs-container-info-message-container">
+                        <div chat-id="23" class="ccs-container-info-name">
+                            Emmanuel Shamsulin
+                            <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+                        </div>
+                        <div chat-id="23" class="ccs-container-info-message-time">20:40</div>
+                    </div>
+                    <div class="ccs-container-info-message-container">
+                        <div chat-id="23" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
+                        <div chat-id="23" class="ccs-container-info-message-count">2</div>
+                    </div>
+                </div>
             </div>
-            <div chat-id="25" class="chat-contacts-section-container">
 
+
+            <div chat-id="23" class="chat-contacts-section-container">
+                <a href="#" class="ccs-container-story">
+                    <div chat-id="23" class="ccs-container-online" title="Online"></div>
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
+                </a>
+            <!-- <div class="ccs-container-avatar-container">
+                    <div chat-id="23" class="ccs-container-online"></div>
+                    <img class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
+                </div> -->
+
+                <div class="ccs-container-info">
+                    <div class="ccs-container-info-message-container">
+                        <div chat-id="23" class="ccs-container-info-name">
+                            Emmanuel Shamsulin
+                            <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+                        </div>
+                        <div chat-id="23" class="ccs-container-info-message-time">20:40</div>
+                    </div>
+                    <div class="ccs-container-info-message-container">
+                        <div chat-id="23" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
+                        <div chat-id="23" class="ccs-container-info-message-count">2</div>
+                    </div>
+                </div>
             </div>
         </section>
-        <footer class="chat-contacts-footer"></footer>
+        <footer class="chat-contacts-footer">
+            <a class="chat-contacts-footer-button" href="#">
+                <img class="chat-contacts-footer-button-img" src="{% static 'main/svg/home-sidebar.svg' %}" 
+                    title="Home" alt="svg-image">
+            </a>
+            <a class="chat-contacts-footer-button" href="#">
+                <img class="chat-contacts-footer-button-img" src="{% static 'main/svg/search-sidebar.svg' %}" 
+                    title="Search"  alt="svg-image">
+            </a>
+            <a class="chat-contacts-footer-button" href="#">
+                <div class="chat-contacts-footer-button-notify">12</div>
+                <img class="chat-contacts-footer-button-img" src="{% static 'main/svg/notification-sidebar.svg' %}" 
+                    title="Notifications"  alt="svg-image">
+            </a>
+            <a class="chat-contacts-footer-button" href="#">
+                <img class="chat-contacts-footer-button-img" src="{% static 'main/svg/profile.svg' %}" 
+                    title="Profile"  alt="svg-image">
+            </a>
+        </footer>
     </aside>
+
+    <div class="chat-content">
+        <header class="chat-content-header">
+            <a href="#" class="chat-content-header-a">
+                <div class="chat-content-header-userinfo">
+                    <span class="chat-content-header-userinfo-username">
+                        Emmanuel Shamsulin
+                        <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+                    </span>
+                    <span class="chat-content-header-userinfo-activity">online</span>
+                </div>
+            </a>
+                <div class="chat-content-header-buttons">
+                    <a href="#"><img class="chat-content-header-buttons-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image"></a>
+                    <a href="#"><img class="chat-content-header-buttons-img" src="{% static 'main/svg/video-call.svg' %}" alt="svg-image"></a>
+                </div>  
+        </header>
+
+        <section chat-id="23" class="chat-content-chat">
+
+            <div class="ccc-container">
+                <div class="ccc-date">29 September 2023</div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-message-text">
+                    <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                    <span class="ccc-message-time">23:40</span>
+                    <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-message-text ccc-contrary">
+                    <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                    <span class="ccc-message-time">23:40</span>
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-message-text-answer">
+                    <a href="#" class="ccc-message-answer">
+                        <span class="ccc-message-answer-span">Egor: dfgsdfsdfsdf sdf sdf sdfsdffdg</span>
+                    </a>
+                    <div class="ccc-message-container">
+                        <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-message-text-answer ccc-contrary">
+                    <a href="#" class="ccc-message-answer">
+                        <span class="ccc-message-answer-span">Egor: dfgsdfsdfsdf sdf sdf sdfsdffdg</span>
+                    </a>
+                    <div class="ccc-message-container">
+                        <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-media">
+                    <div class="ccc-media-info">
+                        23:50
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <img class="ccc-media-content" src="{% static 'main/images/p1.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-media ccc-contrary-media">
+                    <div class="ccc-media-info">
+                        23:50
+                    </div>
+                    <img class="ccc-media-content" src="{% static 'main/images/p1.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-media">
+                    <div class="ccc-media-info">
+                        23:50
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-media ccc-contrary-media">
+                    <div class="ccc-media-info">
+                        23:50
+                    </div>
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-media-text">
+                    <img class="ccc-media-content" src="{% static 'main/images/p2.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-media-text ccc-contrary-media">
+                    <img class="ccc-media-content" src="{% static 'main/images/ilon.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-media-text">
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-media-text ccc-contrary-media">
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-audio-container">
+                    <audio controls src="{% static 'main/sounds/d.mp3' %}"></audio>
+                    <span class="ccc-message-time">23:40</span>
+                    <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-audio-container ccc-contrary-audio">
+                    <audio controls src="{% static 'main/sounds/d.mp3' %}"></audio>
+                    <span class="ccc-message-time">23:40</span>
+                </div>
+            </div>
+
+
+
+            <div class="ccc-container">
+                <div class="ccc-file-container">
+                    <img class="ccc-file-img" src="{% static 'main/svg/file.svg'%}" alt="svg-image">
+                    <div class="ccc-file-info">
+                        <span class="ccc-file-info-name">tochno_ne_virus_otvechau.exe</span>
+                        <div class="ccc-file-info-info">
+                            <span class="ccc-file-size">123.4kb</span>
+                            <span class="ccc-message-time">23:40</span>
+                            <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ccc-container">
+                <div class="ccc-file-container ccc-contrary">
+                    <img class="ccc-file-img" src="{% static 'main/svg/file.svg'%}" alt="svg-image">
+                    <div class="ccc-file-info">
+                        <span class="ccc-file-info-name">tochno_ne_virus_otvechau.exe</span>
+                        <div class="ccc-file-info-info">
+                            <span class="ccc-file-size">123.4kb</span>
+                            <span class="ccc-message-time">23:40</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="chat-content-input">
+            <div class="chat-content-input-container">
+                <div class="chat-content-input-file">
+                    <img class="chat-content-input-file-img" src="{% static 'main/svg/input-file.svg' %}" alt="input-file">
+                </div>
+                <input type="text" class="chat-content-input-message" oninput="chatChangeSendInputButton()">
+
+                <div class="chat-content-input-audio" onclick="onContentAudio()">
+                    <img class="chat-content-input-message-img" src="{% static 'main/svg/mic.svg' %}" alt="audio-img">
+                </div>
+                <!-- <div class="chat-content-input-send">
+                    <img class="chat-content-input-send-img" src="{% static 'main/svg/send.svg' %}" alt="send-img">
+                </div> -->
+            </div>
+        </section>
+
+        <section class="chat-content-audio">
+            <div class="chat-content-audio-record">
+                <div class="chat-content-audio-left">
+                    <img class="chat-content-audio-record-trash-img" src="{% static 'main/svg/trash.svg' %}" alt="svg-img">
+                </div>
+                <span class="chat-content-audio-record-span">Recording...</span>
+                <img class="chat-content-audio-record-send-img" src="{% static 'main/svg/send.svg' %}" alt="svg-img">
+            </div>
+        </section>
+    </div>
 </main>
 
+<script>
+    var inputAudioImg = "{% static 'main/svg/mic.svg' %}";
+    var inputSendImg = "{% static 'main/svg/send.svg' %}";
+</script>
 <script src="{% static 'main/JS/chat.js' %}"></script>
 {% endblock %}

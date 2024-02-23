@@ -9,6 +9,7 @@
     border: 2px solid rgba( 255, 255, 255, 0.18 );
     color: #fff;
     overflow: hidden;
+    position: relative;
 }
 
 .mc-profile-user-background-img {
@@ -123,6 +124,7 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    font-weight: 600;
 }
 
 .mc-profile-user-unfollow {
@@ -147,30 +149,40 @@
     box-shadow: 0px 0px 15px #0000002d;
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );
+    font-weight: 600;
 }
 
-.mc-profile-user-message {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    margin-right: 140px;
-    height: 40px;
-    width: 120px;
-    font-size: 25px;
-    border-radius: 10px;
-    cursor: pointer;
-    align-items: center;
+.mc-profile-user-buttons-button {
+    height: 50px;
+    width: 30%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    background-color: #ffffff8e;
+    align-items: center;
+    background-color: #ffffff33;
     color: #ffffff;
-    text-shadow: 0px 0px 10px #00000054;
-    box-shadow: 0px 0px 15px #0000002d;
-    backdrop-filter: blur( 4px );
-    -webkit-backdrop-filter: blur( 4px );
+    backdrop-filter: blur( 5px );
+    -webkit-backdrop-filter: blur( 5px );
+    border-radius: 15px;
+    opacity: 0.8;
+    transition: all 250ms ease-in-out;
+}
+
+.mc-profile-user-buttons-button:hover {
+    opacity: 1;
+    transition: all 250ms ease-in-out;
+}
+
+.mc-profile-user-buttons-button-img {
+    height: 25px;
+    width: 25px;
+    pointer-events: none;
+}
+
+.mc-profile-user-buttons-button-span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
 }
 
 
@@ -267,6 +279,10 @@
     overflow: hidden;
 }
 
+.mc-feed-article {
+    position: relative;
+}
+
 .mc-feed-article-mini-img {
     width: 100%;
     height: 100%;
@@ -303,44 +319,6 @@
     padding: 5px;
     background: rgba(255, 255, 255, 0.13);
     height: 100%;
-}
-
-@media (max-width: 595px) {
-    .mc-profile-user-stat-container {
-        font-size: 15px;
-    }
-    
-    .mc-profile-user-username {
-        font-size: 20px;
-    }
-
-    .mc-profile-user-description {
-        font-size: 13px;
-    }
-
-    .mc-profile-user-follow, .mc-profile-user-unfollow {
-        font-size: 16px;
-        width: 80px;
-    }
-
-    .mc-profile-user-message {
-        font-size: 16px;
-        width: 80px;
-        margin-right: 100px;
-    }
-}
-
-@media (max-width: 380px) {
-    .mc-profile-user-follow, .mc-profile-user-unfollow {
-        font-size: 14px;
-        width: 70px;
-    }
-
-    .mc-profile-user-message {
-        font-size: 14px;
-        width: 70px;
-        margin-right: 90px;
-    }
 }
 
 .mc-profile-user-content-stat-container {
@@ -444,10 +422,62 @@
 .mc-profile-user-lock-img {
     height: 150px;
     width: 150px;
+    opacity: 0.9;
 }
 
 .mc-profile-user-lock-span {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+
+@media (max-width: 595px) {
+    .mc-profile-user-stat-container {
+        font-size: 15px;
+    }
+    
+    .mc-profile-user-username {
+        font-size: 20px;
+        margin-top: 5px;
+    }
+
+    .mc-profile-user-description {
+        font-size: 13px;
+    }
+
+    .mc-profile-user-follow, .mc-profile-user-unfollow {
+        font-size: 16px;
+        width: 80px;
+        margin-top: 102px;
+    }
+
+    .mc-profile-user-avatar-story-img {
+        height: 75px;
+        width: 75px;
+    }
+
+    .mc-profile-user-avatar-story {
+        height: 85px;
+        width: 85px;
+        margin-top: -55px;
+        margin-left: 20px;
+    }
+
+    .mc-profile-user-avatar-online {
+        margin-top: -25px;
+        margin-left: 75px;    
+    }
+
+    .mc-profile-user-background-img {
+        height: 150px;
+    }
+
+    .mc-profile-user-online {
+        margin-left: 115px;
+    }
+    
+    .mc-profile-user {
+        height: 300px;
+    }
 }

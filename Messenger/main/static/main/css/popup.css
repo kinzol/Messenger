@@ -57,6 +57,7 @@
     align-items: center;
     display: flex;
     font-weight: 400;
+    color: #fff;
 }
 
 @keyframes notifications {
