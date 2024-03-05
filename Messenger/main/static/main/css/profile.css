@@ -1,6 +1,5 @@
 .mc-profile-user {
     background-color: red;
-    height: 340px;
     margin: 15px 0px;
     border-radius: 30px;
     background: rgba(255, 255, 255, 0.041);
@@ -10,6 +9,7 @@
     color: #fff;
     overflow: hidden;
     position: relative;
+    padding-bottom: 15px;
 }
 
 .mc-profile-user-background-img {
@@ -43,12 +43,13 @@
     background-color: #3794ff;
     border-radius: 50%;
     border: 3px solid rgba( 255, 255, 255, 0.18 );
-    margin-top: -40px;
-    margin-left: 110px;
+    margin-top: -28px;
+    margin-left: 106px;
 }
 
 .mc-profile-user-online-time {
     color: #ffffff9f;
+    -webkit-text-fill-color: #ffffff9f;
     font-size: 12px;
 }
 
@@ -66,6 +67,7 @@
 
 .mc-profile-user-second-username {
     color: #ffffff6c;
+    -webkit-text-fill-color: #ffffff6c;
     font-size: 12px;
     margin-left: 20px;
 }
@@ -88,6 +90,7 @@
 
 .mc-profile-user-stat-span {
     color: #ffffffc4;
+    -webkit-text-fill-color: #ffffffc4;
     font-size: 18px;
 }
 
@@ -112,6 +115,7 @@
     bottom: 0;
     left: 0;
     margin: auto;
+    margin-top: 150px;
     margin-right: 10px;
     height: 40px;
     width: 120px;
@@ -134,6 +138,7 @@
     bottom: 0;
     left: 0;
     margin: auto;
+    margin-top: 150px;
     margin-right: 10px;
     height: 40px;
     width: 120px;
@@ -201,6 +206,7 @@
 .mc-profile-user-description {
     margin-left: 20px;
     color: #ffffffbd;
+    -webkit-text-fill-color: #ffffffbd;
     align-items: center;
     display: flex;
 }
@@ -315,6 +321,7 @@
 
 .mc-feed-article-mini-text {
     color: #ffffffb6;
+    -webkit-text-fill-color: #ffffffb6;
     overflow: hidden;
     padding: 5px;
     background: rgba(255, 255, 255, 0.13);
@@ -475,9 +482,5 @@
 
     .mc-profile-user-online {
         margin-left: 115px;
-    }
-    
-    .mc-profile-user {
-        height: 300px;
     }
 }

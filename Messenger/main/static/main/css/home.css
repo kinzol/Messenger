@@ -339,6 +339,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-left: auto;
     margin-right: 5px;
     color: #ffffff5d;
+    -webkit-text-fill-color: #ffffff5d;
 }
 
 .mc-feed-article-article-img {
@@ -387,6 +388,7 @@ h1, h2, h3, h4, h5, h6 {
 .mc-feed-article-text-count {
     margin-left: 5px;
     color: #ffffffb4;
+    -webkit-text-fill-color: #ffffffb4;
 }
 
 .mc-feed-article-liked {
@@ -449,6 +451,7 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     font-size: 15px;
     color: #ffffff80;
+    -webkit-text-fill-color: #ffffff80;
     margin: auto;
     top: -10px;
     text-align: center;
@@ -477,11 +480,13 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 5px;
     margin-bottom: 25px;
     color: #ffffff94;
+    -webkit-text-fill-color: #ffffff94;
     max-height: 75px;
 }
 
 .mc-second-sidebar-container-userid {
     color: #ffffff4b;
+    -webkit-text-fill-color: #ffffff4b;
     font-size: 13px;
     margin-bottom: 10px;
 }
@@ -507,6 +512,7 @@ h1, h2, h3, h4, h5, h6 {
     -webkit-backdrop-filter: blur( 4px );
     border: 2px solid rgba( 255, 255, 255, 0.18 );
     color: #161616;
+    -webkit-text-fill-color: #161616;
     padding: 5px;
     overflow: hidden;
     display: none;
@@ -548,6 +554,7 @@ h1, h2, h3, h4, h5, h6 {
 .mc-feed-article-share-input {
     background-color: #fff;
     color: #000;
+    -webkit-text-fill-color: #000;
     font-size: 25px;
     width: calc(100% - 18px);
     margin: 5px;
@@ -562,6 +569,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mc-feed-article-share-header {
     color: #161616;
+    -webkit-text-fill-color: #161616;
     font-size: 30px;
     font-weight: 600;
     display: flex;
@@ -605,6 +613,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mc-feed-article-share-user-name {
     color: #161616;
+    -webkit-text-fill-color: #161616;
     font-size: 20px;
     align-items: center;
     display: grid;
@@ -630,6 +639,7 @@ h1, h2, h3, h4, h5, h6 {
 .mc-feed-article-share-user-second-name {
     font-size: 12px;
     color: #00000070;
+    -webkit-text-fill-color: #00000070;
 }
 
 .mc-feed-article-menu-img {
@@ -752,6 +762,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mc-feed-article-menu-a {
     color: #161616;
+    -webkit-text-fill-color: #161616;
     font-size: 20px;
     width: 100%;
     text-align: center;
@@ -776,6 +787,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mc-feed-article-menu-a-red {
     color: #ff4242;
+    -webkit-text-fill-color: #ff4242;
 }
 
 .mc-feed-article-menu-a-red:hover {
@@ -933,6 +945,7 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
     font-size: 14px;
     color: #ffffff81;
+    -webkit-text-fill-color: #ffffff81;
     display: flex;
     gap: 5px;
     overflow-x: auto;
@@ -945,7 +958,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .mc-sb-c-links-notify {
-    background-color: red;
+    background-color: #f43f38;
     width: 20px;
     height: 20px;
     position: absolute;
@@ -964,6 +977,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mc-feed-article-not-interested {
     color: #ffffffc2;
+    -webkit-text-fill-color: #ffffffc2;
     font-size: 15px;
     text-align: center;
 }
@@ -993,5 +1007,6 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     font-size: 15px;
     color: #ffffffec;
+    -webkit-text-fill-color: #ffffffec;
     margin: 5px 0px;
 }
