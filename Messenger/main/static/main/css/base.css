@@ -15,6 +15,7 @@ body {
     margin: 0;
     background-attachment: fixed;
     color: #fff;
+    -webkit-text-fill-color: #fff;
 }
 
 .full-screen-photo {
@@ -43,6 +44,7 @@ body {
     height: 20px;
     justify-content: center;
     color: #ffffff2c;
+    -webkit-text-fill-color: #ffffff2c;
     font-weight: 600;
     object-fit: cover;
 }

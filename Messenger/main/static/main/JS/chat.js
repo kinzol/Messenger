@@ -1,3 +1,14 @@
+var messageActionsId = null;
+var replyMessageId = null;
+var replyMessageContent = null;
+var partnerName = null;
+var partnerId = null;
+var replyStatus = false;
+var chatId = null;
+var previousChatField = null;
+var isChatOpen = false;
+
+
 function notification(type, message) {
     var notifications = document.querySelector('.notifications');
 
@@ -224,4 +235,195 @@ function OnFullScreenPhoto(element) {
     fullScreenImg.src = element.src;
     fullScreen.classList.remove('full-screen-mode-hide');
     fullScreen.classList.add('full-screen-mode-show');
+};
+
+function hideMessageActions() {
+    var messageActions = document.querySelector('.message-actions')
+    messageActions.classList.remove('message-actions-show');
+    messageActions.classList.add('message-actions-hide');
+};
+
+function showMessageActions(element) {
+    var messageActions = document.querySelector('.message-actions');
+
+    messageActionsId = element.getAttribute('message-id');
+    messageActions.classList.remove('message-actions-hide');
+    messageActions.classList.add('message-actions-show');
+};
+
+function messageReply() {
+    var replyContainer = document.querySelector('.chat-content-input-reply');
+
+    hideMessageActions();
+    replyContainer.classList.remove('message-actions-hide');
+    replyContainer.classList.add('message-actions-show');
+    replyStatus = true;
+};
+
+
+function hideReplyContainer() {
+    var replyContainer = document.querySelector('.chat-content-input-reply');
+
+    hideMessageActions();
+    replyContainer.classList.remove('message-actions-show');
+    replyContainer.classList.add('message-actions-hide');
+    replyStatus = false;
+}
+
+var doubleClickMessageStatus = false;
+function doubleClickMessage(element) {
+    if (doubleClickMessageStatus) {
+        doubleClickMessageStatus = false;
+        console.log('doubleClick')
+    } else {
+        doubleClickMessageStatus = true;
+        setTimeout(() => {
+            doubleClickMessageStatus = false;
+        }, 500);
+    }
+}
+
+function setReactionMessage(reactionId) {
+    var reactions = ['❤️', '👍', '😃', '😂', '💩'];
+
+    hideReplyContainer();
+}
+
+
+function messageReactions(element) {
+    var messageActions = document.querySelector('.message-reaction');
+
+    messageActionsId = element.getAttribute('message-id');
+    messageActions.classList.remove('message-actions-hide');
+    messageActions.classList.add('message-actions-show');
+};
+
+function hideMessageReactions() {
+    var messageActions = document.querySelector('.message-reaction')
+    messageActions.classList.remove('message-actions-show');
+    messageActions.classList.add('message-actions-hide');
+};
+
+function hideMessageNotification(element) {
+    element.classList.remove('show-message-notification');
+    element.classList.add('hide-message-notification');
+    setTimeout(() => {
+        element.parentNode.removeChild(element);
+    }, 150);
+};
+
+function showMessageNotification(from) {
+    var messageNotification = document.querySelector('.message-notification')
+
+    if (!messageNotification.textContent.includes(from)) {
+        var newMessageNotification = document.createElement('div');
+        newMessageNotification.classList.add('message-notification-content');
+        newMessageNotification.classList.add('show-message-notification');
+        newMessageNotification.innerHTML = `New message from ${from}`;
+        newMessageNotification.setAttribute('onclick', 'hideMessageNotification(this)');
+        messageNotification.appendChild(newMessageNotification);
+        setTimeout(() => {
+            newMessageNotification.classList.remove('show-message-notification');
+            newMessageNotification.classList.add('hide-message-notification');
+            setTimeout(() => {
+            newMessageNotification.parentNode.removeChild(newMessageNotification);
+            }, 150);
+        }, 2000);
+    }
+};
+
+
+function openChat(element) {
+    var newChatId = element.getAttribute('chat-id');
+    if (newChatId == chatId) {return;};
+
+    var previousChat = document.querySelector(`[chat-id='${chatId}'].chat-contacts-section-container`);
+    var chatContacts = document.querySelector('.chat-contacts');
+    var chatContent = document.querySelector('.chat-content');
+
+    var userName = document.querySelector(`[chat-id='${newChatId}'].ccs-container-info-name`).innerHTML; 
+    var userAvatar = document.querySelector(`[chat-id='${newChatId}'].ccs-container-avatar`).src;
+    var userActivity = document.querySelector(`[chat-id='${newChatId}'].ccs-container-last-activity`);
+
+    var headerUserName = document.querySelector('.chat-content-header-userinfo-username');
+    var headerUserAvatar = document.querySelector('.chat-content-header-avatar');
+    var headerUserLink = document.querySelector('.chat-content-header-a');
+    var headerActivity = document.querySelector('.chat-content-header-userinfo-activity');
+
+
+    var chatField = document.querySelector(`[chat-id='${newChatId}'].chat-content-chat`);
+    var previousChatField = document.querySelector(`[chat-id='${chatId}'].chat-content-chat`);
+
+    isChatOpen = true;
+    chatId = newChatId;
+
+    if (!chatField) {
+        var createNewChatField = document.createElement('section')
+        createNewChatField.setAttribute('class', 'chat-content-chat');
+        createNewChatField.setAttribute('chat-id', newChatId)
+        chatContent.appendChild(createNewChatField);
+        chatField = createNewChatField;
+    };
+
+    if (window.innerWidth <= 1000) {
+        headerUserName.innerHTML = userName;
+        headerUserAvatar.src = userAvatar;
+        headerActivity.innerHTML = userActivity.innerHTML;
+
+        chatContent.classList.add('mobile-element-show');
+        chatContent.classList.remove('mobile-element-hide');
+        chatContacts.classList.add('mobile-element-hide');
+        chatContacts.classList.remove('mobile-element-show');
+        if (previousChatField) {
+            previousChatField.style.display = 'none';
+        };
+        chatField.style.display = 'flex';
+
+    } else {
+
+        if ((chatContent.classList.contains('show-chat-field')) || (chatContent.classList.contains('update-chat-field'))) {
+            chatContent.classList.remove('show-chat-field');  
+            chatContent.classList.remove('update-chat-field');  
+            void chatContent.offsetWidth;
+            chatContent.classList.add('update-chat-field');
+            setTimeout(() => {
+                headerUserName.innerHTML = userName;
+                headerActivity.innerHTML = userActivity.innerHTML;
+                var changeVerify = headerUserName.querySelector('.user-verify-small');
+                if (changeVerify) {changeVerify.classList.remove('user-verify-small');};
+
+                if (previousChatField) {
+                    previousChatField.style.display = 'none';
+                };
+
+                chatField.style.display = 'flex';
+            }, 250);
+        } else {
+            chatContent.classList.add('show-chat-field');
+            headerUserName.innerHTML = userName;
+            headerActivity.innerHTML = userActivity.innerHTML;
+            var changeVerify = headerUserName.querySelector('.user-verify-small');
+            if (changeVerify) {changeVerify.classList.remove('user-verify-small');};
+        }
+
+        element.classList.add('chat-contacts-selected');
+        previousChat.classList.remove('chat-contacts-selected');
+        previousChat.classList.add('chat-contacts-unselected');
+        setTimeout(() => {
+            previousChat.classList.remove('chat-contacts-unselected');
+        }, 500);
+
+    };
+};
+
+function closeChat() {
+    isChatOpen = false;
+    var previousChat = document.querySelector(`[chat-id='${chatId}'].chat-contacts-section-container`);
+    previousChat.classList.remove('chat-contacts-selected');
+    var chatContacts = document.querySelector('.chat-contacts');
+    var chatContent = document.querySelector('.chat-content');
+    chatContent.classList.add('mobile-element-hide');
+    chatContent.classList.remove('mobile-element-show');
+    chatContacts.classList.add('mobile-element-show');
+    chatContacts.classList.remove('mobile-element-hide');
 };

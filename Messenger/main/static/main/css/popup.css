@@ -195,25 +195,28 @@
     border-radius: 10px;
     cursor: pointer;
     color: #ffffffbb;
-    transition: all 250ms ease-in-out;
+    -webkit-text-fill-color: #ffffffbb;
+    transition: all 250ms linear;
 }
 
 .confirm-dialog-buttons-yes {
     color: #ff4242;
+    -webkit-text-fill-color: #ff4242;
 }
 
 
 .confirm-dialog-buttons-yes:hover {
-    transition: all 250ms ease-in-out;
+    transition: all 250ms linear;
     background-color: #ff4242;
     color: #fff;
-    
+    -webkit-text-fill-color: #fff;
 }
 
 .confirm-dialog-buttons-no:hover {
-    transition: all 250ms ease-in-out;
+    transition: all 250ms linear;
     background-color: #ffffff6c;
     color: #fff;
+    -webkit-text-fill-color: #fff;
 }
 
 .confirm-dialog-cancel {
