@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/authentication.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="authentication">
+    <form method="post" class="auth-form-login">
+    <div class="authentication-container">
+        <div class="auth-title">Join Us Today!
+            <span class="auth-title-desc">Already have an account? <a href="#">Login</a></span>
+        </div>
+        <div class="auto-form-container">
+
+            <div class="auto-form-input-container">
+                <span class="auth-label">Name</span>
+                <input class="auth-input" type="text" placeholder="Enter your name">
+                <input class="auth-input" type="text" placeholder="Enter your surname">
+                <span class="auth-input-error"></span>
+            </div>
+
+            <div class="auto-form-input-container">
+                <span class="auth-label">Username</span>
+                <input class="auth-input" type="email" placeholder="Enter your username">
+                <span class="auth-input-error"></span>
+            </div>
+
+            <div class="auto-form-input-container">
+                <span class="auth-label">Email</span>
+                <input class="auth-input" type="email" placeholder="Enter your email">
+                <span class="auth-input-error"></span>
+            </div>
+
+            <div class="auto-form-input-container">
+                <span class="auth-label">Password</span>
+                <input class="auth-input" type="password" placeholder="Enter your password">
+                <span class="auth-input-error"></span>
+            </div>
+
+            <div class="auto-form-input-container">
+                <span class="auth-label">Repeat password</span>
+                <input class="auth-input" type="password" placeholder="Repeat your password">
+                <span class="auth-input-error"></span>
+            </div>
+        </div>
+    </div>
+    <div class="auth-form-confirm-button">Sign up</div>
+    <span class="auth-title-desc-bottom">Already have an account? <a href="#">Login</a></span>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+.selection-menu {
+    height: fit-content;
+    margin-top: 15px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.041);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selection-menu-title {
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 500;
+    margin: 10px auto 10px auto;
+}
+
+.selection-menu-line {
+    border-top: 3px solid rgba(255, 255, 255, 0.212);
+    border-radius: 5px;
+}
+
+.ccc-story-header {
+    background-color: #00000036;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    margin: 10px auto auto 10px;
+    border-radius: 20px;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    left: 0;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px 5px;
+    font-size: 13px;
+    backdrop-filter: blur( 15px );
+    -webkit-backdrop-filter: blur( 15px );
+    color: #fff;
+    text-wrap: nowrap;
+    overflow: hidden;
+    max-width: calc(100% - 30px);
+    text-overflow: ellipsis;
+    gap: 5px;
+}
+
+.ccc-story-header-img {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ccc-story-icon-img {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto auto 10px 10px;
+}
+
+.ccc-story-container {
+    width: 30%;
+    height: 250px;
+    display: flex;
+    border-radius: 20px;
+    position: relative;
+}
+
+.ccc-story-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.selection-menu-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+@media (max-width: 550px) {
+    .ccc-story-container {
+        height: 200px;
+    }
+}
+
+@media (max-width: 410px) {
+    .ccc-story-container {
+        height: 150px;
+    }
+}

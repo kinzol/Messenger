@@ -1,0 +1,64 @@
+.userlist {
+    height: fit-content;
+    margin-top: 15px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.041);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.userlist-title {
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 500;
+    margin: 10px auto 10px auto;
+}
+
+.userlist-line {
+    border-top: 3px solid rgba(255, 255, 255, 0.212);
+    border-radius: 5px;
+}
+
+.userlist-user {
+    border-radius: 25px;
+    background: #ffffff13;
+    width: calc(100% - 10px);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
+}
+
+.userlist-user-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.userlist-user-username-name {
+    font-size: 20px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+}
+
+.userlist-user-username-login {
+    font-size: 16px;
+    color: #ffffff9f;
+    -webkit-text-fill-color: #ffffff9f;
+}
+
+.userlist-user-username {
+    display: flex;
+    flex-direction: column;
+}

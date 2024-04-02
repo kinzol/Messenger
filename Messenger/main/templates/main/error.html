@@ -1,0 +1,17 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/error.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="error">
+    <div class="error-title">404</div>
+    <div class="error-discription">Not Found</div>
+    <a href="#" class="error-home">Back to home</a>
+</div>
+
+{% endblock %}

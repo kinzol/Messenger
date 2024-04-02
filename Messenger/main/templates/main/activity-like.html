@@ -1,0 +1,39 @@
+{% extends 'main/base-expanded.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/activity-like.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="selection-menu">
+    <span class="selection-menu-title">Posts where you put likes</span>
+    <div class="selection-menu-line"></div>
+    <div class="selection-menu-container">
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
+        </a>
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
+            <video class="mc-feed-article-mini-img" src="{% static 'main/images/v1.mp4' %}"></video>
+        </a>
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
+            <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
+        </a>
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
+            <div class="mc-feed-article-mini-text">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</div>
+        </a>
+        
+    </div>
+
+</div>
+
+{% endblock %}

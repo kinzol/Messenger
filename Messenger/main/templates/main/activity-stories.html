@@ -1,0 +1,47 @@
+{% extends 'main/base-expanded.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/activity-stories.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="selection-menu">
+    <span class="selection-menu-title">Your stories history</span>
+    <div class="selection-menu-line"></div>
+    <div class="selection-menu-container">
+
+        <a href="#" class="ccc-story-container">
+            <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
+            <div class="ccc-story-header">
+                <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's image">
+                <span>author</span>
+            </div>
+            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
+        </a>
+
+        <a href="#" class="ccc-story-container">
+            <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
+            <div class="ccc-story-header">
+                <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's image">
+                <span>author</span>
+            </div>
+            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
+        </a>
+
+        <a href="#" class="ccc-story-container">
+            <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
+            <div class="ccc-story-header">
+                <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's image">
+                <span>author</span>
+            </div>
+            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
+        </a>
+        
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,192 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main/css/base.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/profile.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/home.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+    <title>{{title}}</title>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+
+    <div class="message-notification">
+        <!-- <div class="message-notification-content" onclick="hideMessageNotification(this)">
+            <img class="message-notification-content-image" src="{% static 'main/images/p1.jpg' %}"  alt="user's avatar">
+            <div class="message-notification-content-info">
+                <span class="message-notification-content-info-username">Emmanuel Shamsulin</span>
+                <span class="message-notification-content-info-message">Привет как у тебя дела что ты делашь аылващл ащылазщв ылзщал ызщвалзыщ лвазщылвза щлывщзал ыщзвлващз ылвазщлыв азщшл</span>
+                <span class="message-notification-content-info-data">id</span>
+            </div>
+        </div> -->
+    </div>
+
+    <div class="notifications"></div>
+
+    <div class="full-screen-photo" onclick="offFullScreenPhoto()">
+        <span class="full-screen-span">Full screen mode</span>
+        <img class="full-screen-content" onclick="event.stopPropagation()">
+    </div>
+
+    <div class="confirm-dialog">
+        <div class="confirm-dialog-cancel"></div>
+        <div class="confirm-dialog-container">
+            <span class="confirm-dialog-header">Сonfirm the action</span>
+            <span class="confirm-dialog-span"></span>
+            <div class="confirm-dialog-buttons">
+                <div class="confirm-dialog-buttons-yes">Yes</div>
+                <div class="confirm-dialog-buttons-no">No</div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="mobile-buttons">
+        <a class="m-buttons-link" href="#">
+            <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
+        </a>
+        <a class="m-buttons-link" href="#">
+            <div class="mc-sb-c-links-message">12</div>
+            <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
+        </a>
+        <a class="m-buttons-link" href="#">
+            <div class="mc-sb-c-links-notify">12</div>
+            <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
+        </a>
+        <a class="m-buttons-link" href="#">
+            <img class="m-buttons-link-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
+        </a>
+        <div class="m-buttons-link" onclick="showMobileMenu()">
+            <img class="m-buttons-link-img" src="{% static 'main/svg/menu.svg' %}" alt="svg-image">
+        </div>
+    </div>
+    
+    <div class="mobile-full-buttons">
+        <a class="m-mc-sb-c-links-a" href="#">
+            <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
+            Search
+        </a>
+        <a class="m-mc-sb-c-links-a" href="#">
+            <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
+            Create
+        </a>
+        <a class="m-mc-sb-c-links-a" href="#">
+            <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
+            Activity
+        </a>
+        <a class="m-mc-sb-c-links-a" href="#">
+            <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
+            Settings
+        </a>
+    </div>
+
+    <div class="main-container">
+        <div class="mc-container-sidebar-container">
+            <aside class="mc-sidebar-container">
+                <div class="mc-sidebar-container-logo">Messenger</div>
+                <div class="mc-sidebar-container-links">
+                    <a class="mc-sb-c-links-a" href="#">
+                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
+                        Home
+                    </a>
+                    <a style="position: relative;" href="#">
+                        <div class="mc-sb-c-links-message">12</div>
+                        <div class="mc-sb-c-links-a">
+                            <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
+                            Messages
+                        </div>
+                    </a>
+                    <a class="mc-sb-c-links-a" href="#">
+                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
+                        Search
+                    </a>
+                    <a style="position: relative;" href="#">
+                        <div class="mc-sb-c-links-notify">12</div>
+                        <div class="mc-sb-c-links-a">
+                            <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
+                            Notifications
+                        </div>
+                    </a>
+                    <a class="mc-sb-c-links-a" href="#">
+                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
+                        Create
+                    </a>
+                </div>
+            </aside>
+        </div>
+        
+        <main class="mc-container-feed-container">
+    
+            {% block body %}
+            {% endblock %}
+    
+        </main>
+        <div class="mc-container-second-sidebar-container">
+            <aside class="mc-second-sidebar-container">
+                <a href="#"><img class="mc-second-sidebar-container-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a>
+                <a href="#"><h1 class="mc-second-sidebar-container-username">Emmanuel Shamsulin</h1></a>
+                <h2 class="mc-second-sidebar-container-userid">shamsulin</h2>
+                <div class="mc-second-sidebar-container-verify">
+                    Verified profile
+                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
+                </div>
+                <div class="mc-second-sidebar-container-description">TYT BUDET OPISANIE</div>
+                <a class="mc-sb-c-links-a" href="#">
+                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
+                    My Profile
+                </a>
+                <a class="mc-sb-c-links-a" href="#">
+                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
+                    Activity
+                </a>
+                <a class="mc-sb-c-links-a" href="#">
+                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image">
+                    Bookmarks
+                </a>
+                <a class="mc-sb-c-links-a" href="#">
+                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
+                    Settings
+                </a>
+            </aside>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    const notificationImgs = ["{% static 'main/svg/tick.svg' %}",
+                              "{% static 'main/svg/exclamation.svg' %}",
+                              "{% static 'main/svg/cross.svg' %}"];
+</script>
+
+<script src="{% static 'main/JS/base.js' %}"></script>
+<script src="{% static 'main/JS/home.js' %}"></script>
+<script src="{% static 'main/JS/emoji.js' %}"></script>
+<script src="{% static 'main/JS/notification.js' %}"></script>
+<script src="{% static 'main/JS/dialog.js' %}"></script>
+
+<script>
+    // var emoji = emoji;
+    // var emojiPopular = emojiPopular;
+    // var emoji_names = emoji_names;
+
+    var notification = notification;
+    var confirmationDialog = confirmationDialog;
+    var hideMessageNotification = hideMessageNotification;
+    var showMessageNotification = showMessageNotification;
+    var offFullScreenPhoto = offFullScreenPhoto;
+    var OnFullScreenPhoto = OnFullScreenPhoto;
+    var showMobileMenu = showMobileMenu;
+
+    var userNamesNotification = {43: 'Abdurosik Mahachkala'};
+    var userAvatarsNotification = {43: '{% static "main/images/p1.jpg" %}'};
+
+    var newMessageSound = '{% static "main/sounds/new_message.mp3" %}';
+</script>
+</html>

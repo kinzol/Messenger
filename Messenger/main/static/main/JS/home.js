@@ -125,6 +125,10 @@ function shareFilter(inputFields) {
 
 function showShareContainer(thisArticle) {
     var shareContainer = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article-share-container`);
+    var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
+
+    shareArticle.style.backgroundColor = "#a7c6e8";
+
     shareContainer.classList.remove('block-hide-share');
     shareContainer.classList.add('block-show-share');
     statusBlockShare = true;
@@ -133,6 +137,9 @@ function showShareContainer(thisArticle) {
 
 function hideShareContainer(thisArticle) {
     var shareContainer = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article-share-container`);
+    var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
+
+    shareArticle.style.removeProperty('background-color');
     shareContainer.classList.remove('block-show-share');
     shareContainer.classList.add('block-hide-share');
     statusBlockShare = false;
@@ -178,6 +185,10 @@ document.addEventListener('click', function(event) {
     articlesMenu.forEach(function(articleMenu) {
         if (!(articleMenu.contains(targetElement) || isClickInsideArticleMenuButton)) {
             if (articleMenu.classList.contains('block-show-article-menu')) {
+
+                var shareArticle = document.querySelector(`[data-id="${articleMenu.getAttribute('data-id')}"].mc-feed-article`);
+                shareArticle.style.removeProperty('background-color');
+                
                 articleMenu.classList.remove('block-show-article-menu');
                 articleMenu.classList.add('block-hide-article-menu');
             };
@@ -197,6 +208,10 @@ document.addEventListener('click', function(event) {
                 block.classList.remove('block-show-share');
                 block.classList.add('block-hide-share');
                 statusBlockShare = false;
+
+                var shareArticle = document.querySelector(`[data-id="${block.getAttribute('data-id')}"].mc-feed-article`);
+
+                shareArticle.style.removeProperty('background-color');
             };
         });
     };
@@ -213,6 +228,9 @@ function showMobileMenu() {
 
 function openArticleMenu(element) {
     var articleMenu = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article-menu`);
+    var shareArticle = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article`);
+
+    shareArticle.style.backgroundColor = "#a7c6e8";
     
     articleMenu.classList.remove('block-hide-article-menu');
     articleMenu.classList.add('block-show-article-menu');
@@ -222,22 +240,6 @@ function openArticleMenu(element) {
 function articleCopyLink(element) {
     navigator.clipboard.writeText(`${window.location.origin}/post/${element.getAttribute('data-id')}`);
     notification(1, "Link successfully copied");
-};
-
-
-function offFullScreenPhoto(element) {
-    element.classList.remove('full-screen-mode-show');
-    element.classList.add('full-screen-mode-hide');
-};
-
-
-function OnFullScreenPhoto(element) {
-    var fullScreen = document.querySelector('.full-screen-photo');
-    var fullScreenImg = document.querySelector('.full-screen-content');
-
-    fullScreenImg.src = element.src;
-    fullScreen.classList.remove('full-screen-mode-hide');
-    fullScreen.classList.add('full-screen-mode-show');
 };
 
 

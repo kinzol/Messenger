@@ -1,0 +1,57 @@
+.selection-menu {
+    height: fit-content;
+    margin-top: 15px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.041);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selection-menu-title {
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 500;
+    margin: 10px auto 10px auto;
+}
+
+.selection-menu-line {
+    border-top: 3px solid rgba(255, 255, 255, 0.212);
+    border-radius: 5px;
+}
+
+.selection-menu-button {
+    transition: all 150ms ease-in-out;
+    border-radius: 25px;
+    background: #ffffff13;
+    width: calc(100% - 20px);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 5px;
+    opacity: 0.8;
+    overflow: hidden;
+}
+
+.selection-menu-button:hover {
+    transition: all 150ms ease-in-out;
+    opacity: 1;
+}
+
+.selection-menu-button-svg {
+    width: 40px;
+    height: 40px;
+}
+
+.selection-menu-button-name {
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+}

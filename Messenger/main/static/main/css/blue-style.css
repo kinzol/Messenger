@@ -9,3 +9,27 @@
 .ccc-reactions{
     background-color: #a7c6e8;
 }
+
+.error-home  {
+    color: #a7c6e8;
+    -webkit-text-fill-color: #a7c6e8;
+}
+
+.auth-form-confirm-button {
+    background: linear-gradient(150deg, #4fa4ff, #2b7cff);
+	background-size: 400% 400%;
+	animation: gradient-story 7s ease-in-out infinite;
+}
+
+
+@keyframes gradient-story {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

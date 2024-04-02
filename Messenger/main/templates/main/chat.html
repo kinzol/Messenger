@@ -8,22 +8,27 @@
 
 {% block body %}
 
-<div class="message-notification">
-    <div class="message-notification-content" onclick="hideMessageNotification(this)">New message from Emmanuel Shamsulin</div>
-</div>
-
 <div class="message-actions" onclick="hideMessageActions()">
     <div class="message-actions-container" onclick="event.stopPropagation()">
         <span class="message-actions-container-span">Actions buttons</span>
         <div class="message-actions-reactions-container">
-            <div class="message-actions-reaction" onclick="setReactionMessage(0)">❤️</div>
-            <div class="message-actions-reaction" onclick="setReactionMessage(1)">👍</div>
-            <div class="message-actions-reaction" onclick="setReactionMessage(2)">😃</div>
-            <div class="message-actions-reaction" onclick="setReactionMessage(3)">😂</div>
-            <div class="message-actions-reaction" onclick="setReactionMessage(4)">💩</div>
+            <div class="message-actions-reaction" onclick="setReactionMessage(this, messageActionsId)">❤️</div>
+            <div class="message-actions-reaction" onclick="setReactionMessage(this, messageActionsId)">👍</div>
+            <div class="message-actions-reaction" onclick="setReactionMessage(this, messageActionsId)">👎</div>
+            <div class="message-actions-reaction" onclick="setReactionMessage(this, messageActionsId)">🔥</div>
+            <div class="message-actions-reaction" onclick="setReactionMessage(this, messageActionsId)">🥰</div>
+            <div class="message-actions-reaction" onclick="setReactionEmoji()">
+                <img class="message-actions-reaction-full" src="{% static 'main/svg/down-arrow.svg' %}"  alt="svg image">
+            </div>
+            <div class="message-actions-reaction-emoji">
+                <header class="message-actions-reaction-emoji-header">Emoji 
+                    <img class="message-actions-reaction-emoji-close" src="{% static 'main/svg/close.svg' %}" onclick="closesetReactionEmoji()" alt="svg image">
+                </header>
+                <div class="message-actions-reaction-emoji-container"></div>
+            </div>
         </div>
         <div class="message-actions-button message-actions-button-reply" onclick="messageReply()">Reply</div>
-        <div class="message-actions-button red-button">Delete</div>
+        <div class="message-actions-button red-button" onclick="deleteMessage(messageActionsId, chatId)">Delete</div>
     </div>
 </div>
 
@@ -559,6 +564,10 @@
                         <div class="chat-content-input-container-emoji-emoji">❤️</div>
                     </div>
                 </div> -->
+
+                <div class="chat-content-input-scrollDown" onclick="scrollToBottomAnyway()">
+                    <img class="chat-content-input-scrollDown-img" src="{% static 'main/svg/down.svg' %}" alt="svg-image">
+                </div>
 
                 <div class="chat-content-input-file">
                     <input type="file" class="chat-content-input-file-input" onchange="openFileButton(this)">

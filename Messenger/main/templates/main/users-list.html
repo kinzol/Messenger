@@ -1,0 +1,49 @@
+{% extends 'main/base-expanded.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/users-list.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="userlist">
+    <span class="userlist-title">List of those who liked the post</span>
+    <div class="userlist-line"></div>
+
+    <a href="#" class="userlist-user">
+        <img src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar" class="userlist-user-avatar">
+        <div class="userlist-user-username">
+            <span class="userlist-user-username-name">
+                Emmanuel Shamsulin
+                <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+            </span>
+            <span class="userlist-user-username-login">shamsulin</span>
+        </div>
+    </a>
+
+    <a href="#" class="userlist-user">
+        <img src="{% static 'main/images/p2.jpg' %}" alt="user's avatar" class="userlist-user-avatar">
+        <div class="userlist-user-username">
+            <span class="userlist-user-username-name">
+                Emmanuel Shamsulin
+                <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+            </span>
+            <span class="userlist-user-username-login">shamsulin</span>
+        </div>
+    </a>
+
+    <a href="#" class="userlist-user">
+        <img src="{% static 'main/images/p3.jpg' %}" alt="user's avatar" class="userlist-user-avatar">
+        <div class="userlist-user-username">
+            <span class="userlist-user-username-name">
+                Emmanuel Shamsulin
+                <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+            </span>
+            <span class="userlist-user-username-login">shamsulin</span>
+        </div>
+    </a>
+</div>
+
+{% endblock %}

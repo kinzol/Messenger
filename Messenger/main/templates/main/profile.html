@@ -4,6 +4,7 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'main/css/home.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'main/css/profile.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
 {% endblock %}
 
 {% block body %}
@@ -12,11 +13,12 @@
         <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
     </a>
     <a class="m-buttons-link" href="#">
-        <div class="mc-sb-c-links-notify">12</div>
+        <div class="mc-sb-c-links-message">12</div>
         <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
     </a>
     <a class="m-buttons-link" href="#">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
+        <div class="mc-sb-c-links-notify">12</div>
+        <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
     </a>
     <a class="m-buttons-link" href="#">
         <img class="m-buttons-link-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
@@ -27,31 +29,23 @@
 </div>
 
 <div class="mobile-full-buttons">
-    <a class="mc-sb-c-links-a" href="#">
+    <a class="m-mc-sb-c-links-a" href="#">
+        <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
+        Search
+    </a>
+    <a class="m-mc-sb-c-links-a" href="#">
+        <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
+        Create
+    </a>
+    <a class="m-mc-sb-c-links-a" href="#">
         <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
         Activity
     </a>
-    <a class="mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image">
-        Bookmarks
-    </a>
-    <a class="mc-sb-c-links-a" href="#">
+    <a class="m-mc-sb-c-links-a" href="#">
         <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
         Settings
     </a>
 </div>
-
-<header class="mobile-header"><h1 class="mobile-header-title">Messenger</h1>
-    <div class="mobile-header-buttons">
-        <a class="mobile-header-buttons-a">
-            <img class="mobile-header-buttons-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
-        </a>
-        <a class="mobile-header-buttons-a">
-            <div class="mc-sb-c-links-notify">12</div>
-            <img class="mobile-header-buttons-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
-        </a>
-    </div>
-</header>
 
 <div class="main-container">
     <div class="mc-container-sidebar-container">
@@ -62,19 +56,23 @@
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
                     Home
                 </a>
-                <a class="mc-sb-c-links-a" href="#">
-                    <div class="mc-sb-c-links-notify">12</div>
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
-                    Messages
+                <a style="position: relative;" href="#">
+                    <div class="mc-sb-c-links-message">12</div>
+                    <div class="mc-sb-c-links-a">
+                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
+                        Messages
+                    </div>
                 </a>
                 <a class="mc-sb-c-links-a" href="#">
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
                     Search
                 </a>
-                <a class="mc-sb-c-links-a" href="#">
+                <a style="position: relative;" href="#">
                     <div class="mc-sb-c-links-notify">12</div>
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
-                    Notifications
+                    <div class="mc-sb-c-links-a">
+                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
+                        Notifications
+                    </div>
                 </a>
                 <a class="mc-sb-c-links-a" href="#">
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
@@ -109,7 +107,7 @@
                 <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
             </h1>
             <h2 class="mc-profile-user-second-username">shamsulin</h2>
-            <span class="mc-profile-user-description">Гений, богатый, денег не дам не проси Гений, богатый, денег не дам не проси Гений, богатый, денег не дам не проси :) И просто крутой!</span>
+            <span class="mc-profile-user-description">TYT BUDET OPISANIE</span>
         </div>
 
         <div class="mc-profile-user-content-stat-container">
@@ -154,7 +152,7 @@
 
         <div class="mc-profile-user-content-stat-container">
             <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}" alt="svg-image">
-            <span class="mc-profile-user-lock-span">This account is private</span>
+            <span class="mc-profile-user-lock-span">This profile is private</span>
         </div>
 
         <div class="change-style-articles">
@@ -168,7 +166,7 @@
             </div>
         </div>
 
-        <div class="mc-feed-article-container-mini">
+        <div class="mc-feed-article-container-mini mc-feed-article-container-show">
             <a href="#" class="mc-feed-article-mini">
                 <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
             </a>
@@ -185,7 +183,7 @@
 
             <a href="#" class="mc-feed-article-mini">
                 <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
-                <div class="mc-feed-article-mini-text">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!!Всем привет! Как у вас проходитddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd день, что делаете сегодня? Я вот выбрал себе новые обои на робочий стол на компьютер свой :)</div>
+                <div class="mc-feed-article-mini-text">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</div>
             </a>
 
         </div>
@@ -236,7 +234,7 @@
                         <div data-id="126" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
                     </div>
                 </div>
-                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!!Всем привет! Как у вас проходитddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd день, что делаете сегодня? Я вот выбрал себе новые обои на робочий стол на компьютер свой :)</p>
+                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
                 <div class="mc-feed-article-hashtags">
                     <span>#summer</span>
                     <span>#cars</span>
@@ -310,7 +308,7 @@
                         <div data-id="125" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
                     </div>
                 </div>
-                <p class="mc-feed-article-description-solo">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!!Всем привет! Как у вас проходитddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd день, что делаете сегодня? Я вот выбрал себе новые обои на робочий стол на компьютер свой :)</p>
+                <p class="mc-feed-article-description-solo">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
                 <div class="mc-feed-article-hashtags">
                     <span>#summer</span>
                     <span>#cars</span>
@@ -373,7 +371,7 @@
                         <div data-id="124" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
                     </div>
                 </div>
-                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!!Всем привет! Как у вас проходитddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd день, что делаете сегодня? Я вот выбрал себе новые обои на робочий стол на компьютер свой :)</p>
+                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
                 <div class="mc-feed-article-hashtags">
                     <span>#summer</span>
                     <span>#cars</span>
@@ -439,7 +437,7 @@
                         <div data-id="123" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
                     </div>
                 </div>
-                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!!Всем привет! Как у вас проходитddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd день, что делаете сегодня? Я вот выбрал себе новые обои на робочий стол на компьютер свой :)</p>
+                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
                 <div class="mc-feed-article-hashtags">
                     <span>#summer</span>
                     <span>#cars</span>
@@ -470,7 +468,7 @@
                 Verified profile
                 <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
             </div>
-            <div class="mc-second-sidebar-container-description">Гений, богатый, денег не дам не проси :) И просто крутой!</div>
+            <div class="mc-second-sidebar-container-description">TYT BUDET OPISANIE</div>
             <a class="mc-sb-c-links-a" href="#">
                 <img class="mc-sb-c-links-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
                 My Profile

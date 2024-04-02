@@ -1,17 +1,31 @@
 var userId = 13;
+var messageSound
+var chatMessegeDates = {};
 
-function createMessage(message) {
-    var chatSection = document.querySelector(`[chat-id="${message.from}"].chat-content-chat`);
-    var chatCounter = document.querySelector(`[chat-id="${message.from}"].ccs-container-info-message-count`);
-    raiseChat(message.from);
+document.addEventListener("DOMContentLoaded", (event) => {
+    messageSound = new Audio(newMessageSound) 
+});
+
+function newMessage(message) {
+    if (userId != message.from) {
+        var chatSection = document.querySelector(`[chat-id="${message.from}"].chat-content-chat`);
+        var chatCounter = document.querySelector(`[chat-id="${message.from}"].ccs-container-info-message-count`);
+        raiseChat(message.from);
+    } else {
+        var chatSection = document.querySelector(`[chat-id="${message.to}"].chat-content-chat`);
+        var chatCounter = document.querySelector(`[chat-id="${message.to}"].ccs-container-info-message-count`);
+        raiseChat(message.to);
+    };
 
     if (!chatSection || (chatId != message.from)) {
         var chatCounterContainer = document.querySelector(`[chat-id="${message.from}"].ccs-container-info-message-container-second`);
 
-        if (chatCounter) {
-            chatCounter.innerHTML = parseInt(chatCounter.innerHTML) + 1;
-        } else {
-            chatCounterContainer.innerHTML = chatCounterContainer.innerHTML + `<div chat-id="${message.from}" class="ccs-container-info-message-count">1</div>`
+        if (chatCounterContainer){
+            if (chatCounter) {
+                chatCounter.innerHTML = parseInt(chatCounter.innerHTML) + 1;
+            } else {
+                chatCounterContainer.innerHTML = chatCounterContainer.innerHTML + `<div chat-id="${message.from}" class="ccs-container-info-message-count">1</div>`
+            };
         };
     };
 
@@ -20,16 +34,51 @@ function createMessage(message) {
         createMessagePlate('New messages', true, true, message.from);
         newMessagePlate.push(message.from);
     }
+
+    if ((chatId != message.from) && (userId != message.from)) {
+        messageSound.play();
+    };
+
+    if (userId != message.from) {
+        var chatInfoMessage = document.querySelector(`[chat-id='${message.from}'].ccs-container-info-message`);
+        var chatInfoTime = document.querySelector(`[chat-id='${message.from}'].ccs-container-info-message-time`);
+        chatInfoMessage.innerHTML = message.text;
+        chatInfoTime.innerHTML = message.time;
+    } else {
+        var chatInfoMessage = document.querySelector(`[chat-id='${message.to}'].ccs-container-info-message`);
+        var chatInfoTime = document.querySelector(`[chat-id='${message.to}'].ccs-container-info-message-time`);
+        chatInfoMessage.innerHTML = message.text;
+        chatInfoTime.innerHTML = message.time;
+    };
     
     if (!chatSection) {return};
+
+    if (userId != message.from) {
+        if (!chatMessegeDates[message.from]) {
+            chatMessegeDates[message.from] = message.date;
+            createMessagePlate(message.date, true, false, message.from);
+        } else {
+            if (chatMessegeDates[message.from] != message.date) {
+                createMessagePlate(message.date, true, false, message.from);
+                chatMessegeDates[message.from] = message.date;
+            };
+        };
+    } else {
+        if (!chatMessegeDates[message.to]) {
+            chatMessegeDates[message.to] = message.date;
+            createMessagePlate(message.date, true, false, message.to);
+        } else {
+            if (chatMessegeDates[message.to] != message.date) {
+                createMessagePlate(message.date, true, false, message.to);
+                chatMessegeDates[message.to] = message.date;
+            };
+        };
+    };
 
     var newMessage = document.createElement('div');
     newMessage.classList.add('ccc-container');
     newMessage.setAttribute('message-id', message.id);
     newMessage.setAttribute('onclick', 'doubleClickMessage(this)');
-
-    var chatInfoMessage = document.querySelector(`[chat-id='${message.from}'].ccs-container-info-message`);
-    chatInfoMessage.innerHTML = message.text;
 
     if (message.read == true) {
         var tick = `<img message-id="${message.id}" class="ccc-message-view" src="${svgTickBlue}" alt="svg-view"></img>`
@@ -37,10 +86,7 @@ function createMessage(message) {
         var tick = `<img message-id="${message.id}" class="ccc-message-view" src="${svgTickWhite}" alt="svg-view"></img>`
     };
     var additional = `<img message-id="${message.id}" class="ccc-container-additional ${message.from != userId ? 'ccc-contrary-additional' : ''}"
-                      src="${svgAdditional}" alt="svg-additional" onclick="showMessageActions(this, false)">`
-
-    var additionalReply = `<img message-id="${message.id}" class="ccc-container-additional ${message.from != userId ? 'ccc-contrary-additional' : ''}"
-                      src="${svgAdditional}" alt="svg-additional" onclick="showMessageActions(this, true)">`
+                      src="${svgAdditional}" alt="svg-additional" onclick="showMessageActions(this, ${message.from == userId ? 'true' : 'false'})">`
 
     if (message.text) {
         var parts = message.text.split(" ");
@@ -55,18 +101,18 @@ function createMessage(message) {
 
     if (message.type == 'text') {
         var result = `
-                ${message.from == userId ? additionalReply : ''}
+                ${message.from == userId ? additional : ''}
                 <div message-id="${message.id}" class="ccc-message-text reaction-area ${message.from != userId ? 'ccc-contrary' : ''}">
                     <span message-id="${message.id}" class="ccc-message-text-span">${message.text}</span>
                     <span class="ccc-message-time">${message.time}</span>
                     ${message.from == userId ? tick : ''}
                 </div>
-                ${message.from != userId ? additionalReply : ''}`;
+                ${message.from != userId ? additional : ''}`;
 
 
     } else if (message.type == 'reply') {
         var result = `
-                ${message.from == userId ? additionalReply : ''}
+                ${message.from == userId ? additional : ''}
                 <div message-id="${message.id}" class="ccc-message-text-reply reaction-area ${message.from != userId ? 'ccc-contrary' : ''}">
                     <div reply-id="${message.reply_id}" class="ccc-message-reply" onclick='replyScrollMessage(this)'>
                         <span class="ccc-message-reply-span">${message.reply_text}</span>
@@ -77,7 +123,7 @@ function createMessage(message) {
                         ${message.from == userId ? tick : ''}
                     </div>
                 </div>
-                ${message.from != userId ? additionalReply : ''}`;
+                ${message.from != userId ? additional : ''}`;
 
 
     } else if (message.type == 'image') {
@@ -90,7 +136,9 @@ function createMessage(message) {
                     </div>
                     <img class="ccc-media-content" src="${message.image}" onclick="OnFullScreenPhoto(this)" alt="${message.from}'s img">
                 </div>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Image</span>`;
+                
 
         chatInfoMessage.innerHTML = message.image.split('/').at(-1);
 
@@ -107,13 +155,14 @@ function createMessage(message) {
                         <source src="${message.video}">
                     </video>
                 </div>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Video</span>`;
         chatInfoMessage.innerHTML = message.video.split('/').at(-1);
 
 
     } else if (message.type == 'image-text') {
         var result = `
-                ${message.from == userId ? additionalReply : ''}
+                ${message.from == userId ? additional : ''}
                 <div message-id="${message.id}" class="ccc-media-text reaction-area ${message.from != userId ? 'ccc-contrary-media' : ''}">
                     <img class="ccc-media-content ccc-media-content-text" src="${message.image}" onclick="OnFullScreenPhoto(this)" alt="${message.from}'s img">
                     <div class="ccc-message-container-media">
@@ -122,12 +171,12 @@ function createMessage(message) {
                         ${message.from == userId ? tick : ''}
                     </div>
                 </div>
-                ${message.from != userId ? additionalReply : ''}`;
+                ${message.from != userId ? additional : ''}`;
 
 
     } else if (message.type == 'video-text') {
         var result = `
-                ${message.from == userId ? additionalReply : ''}
+                ${message.from == userId ? additional : ''}
                 <div message-id="${message.id}" class="ccc-media-text reaction-area ${message.from != userId ? 'ccc-contrary-media' : ''}">
                     <video controls class="ccc-media-content ccc-media-content-text" alt="${message.from}'s video">
                         <source src="${message.video}">
@@ -139,7 +188,7 @@ function createMessage(message) {
                     </div>
                 </div>
             </div>
-            ${message.from != userId ? additionalReply : ''}`;
+            ${message.from != userId ? additional : ''}`;
 
 
     } else if (message.type == 'audio') {
@@ -150,7 +199,8 @@ function createMessage(message) {
                     <span class="ccc-message-time">${message.time}</span>
                     ${message.from == userId ? tick : ''}
                 </div>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Audio</span>`;
 
         chatInfoMessage.innerHTML = `Audio message`;
 
@@ -175,7 +225,8 @@ function createMessage(message) {
                         </div>
                     </div>
                 </a>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>File</span>`;
         chatInfoMessage.innerHTML = message.file.split('/').at(-1);
 
 
@@ -190,7 +241,8 @@ function createMessage(message) {
                     </div>
                     <img class="ccc-call-img" src="${svgCall}" alt="svg-image">
                 </div>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>${message.from != userId ? 'Incoming call' : 'Outgoing call'}</span>`;
         chatInfoMessage.innerHTML = message.from != userId ? 'Incoming call' : 'Outgoing call';
 
 
@@ -204,7 +256,8 @@ function createMessage(message) {
                     </div>
                     <img class="ccc-call-img" src="${svgVideoCall}" alt="svg-image">
                 </div>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>${message.from != userId ? 'Incoming video call' : 'Outgoing video call'}</span>`;
         chatInfoMessage.innerHTML = message.from != userId ? 'Incoming video call' : 'Outgoing video call';
 
 
@@ -221,7 +274,8 @@ function createMessage(message) {
                         </div>
                     </div>
                 </a>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Post</span>`;
         chatInfoMessage.innerHTML = 'View post';
 
 
@@ -243,7 +297,8 @@ function createMessage(message) {
                         ${message.from == userId ? tick : ''}
                     </div>
                 </a>
-                ${message.from != userId ? additional : ''}`;
+                ${message.from != userId ? additional : ''}
+                <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Story</span>`;
         chatInfoMessage.innerHTML = 'story';
 
     };
@@ -297,7 +352,7 @@ function createMessagePlate(message, toBottom, newMessage, toChatId) {
 
 
 function test() {
-ab = createMessage({'type': 'reply', 'from': 23, 'length': '1m 32s', 'file': testaudio, 'audio': testaudio, 'video': testvideo, 'image': testpicture, 'text': 'да http://127.0.0.1:8000/# https://www.youtube.com/watch?v=d9eSfSACgmI asdasd', 'id': 123, 'read': true, 'time': '13:40', 'reply_text': 'asdasasdasd', 'reply_id': 123})
+ab = newMessage({'type': 'image', 'to': 23, 'from': 13, 'date': '23 jan', 'length': '1m 32s', 'file': testaudio, 'audio': testaudio, 'video': testvideo, 'image': testpicture, 'text': 'да http://127.0.0.1:8000/# https://www.youtube.com/watch?v=d9eSfSACgmI asdasd', 'id': 123, 'read': true, 'time': '13:40', 'reply_text': 'asdasasdasd', 'reply_id': 123})
 };
 
 function testM() {

@@ -21,14 +21,15 @@ function changeStyleArticlesMini() {
     miniButton.style.opacity = 1;
     fullButton.style.opacity = 0.6;
 
-    fullContainer.classList.remove('block-show-articles');
-    fullContainer.classList.add('block-hide-articles');
+    fullContainer.classList.remove('mc-feed-article-container-show');
+    setTimeout(() => {
+        fullContainer.style.display = 'none';
+    }, 150);
 
     setTimeout(() => {
-        miniContainer.style.removeProperty('display');
-        miniContainer.classList.remove('block-hide-articles');
-        miniContainer.classList.add('block-show-articles');
-    }, 250);
+        miniContainer.style.display = 'flex';
+        miniContainer.classList.add('mc-feed-article-container-show');
+    }, 150);
 };
 
 
@@ -41,14 +42,15 @@ function changeStyleArticlesFull() {
     fullButton.style.opacity = 1;
     miniButton.style.opacity = 0.6;
 
-    miniContainer.classList.remove('block-show-articles');
-    miniContainer.classList.add('block-hide-articles');
+    miniContainer.classList.remove('mc-feed-article-container-show');
+    setTimeout(() => {
+        miniContainer.style.display = 'none';
+    }, 150);
 
     setTimeout(() => {
-        fullContainer.classList.remove('block-hide-articles');
-        fullContainer.classList.add('block-show-articles');
         fullContainer.style.display = 'block';
-    }, 250);
+        fullContainer.classList.add('mc-feed-article-container-show');
+    }, 150);
 };
 
 

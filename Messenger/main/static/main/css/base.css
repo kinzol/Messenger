@@ -9,18 +9,25 @@ html {
 }
 
 body {
-    background: radial-gradient(circle at 50% 100%, #5a83c2 0%, #90b7e2 60%);
-    /* background: radial-gradient(circle at 50% 100%, #7dd675 0%, #9be29b 60%); */
-    /* background: radial-gradient(circle at 50% 100%, #d67391 0%, #d884a0 60%); */
+    transition: all 500ms ease-in-out;
+    background: radial-gradient(circle at 50% 100%, #6995d9  0%, #90b7e2 60%);
+    /* background: radial-gradient(circle at 50% 100%, #82df7a 0%, #90cd90 60%); */
+    /* background: radial-gradient(circle at 50% 100%, #d67995 0%, #ea87a8 60%); */
+    /* background: radial-gradient(circle at 50% 100%, #414141 0%, #505050 60%); */
+
+    /* background-image: url(../svg/noise.svg), radial-gradient(circle at 50% 100%, #6995d9 0%, #90b7e2 60%);
+    background-repeat: repeat, no-repeat; */
+
     margin: 0;
     background-attachment: fixed;
     color: #fff;
-    -webkit-text-fill-color: #fff;
     width: 100%;
     height: 100%;
+    cursor: default;
 }
 
 .full-screen-photo {
+    transition: all 150ms ease-in-out;
     display: none;
     position: fixed;
     height: 100%;
@@ -33,6 +40,7 @@ body {
     z-index: 7;
     backdrop-filter: blur( 3px );
     -webkit-backdrop-filter: blur( 3px );
+    opacity: 0;
 }
 
 .full-screen-span {
@@ -66,26 +74,6 @@ body {
     margin: auto;
     border-radius: 15px;
     z-index: 8;
-}
-
-.full-screen-mode-show {
-    display: flex; 
-    animation: fullScreenModeShow 250ms linear forwards;
-}
-
-@keyframes fullScreenModeShow {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
-}
-
-.full-screen-mode-hide {
-    display: flex;
-    animation: fullScreenModeHide 250ms linear forwards;
-}
-  
-@keyframes fullScreenModeHide {
-  0% {opacity: 1;}
-  100% {opacity: 0; display: none;}
 }
 
 .user-verify {

@@ -1,0 +1,26 @@
+{% extends 'main/base-expanded.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/activity-comment.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="selection-menu">
+    <span class="selection-menu-title">The comments you wrote</span>
+    <div class="selection-menu-line"></div>
+    <div class="selection-menu-container">
+
+        <a href="#" class="selection-menu-button">
+            <img class="selection-menu-button-svg" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image">
+            <span class="selection-menu-button-name">ksdfjlksdjflks jdlkfjslkd jflksdj lfkjslkdfj lksjdflkjslkdjflksdjflkjsdlkfjslkdjf lkjsdlfj lskdjflkjsdlkfjslkdjfkosdjfl</span>
+            <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
+        </a>
+        
+    </div>
+
+</div>
+
+{% endblock %}

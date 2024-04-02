@@ -1,0 +1,103 @@
+.search-content {
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.041);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    /* border-radius: 10px; */
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    margin-top: 15px;
+    padding: 5px;
+}
+
+
+.search-input {
+    transition: all 250ms ease-in-out;
+    border-radius: 25px;
+    background-color: #ffffff13;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    outline: none;
+    font-size: 25px;
+    padding: 5px;
+    width: calc(100% - 14px);
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+}
+
+.search-input:hover {
+    transition: all 250ms ease-in-out;
+    border: 2px solid rgba(255, 255, 255, 0.411);
+}
+
+.search-input:focus {
+    transition: all 250ms ease-in-out;
+    border: 2px solid rgba(255, 255, 255, 0.63);
+}
+
+.search-input::placeholder {
+    color: #ffffff49;
+    -webkit-text-fill-color: #ffffff49;
+}
+
+.search-users {
+    width: 100%;
+    margin: 15px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.search-users-container {
+    transition: all 250ms ease-in-out;
+    height: 60px;
+    width: calc(100% - 10px);
+    padding: 0px 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    border-radius: 20px;
+}
+
+.search-users-container:hover {
+    transition: all 250ms ease-in-out;
+    background-color: #ffffff1a;
+}
+
+.search-users-container-avatar {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.search-users-container-userinfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.sucu-name {
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.sucu-login {
+    font-size: 15px;
+    font-weight: 500;
+    color: #ffffff98;
+    -webkit-text-fill-color: #ffffff98;
+}
+
+@media (max-width: 410px) {
+
+    .sucu-name {
+        font-size: 17px;
+    }
+
+    .sucu-login {
+        font-size: 13px;
+    }
+}

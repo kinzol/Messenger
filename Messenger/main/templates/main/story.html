@@ -1,0 +1,79 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/story.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<main class="story">
+    <div class="story-timeline">
+
+        <div class="story-timeline-viewed"></div>
+        <div class="story-timeline-viewed"></div>
+        <div class="story-timeline-underviewed"><div class="story-timeline-now"></div></div>
+        <div class="story-timeline-underviewed"></div>
+        <div class="story-timeline-underviewed"></div>
+
+    </div>
+
+    <div class="story-top-buttons">
+        <img class="story-top-button-img" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-image" onclick="showMenu()">
+        <img class="story-top-button-img" src="{% static 'main/svg/close.svg' %}" alt="svg-image">
+    </div>
+
+    <a class="story-info" href="#">
+        <img class="story-info-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+        <div class="story-info-container">
+            <div class="story-info-userinfo">
+                Emmanuel Shamsulin
+                <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+            </div>
+            <span class="story-info-time">6 hours ago</span>
+        </div>
+    </a>
+    <img class="start-video-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
+    <video class="story-video" onclick="startVideo(this)" disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false">
+        <source class="story-video-source" src="{% static 'main/images/v4.mp4' %}">
+    </video>
+
+    <div class="story-menu">
+        <div class="story-menu-button" onclick="storyCopyLink()">Copy link</div>
+        <div class="story-menu-button" onclick="showShare()">Share</div>
+        <div class="story-menu-button story-menu-button-red">Delete</div>
+    </div>
+
+    <div class="control-stories">
+        <div class="control-stories-previous" onclick="storyPrevious()"></div>
+        <div class="control-stories-next" onclick="storyNext()"></div>
+    </div>
+
+    <div class="story-share">
+        <input type="text" class="story-share-search" oninput="shareFilter(this)">
+        
+        <div class="story-share-user">
+            <img class="story-share-user-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+            <div class="story-share-user-userinfo">
+                <span class="story-share-user-userinfo-name">Emmanuel Shamsulin</span>
+                <span class="story-share-user-userinfo-login">shamsulin</span>
+            </div>
+            <div class="story-share-button">Share</div>
+        </div>
+
+
+        <div class="story-share-user">
+            <img class="story-share-user-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+            <div class="story-share-user-userinfo">
+                <span class="story-share-user-userinfo-name">Emmanuel Shamsulin</span>
+                <span class="story-share-user-userinfo-login">shamsulin</span>
+            </div>
+            <div class="story-share-button">Share</div>
+        </div>
+
+    </div>
+</main>
+
+<script src="{% static 'main/JS/story.js' %}"></script>
+{% endblock %}

@@ -53,3 +53,46 @@ function notification(type, message) {
         }, 1000);
     });
 };
+
+
+function hideMessageNotification(element) {
+    element.classList.remove('message-notification-content-show');
+    setTimeout(() => {
+        element.parentNode.removeChild(element);
+    }, 150);
+};
+
+function showMessageNotification(notifyUserId, text) {
+    var messageNotification = document.querySelector('.message-notification')
+
+    if (!messageNotification.textContent.includes(notifyUserId)) {
+
+        if (!userNamesNotification[notifyUserId]) {
+            // ОБРАЩЕНИЕ К АПИ И ЗАПРОС АВЫ И НИКА И ЗАПИСАТЬ ИХ В СЛОВАРЬ
+        };
+
+        var newMessageNotification = document.createElement('div');
+        newMessageNotification.classList.add('message-notification-content');
+        newMessageNotification.setAttribute('onclick', 'hideMessageNotification(this)');
+        setTimeout(() => {
+            newMessageNotification.classList.add('message-notification-content-show');
+        }, 10);
+
+        newMessageNotification.innerHTML = `
+            <img class="message-notification-content-image" src="${userAvatarsNotification[notifyUserId]}"  alt="${notifyUserId}'s avatar">
+            <div class="message-notification-content-info">
+                <span class="message-notification-content-info-username">${userNamesNotification[notifyUserId]}</span>
+                <span class="message-notification-content-info-message">${text}</span>
+                <span class="message-notification-content-info-data">${notifyUserId}</span>
+            </div>`;
+        
+        messageNotification.appendChild(newMessageNotification);
+
+        setTimeout(() => {
+            newMessageNotification.classList.remove('message-notification-content-show');
+            setTimeout(() => {
+            newMessageNotification.parentNode.removeChild(newMessageNotification);
+            }, 150);
+        }, 4000);
+    };
+};

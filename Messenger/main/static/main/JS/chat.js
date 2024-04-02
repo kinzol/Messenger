@@ -163,39 +163,32 @@ function offContentAudio(){
 }
 
 
-function offFullScreenPhoto(element) {
-    element.classList.remove('full-screen-mode-show');
-    element.classList.add('full-screen-mode-hide');
-};
-
-
-function OnFullScreenPhoto(element) {
-    var fullScreen = document.querySelector('.full-screen-photo');
-    var fullScreenImg = document.querySelector('.full-screen-content');
-
-    fullScreenImg.src = element.src;
-    fullScreen.classList.remove('full-screen-mode-hide');
-    fullScreen.classList.add('full-screen-mode-show');
-};
-
 function hideMessageActions() {
     var messageActions = document.querySelector('.message-actions')
     messageActions.classList.remove('message-actions-show');
-    messageActions.classList.add('message-actions-hide');
+
+    closesetReactionEmoji();
+
+    setTimeout(() => {
+        messageActions.style.display = 'none';
+    }, 250);
 };
 
-function showMessageActions(element, reply) {
+function showMessageActions(element, delMessage) {
     var messageActions = document.querySelector('.message-actions');
-    var replyButton = document.querySelector('.message-actions-button-reply');
+    var replyButton = document.querySelector('.red-button');
 
-    if (reply) {
-        replyButton.style.display = 'flex';
+    if (delMessage) {
+        replyButton.style.display = 'display';
     } else {
         replyButton.style.display = 'none';
     };
     messageActionsId = element.getAttribute('message-id');
-    messageActions.classList.remove('message-actions-hide');
-    messageActions.classList.add('message-actions-show');
+
+    messageActions.style.display = 'flex';
+    setTimeout(() => {
+        messageActions.classList.add('message-actions-show');
+    }, 10);
 };
 
 function messageReply() {
@@ -204,6 +197,9 @@ function messageReply() {
     var getMessageText = document.querySelector(`[message-id='${messageActionsId}'].ccc-message-text-span`);
     var inputReplyMessage = document.querySelector('.chat-content-input-reply-message');
     var moveChatField = document.querySelector(`[chat-id='${chatId}'].chat-content-chat`);
+
+    scrollDown = document.querySelector('.chat-content-input-scrollDown');
+    scrollDown.classList.add('chat-content-input-scrollDown-movetop');
 
     moveChatField.classList.add('chat-content-chat-move');
 
@@ -214,11 +210,11 @@ function messageReply() {
     inputReplyMessage.innerHTML = getMessageText.innerHTML;
     inputFile.classList.add('chat-content-input-file-hide');
     hideMessageActions();
-    replyContainer.classList.remove('message-actions-hide');
-    replyContainer.classList.add('message-actions-show');
+
+    replyContainer.classList.add('chat-content-input-reply-show');
     setTimeout(() => {
         scrollToBottom();
-    }, 200);
+    }, 150);
 };
 
 
@@ -227,79 +223,73 @@ function hideReplyContainer() {
     var replyContainer = document.querySelector('.chat-content-input-reply');
     var inputFile = document.querySelector('.chat-content-input-file');
 
+    scrollDown = document.querySelector('.chat-content-input-scrollDown');
+    scrollDown.classList.remove('chat-content-input-scrollDown-movetop');
+
     moveChatField.classList.remove('chat-content-chat-move');
 
     inputFile.classList.remove('chat-content-input-file-hide');
     hideMessageActions();
-    replyContainer.classList.remove('message-actions-show');
-    replyContainer.classList.add('message-actions-hide');
-    replyStatus = false;
 
-    setTimeout(() => {
-        replyContainer.classList.remove('message-actions-hide');
-    }, 250);
+    replyContainer.classList.remove('chat-content-input-reply-show');
+    replyStatus = false;
 }
 
 var doubleClickMessageStatus = false;
 function doubleClickMessage(element) {
     if (doubleClickMessageStatus) {
         doubleClickMessageStatus = false;
-        console.log('doubleClick')
+        console.log('doubleClick');
+        setReactionMessage('❤️', element.getAttribute('message-id'));
     } else {
         doubleClickMessageStatus = true;
         setTimeout(() => {
             doubleClickMessageStatus = false;
         }, 500);
-    }
-}
+    };
+};
 
-function setReactionMessage(reactionId) {
-    var reactions = ['❤️', '👍', '😃', '😂', '💩'];
+function setReactionMessage(element, messageId) {
 
-    hideReplyContainer();
-}
+    var reactionField = document.querySelector(`[message-id='${messageId}'].ccc-reactions`);
+    
+    if (reactionField) {
+
+    } else {
+        var messageForReaction = document.querySelector(`[message-id='${messageId}'].reaction-area`);
+        messageForReaction.innerHTML = messageForReaction.innerHTML + `<div message-id='${messageId}' onclick="messageReactions(this)" class="ccc-reactions"></div>`;
+        reactionField = document.querySelector(`[message-id='${messageId}'].ccc-reactions`);
+    };
+    
+    if (element.textContent) {
+        if (!reactionField.innerHTML.includes(element.textContent)) {
+            reactionField.innerHTML = reactionField.innerHTML + element.textContent;
+        };
+        hideReplyContainer();
+    } else {
+        if (!reactionField.innerHTML.includes(element)) {
+            reactionField.innerHTML = reactionField.innerHTML + element;
+        };
+    };
+};
 
 
 function messageReactions(element) {
     var messageActions = document.querySelector('.message-reaction');
 
     messageActionsId = element.getAttribute('message-id');
-    messageActions.classList.remove('message-actions-hide');
-    messageActions.classList.add('message-actions-show');
+    messageActions.style.display = 'flex';
+    setTimeout(() => {
+        messageActions.classList.add('message-actions-show');
+    }, 10);
 };
 
 function hideMessageReactions() {
     var messageActions = document.querySelector('.message-reaction')
     messageActions.classList.remove('message-actions-show');
-    messageActions.classList.add('message-actions-hide');
-};
-
-function hideMessageNotification(element) {
-    element.classList.remove('show-message-notification');
-    element.classList.add('hide-message-notification');
     setTimeout(() => {
-        element.parentNode.removeChild(element);
-    }, 150);
-};
-
-function showMessageNotification(from) {
-    var messageNotification = document.querySelector('.message-notification')
-
-    if (!messageNotification.textContent.includes(from)) {
-        var newMessageNotification = document.createElement('div');
-        newMessageNotification.classList.add('message-notification-content');
-        newMessageNotification.classList.add('show-message-notification');
-        newMessageNotification.innerHTML = `New message from ${from}`;
-        newMessageNotification.setAttribute('onclick', 'hideMessageNotification(this)');
-        messageNotification.appendChild(newMessageNotification);
-        setTimeout(() => {
-            newMessageNotification.classList.remove('show-message-notification');
-            newMessageNotification.classList.add('hide-message-notification');
-            setTimeout(() => {
-            newMessageNotification.parentNode.removeChild(newMessageNotification);
-            }, 150);
-        }, 2000);
-    }
+        messageActions.style.display = 'none';
+    }, 250);
 };
 
 
@@ -334,7 +324,6 @@ function openChat(element) {
 
     var chatField = document.querySelector(`[chat-id='${newChatId}'].chat-content-chat`);
     var previousChatField = document.querySelector(`[chat-id='${chatId}'].chat-content-chat`);
-
     var inputMessageField = document.querySelector(`[chat-id='${newChatId}'].chat-content-input-message`);
     var previousInputMessageField = document.querySelector(`[chat-id='${chatId}'].chat-content-input-message`);
 
@@ -347,12 +336,12 @@ function openChat(element) {
             setTimeout(() => {
                 messagePlate.parentNode.removeChild(messagePlate);
             }, 250);
-            var index = newMessagePlate.indexOf(parseInt(chatId));
-            if (index > -1) {
-                newMessagePlate.splice(index, 1);
-            }
         };
     };
+    var index = newMessagePlate.indexOf(parseInt(newChatId));
+    if (index > -1) {
+        newMessagePlate.splice(index, 1);
+    }
 
     isChatOpen = true;
     chatId = newChatId;
@@ -361,6 +350,7 @@ function openChat(element) {
         var createNewChatField = document.createElement('section')
         createNewChatField.setAttribute('class', 'chat-content-chat');
         createNewChatField.setAttribute('chat-id', newChatId)
+        createNewChatField.setAttribute('onscroll', 'chatFieldScrolled(this)')
         chatContent.appendChild(createNewChatField);
         chatField = createNewChatField;
 
@@ -416,6 +406,7 @@ function openChat(element) {
                 chatField.style.display = 'flex';
                 inputMessageField.style.display = 'flex';
                 closeFileInput();
+                inputMessageField.focus()
             }, 250);
         } else {
             chatContent.classList.add('show-chat-field');
@@ -433,7 +424,7 @@ function openChat(element) {
                 previousChat.classList.remove('chat-contacts-unselected');
             }, 500);
         };
-        inputMessageField.focus();
+        inputMessageField.focus()
     };
 };
 
@@ -623,6 +614,9 @@ function openFileInput() {
     setTimeout(() => {
         scrollToBottom();
     }, 200);
+
+    scrollDown = document.querySelector('.chat-content-input-scrollDown');
+    scrollDown.classList.add('chat-content-input-scrollDown-movetop');
 };
 
 
@@ -638,6 +632,9 @@ function closeFileInput() {
     inputFileContent.classList.remove('chat-content-input-file-container-show-notext');
     moveChatField.classList.remove('chat-content-chat-move');
     chatChangeSendInputButton();
+
+    scrollDown = document.querySelector('.chat-content-input-scrollDown');
+    scrollDown.classList.remove('chat-content-input-scrollDown-movetop');
 };
 
 
@@ -707,7 +704,7 @@ function createEmoji(chatStyle) {
             if (chatStyle) {
                 emojiList = emojiList + `<div class="chat-content-input-container-emoji-emoji" onclick="writeEmojiInput(this)">${emojiSymbol}</div>`;
             } else {
-                emojiList = emojiList + `<div class="chat-content-input-container-emoji-emoji">${emojiSymbol}</div>`;
+                emojiList = emojiList + `<div class="chat-content-input-container-emoji-emoji" onclick="setReactionMessage(this, messageActionsId)">${emojiSymbol}</div>`;
             };
         });
 
@@ -721,8 +718,12 @@ function createEmoji(chatStyle) {
 var emojiList = null;
 var emojiListReaction = null;
 document.addEventListener("DOMContentLoaded", (event) => {
+    var reactionEmojiContainer = document.querySelector('.message-actions-reaction-emoji-container');
+
     emojiList = createEmoji(true);
     emojiListReaction = createEmoji(false);
+
+    reactionEmojiContainer.appendChild(emojiListReaction);
 });
 
 var emojiChatStatus = false;
@@ -757,5 +758,58 @@ document.addEventListener('click', event => {
 function writeEmojiInput(element) {
     var inputMessageField = document.querySelector(`[chat-id='${chatId}'].chat-content-input-message`);
     inputMessageField.value = inputMessageField.value + element.innerHTML;
+}
+
+var showButtonScrollDown = false;
+function chatFieldScrolled(field) {
+    fieldHeight = field.scrollHeight - field.offsetHeight;
+    fieldPosition = field.scrollTop;
+
+    if (((fieldHeight-fieldPosition) > 1000) && !showButtonScrollDown) {
+        scrollDown = document.querySelector('.chat-content-input-scrollDown');
+        scrollDown.classList.add('chat-content-input-scrollDown-show');
+        showButtonScrollDown = true;
+    } else if (((fieldHeight-fieldPosition) < 1000) && showButtonScrollDown) {
+        scrollDown = document.querySelector('.chat-content-input-scrollDown');
+        scrollDown.classList.remove('chat-content-input-scrollDown-show');
+        showButtonScrollDown = false;
+    };
+};
+
+function deleteMessage(element, chatFieldId) {
+    var messageContainer = document.querySelector(`[message-id='${parseInt(element)}'].ccc-container`);
+    var chatField = document.querySelector(`[chat-id='${chatFieldId}'].chat-content-chat`);
+    hideMessageActions();
+
+    messageContainer.style.height = `${messageContainer.offsetHeight}px`;
+    
+    setTimeout(() => {
+        messageContainer.style.opacity = '0';
+        messageContainer.style.height = '0px';
+    }, 150);
+
+    setTimeout(() => {
+        chatField.removeChild(messageContainer);
+    }, 1000)
+}
+
+function setReactionEmoji() {
+    var actionContainer = document.querySelector('.message-actions-container');
+    var reactionEmoji = document.querySelector('.message-actions-reaction-emoji');
+
+    reactionEmoji.style.height = '100%';
+    reactionEmoji.style.opacity = '1';
+
+    actionContainer.style.backgroundColor = 'rgb(108 139 172)';
+};
+
+function closesetReactionEmoji() {
+    var actionContainer = document.querySelector('.message-actions-container');
+    var reactionEmoji = document.querySelector('.message-actions-reaction-emoji');
+
+    reactionEmoji.style.height = '0%';
+    reactionEmoji.style.opacity = '0';
+
+    actionContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.233)';
 }
 

@@ -12,9 +12,21 @@
     {% endblock %}
 </head>
 <body>
+
+    <div class="message-notification">
+        <!-- <div class="message-notification-content" onclick="hideMessageNotification(this)">
+            <img class="message-notification-content-image" src="{% static 'main/images/p1.jpg' %}"  alt="user's avatar">
+            <div class="message-notification-content-info">
+                <span class="message-notification-content-info-username">Emmanuel Shamsulin</span>
+                <span class="message-notification-content-info-message">Привет как у тебя дела что ты делашь аылващл ащылазщв ылзщал ызщвалзыщ лвазщылвза щлывщзал ыщзвлващз ылвазщлыв азщшл</span>
+                <span class="message-notification-content-info-data">id</span>
+            </div>
+        </div> -->
+    </div>
+
     <div class="notifications"></div>
 
-    <div class="full-screen-photo" onclick="offFullScreenPhoto(this)">
+    <div class="full-screen-photo" onclick="offFullScreenPhoto()">
         <span class="full-screen-span">Full screen mode</span>
         <img class="full-screen-content" onclick="event.stopPropagation()">
     </div>
@@ -41,6 +53,7 @@
                               "{% static 'main/svg/cross.svg' %}"];
 </script>
 
+<script src="{% static 'main/JS/base.js' %}"></script>
 <script src="{% static 'main/JS/emoji.js' %}"></script>
 <script src="{% static 'main/JS/notification.js' %}"></script>
 <script src="{% static 'main/JS/dialog.js' %}"></script>
@@ -52,5 +65,15 @@
 
     var notification = notification;
     var confirmationDialog = confirmationDialog;
+    var hideMessageNotification = hideMessageNotification;
+    var showMessageNotification = showMessageNotification;
+    var offFullScreenPhoto = offFullScreenPhoto;
+    var OnFullScreenPhoto = OnFullScreenPhoto;
+    var showMobileMenu = showMobileMenu;
+
+    var userNamesNotification = {43: 'Abdurosik Mahachkala'};
+    var userAvatarsNotification = {43: '{% static "main/images/p1.jpg" %}'};
+
+    var newMessageSound = '{% static "main/sounds/new_message.mp3" %}';
 </script>
 </html>

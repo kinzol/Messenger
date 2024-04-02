@@ -1,0 +1,34 @@
+.selection-menu {
+    height: fit-content;
+    margin-top: 15px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.041);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selection-menu-title {
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 500;
+    margin: 10px auto 10px auto;
+}
+
+.selection-menu-line {
+    border-top: 3px solid rgba(255, 255, 255, 0.212);
+    border-radius: 5px;
+}
+
+.selection-menu-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+}
