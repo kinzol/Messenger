@@ -1,0 +1,49 @@
+.live-controls {
+    display: flex;
+    opacity: 1;
+}
+
+.story-top-buttons {
+    z-index: 7;
+    margin: 65px 25px auto auto;
+    flex-direction: column-reverse;
+}
+
+.live-chat-style {
+    margin: 105px 25px auto auto;
+}
+
+.live-top-controls {
+    width: calc(100% - 80px);
+}
+
+.live-user-counter {
+    margin: auto 10px auto auto;
+    background: #f43f38;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    font-size: 17px;
+    font-weight: 500;
+    height: 30px;
+    padding: 2px 10px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 5px;
+    justify-content: center;
+    z-index: 3;
+}
+
+.story-menu {
+    z-index: 7;
+}
+
+.story-info-userinfo {
+    text-wrap: wrap;
+}
+
+@media (max-width: 500px) {
+    .story-info {
+        max-width: 55%;
+    }
+}

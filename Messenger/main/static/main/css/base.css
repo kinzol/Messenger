@@ -11,6 +11,8 @@ html {
 body {
     transition: all 500ms ease-in-out;
     background: radial-gradient(circle at 50% 100%, #6995d9  0%, #90b7e2 60%);
+
+    /* background: radial-gradient(circle at 50% 100%, #6995d9 0%, #a7c6e8 60%); */
     /* background: radial-gradient(circle at 50% 100%, #82df7a 0%, #90cd90 60%); */
     /* background: radial-gradient(circle at 50% 100%, #d67995 0%, #ea87a8 60%); */
     /* background: radial-gradient(circle at 50% 100%, #414141 0%, #505050 60%); */

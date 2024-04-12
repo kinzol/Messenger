@@ -70,10 +70,10 @@
 
 .ccc-story-container {
     width: 30%;
-    height: 250px;
     display: flex;
     border-radius: 20px;
     position: relative;
+    aspect-ratio: 9 / 16;
 }
 
 .ccc-story-img {
@@ -90,16 +90,4 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 5px;
-}
-
-@media (max-width: 550px) {
-    .ccc-story-container {
-        height: 200px;
-    }
-}
-
-@media (max-width: 410px) {
-    .ccc-story-container {
-        height: 150px;
-    }
 }

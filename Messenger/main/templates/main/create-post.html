@@ -1,0 +1,46 @@
+{% extends 'main/base-expanded.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/create-post.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="post">
+    <div class="post-title">New post</div>
+
+    <div>
+        <div class="post-buttons">
+            <!-- <img class="post-buttons-button" src="{% static 'main/svg/emoji-smile.svg' %}"> -->
+            <img class="post-buttons-button" src="{% static 'main/svg/undo-left.svg' %}" onclick="textareaUndo()">
+            <img class="post-buttons-button" src="{% static 'main/svg/undo-right.svg' %}" onclick="textareaRedo()">
+        </div>
+        <textarea rows="5" cols="50" maxlength="255" class="post-tags-textarea"></textarea>
+    </div>
+    <div class="post-tags">
+        <input class="post-tags-input" type="text" placeholder="Enter tag" onchange="appendTag(this)" maxlength="20">
+    </div>
+
+    <div class="post-file">
+        <input type="file" class="post-file-input" accept="image/*,video/*" onchange="openFile()">
+
+        <!-- <img src="{% static 'main/images/ilon.jpg' %}" alt="image" class="post-file-file">
+        <video class="post-file-file" muted autoplay loop><source src="{% static 'main/images/v2.mp4' %}"></video> -->
+        <img src="{% static 'main/svg/plus-large.svg' %}" alt="svg-image" class="post-file-append" onclick="openChooseFile()">
+        <div class="post-file-title" onclick="openChooseFile()">Click to add photo or video</div>
+    </div>
+    <div class="post-file-add" onclick="openChooseFile()">Add more content</div>
+
+    <div class="post-create">Publish</div>
+
+    <div class="post-drag"><div class="post-drag-content">Drag file here</div></div>
+</div>
+
+<script>
+    var svgPlusLarge = "{% static 'main/svg/plus-large.svg' %}";
+</script>
+
+<script src="{% static 'main/JS/create-post.js' %}"></script>
+{% endblock %}

@@ -6,7 +6,8 @@
 .ccc-call-container,
 .ccc-file-container,
 .ccc-post-container,
-.ccc-reactions{
+.ccc-reactions,
+.post-drag{
     background-color: #a7c6e8;
 }
 

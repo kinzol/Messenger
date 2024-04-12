@@ -1,0 +1,71 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/story.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/create-story.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/live.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<main class="story">
+
+    <div class="story-top-buttons">
+        <img class="story-top-button-img" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-image" onclick="showMenu()">
+        <img class="story-top-button-img" src="{% static 'main/svg/close.svg' %}" alt="svg-image">
+    </div>
+
+    <a class="story-info" href="#">
+        <img class="story-info-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+        <div class="story-info-container">
+            <div class="story-info-userinfo">
+                Emmanuel Shamsulin
+                <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+            </div>
+        </div>
+    </a>
+    <video class="story-video" onclick="startVideo(this)" disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false">
+        <source class="story-video-source" src="{% static 'main/images/v4.mp4' %}">
+    </video>
+
+    <div class="story-menu">
+        <div class="story-menu-button" onclick="liveCopyLink()">Copy link</div>
+    </div>
+
+
+    <div class="live-controls">
+        <div class="live-top-controls">
+            <div class="live-user-counter"> 
+                <img src="{% static 'main/svg/eye.svg' %}" alt="svg-image" class="live-user-counter-img">
+                <span class="live-user-counter-num">234</span>
+            </div>
+        </div>
+
+        <div class="live-message">
+            <input type="text" class="live-input" maxlength="100" placeholder="Enter message">
+            <img class="live-input-send" src="{% static 'main/svg/send.svg' %}" alt="svg-image">
+        </div>
+
+        <img src="{% static 'main/svg/chat-live.svg' %}" onclick="changeChatStyle()" alt="svg-image" class="live-chat-style">
+ 
+        <div class="live-chat">
+
+            <div class="live-chat-message">
+                <img src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar" class="live-chat-message-avatar">
+                <div class="live-chat-message-container">
+                    <a href="#" class="live-chat-message-name">Emmanuel Shamsulin</a>
+                    <span class="live-chat-message-text">{% lorem 1 %}</span>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</main>
+
+<script src="{% static 'main/JS/live.js' %}"></script>
+<script src="{% static 'main/JS/story.js' %}"></script>
+{% endblock %}

@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .mc-feed-stories-container {
-    margin: 15px 0px;
+    margin-top: 15px;
     padding: 5px;
     border-radius: 16px;
     grid-gap: 5px;
@@ -46,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
 
     border-radius: 35px;
     background: rgba(255, 255, 255, 0.041);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.062);
+    /* box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.062); */
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );
     /* border-radius: 10px; */
@@ -98,17 +98,21 @@ h1, h2, h3, h4, h5, h6 {
 .mc-feed-article {
     transition: all 150ms ease-in-out;
     width: calc(100%-20px);
-    margin: 15px;
+    margin: 15px 0px;
     padding: 5px;
 
     border-radius: 16px;
     background: rgba(0, 0, 0, 0);
+    background: rgb(255 255 255 / 15%);
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    /* border: 1px solid rgba( 255, 255, 255, 0.18 ); */
     color: #fff;
     width: 546px;
     overflow: hidden;
+    padding: 10px;
+    width: calc(100% - 20px);
+    /* margin-top: 15px;    */
 }
 
 .mc-feed-article-container {
@@ -116,11 +120,12 @@ h1, h2, h3, h4, h5, h6 {
     overflow: auto;
 
     border-radius: 30px;
-    background: rgba(255, 255, 255, 0.13);
+    /* background: rgba(255, 255, 255, 0.13); */
+    background: none;
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );
     /* border-radius: 10px; */
-    border: 2px solid rgba( 255, 255, 255, 0.18 );
+    /* border: 2px solid rgba( 255, 255, 255, 0.18 ); */
 }
 
 .mc-sidebar-container {
@@ -259,7 +264,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .mc-feed-stories-story-userinfo {
-    height: 20px;
+    height: fit-content;
     width: 90%;
     position: absolute;
     margin-top: auto;
@@ -834,6 +839,7 @@ h1, h2, h3, h4, h5, h6 {
 .block-show-article-menu {
     display: flex;
     animation: showBlockArticleMenu 250ms ease-in-out forwards;
+    z-index: 2;
 }
   
 @keyframes showBlockArticleMenu {
@@ -936,15 +942,14 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .main-container {
-        width: 90%;
+        width: 100%;
+        margin-top: 5px;
     }
 
     .mc-feed-article {
         width: auto;
-    }
-
-    .main-container {
-        margin-top: 5px;
+        background: rgb(255 255 255 / 15%);
+        margin: 15px;
     }
 
     .mobile-header {
@@ -961,7 +966,19 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .mc-feed-article-username {
-        font-size: 20px;
+        font-size: 17px;
+        font-weight: 500;
+    }
+
+    .mc-feed-stories-container {
+        margin: 15px;
+        border: none;
+        background: rgb(255 255 255 / 15%);
+    }
+
+    .mc-feed-article-container {
+        border: none;
+        background: none;
     }
 }
 

@@ -1164,12 +1164,11 @@ input[type=file]::-webkit-file-upload-button {
 }
 
 .ccc-story-container {
-    min-width: 10%;
-    max-width: 25%;
-    height: 250px;
+    height: 320px;
     margin-right: 10px;
     border-radius: 20px 20px 5px 20px;
     position: relative;
+    aspect-ratio: 9 / 16;
 }
 
 .ccc-story-img {
@@ -1763,10 +1762,6 @@ input[type=file]::-webkit-file-upload-button {
 
     .ccc-date {
         font-size: 13px;
-    }
-
-    .ccc-story-container {
-        max-width: 40%;
     }
 }
 

@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/create-story.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/story.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<main class="camera">
+
+    <div class="camera-style" onclick="changeStyle()">
+        <div class="camera-style-button camera-style-button-story">Story</div>
+        <div class="camera-style-button camera-style-button-live camera-style-button-hide">Live</div>
+    </div>
+
+    <div class="camera-top-buttons">
+        <img class="camera-top-button-img" src="{% static 'main/svg/close.svg' %}" alt="svg-image">
+    </div>
+
+    <video class="camera-video" autoplay disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false" muted></video>
+    <video class="camera-video-result" onclick="changeMuted()" autoplay muted loop disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false"></video>
+
+    <img class="camera-video-result-muted" src="{% static 'main/svg/sound-max.svg' %}" alt="muted-status">
+
+    <div class="camera-error">An error occurred while accessing the camera</div>
+
+    <div class="camera-record-story" onclick="cameraRecord()"><div class="camera-record-story-stop"></div></div>
+
+    <div class="camera-timeline"><div class="camera-timeline-move"></div></div>
+
+    <div class="camera-video-result-buttons">
+        <div class="camera-video-result-reload">Try again</div>
+        <div class="camera-video-result-publish">Publish story</div>
+    </div>
+
+    <div class="live-start" onclick="liveStart()"><img class="live-start-img" src="{% static 'main/svg/live.svg' %}" alt="svg-image"></div>
+
+    <div class="live-controls">
+        <div class="live-top-controls">
+            <div class="live-time">00:00</div>
+            <div class="live-user-counter"> 
+                <img src="{% static 'main/svg/eye.svg' %}" alt="svg-image" class="live-user-counter-img">
+                <span class="live-user-counter-num">234</span>
+            </div>
+            <img class="camera-top-button-img" src="{% static 'main/svg/close.svg' %}" alt="svg-image">
+        </div>
+
+        <div class="live-message">
+            <input type="text" class="live-input" maxlength="100" placeholder="Enter message">
+            <img class="live-input-send" src="{% static 'main/svg/send.svg' %}" alt="svg-image">
+        </div>
+
+        <img src="{% static 'main/svg/chat-live.svg' %}" onclick="changeChatStyle()" alt="svg-image" class="live-chat-style">
+ 
+        <div class="live-chat">
+
+            <div class="live-chat-message">
+                <img src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar" class="live-chat-message-avatar">
+                <div class="live-chat-message-container">
+                    <a href="#" class="live-chat-message-name">Emmanuel Shamsulin</a>
+                    <span class="live-chat-message-text">{% lorem 1 %}</span>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</main>
+
+<script>
+    var svgSoundMax = '{% static "main/svg/sound-max.svg" %}';
+    var svgSoundMuted = '{% static "main/svg/sound-mute.svg" %}';
+</script>
+
+<script src="{% static 'main/JS/create-story-timer.js' %}"></script>
+<script src="{% static 'main/JS/create-story.js' %}"></script>
+<script src="{% static 'main/JS/story.js' %}"></script>
+
+<script>
+    var timerStart = timerStart;
+    var timerStop = timerStop;
+</script>
+{% endblock %}

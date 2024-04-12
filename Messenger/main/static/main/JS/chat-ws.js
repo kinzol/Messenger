@@ -352,7 +352,7 @@ function createMessagePlate(message, toBottom, newMessage, toChatId) {
 
 
 function test() {
-ab = newMessage({'type': 'image', 'to': 23, 'from': 13, 'date': '23 jan', 'length': '1m 32s', 'file': testaudio, 'audio': testaudio, 'video': testvideo, 'image': testpicture, 'text': 'да http://127.0.0.1:8000/# https://www.youtube.com/watch?v=d9eSfSACgmI asdasd', 'id': 123, 'read': true, 'time': '13:40', 'reply_text': 'asdasasdasd', 'reply_id': 123})
+ab = newMessage({'type': 'story', 'to': 23, 'from': 13, 'date': '23 jan', 'length': '1m 32s', 'file': testaudio, 'audio': testaudio, 'video': testvideo, 'image': testpicture, 'text': 'да http://127.0.0.1:8000/# https://www.youtube.com/watch?v=d9eSfSACgmI asdasd', 'id': 123, 'read': true, 'time': '13:40', 'reply_text': 'asdasasdasd', 'reply_id': 123})
 };
 
 function testM() {
