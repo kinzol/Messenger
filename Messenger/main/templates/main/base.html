@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'main/css/popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/' %}{{ background_style }}" type="text/css">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'main/images/logo-180x180.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'main/images/logo-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'main/images/logo-16x16.png' %}">
     <title>{{title}}</title>
     {% block head %}
     {% endblock %}

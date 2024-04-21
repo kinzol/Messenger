@@ -17,11 +17,13 @@ function changePrivate(element) {
     var profilePrivate = document.querySelector('.mc-profile-user-lock-span');
 
     if (newPrivateStatus) {
+        document.querySelector('#id_private').checked = false;
         element.src = svgUnlock;
         newPrivateStatus = false;
         profilePrivate.innerHTML = 'Your profile is public <span class="settings-lock-description">click on the lock to change status</span>';
         checkChanges();
     } else {
+        document.querySelector('#id_private').checked = true;
         element.src = svgLock;
         newPrivateStatus = true;
         profilePrivate.innerHTML = 'Your profile is private <span class="settings-lock-description">click on the lock to change status</span>';
@@ -34,6 +36,7 @@ var changeBackgroundAvaliable = true;
 function changeBackgroundColor(colorId) {
     if (changeBackgroundAvaliable) {
         newBackground = colorId;
+        document.querySelector('#id_background_style').value = newBackground;
         changeBackgroundAvaliable = false;
         var overlay = document.querySelector('.overlay-background');
 
@@ -200,6 +203,10 @@ function applyChangesEditProfile() {
         var userLoginField = document.querySelector('.epi-login').value;
         var userBioField = document.querySelector('.epi-bio').value;
 
+        var formFullName = document.querySelector('#id_full_name');
+        var formUsername = document.querySelector('#id_username');
+        var formBio = document.querySelector('#id_bio');
+
 
         if (userNameField.includes(' ')) {
             notification(3, 'In the name field, spaces are not allowed');
@@ -212,6 +219,9 @@ function applyChangesEditProfile() {
             return
         };
 
+        formFullName.value = `${userNameField} ${userSurnameField}`
+        formUsername.value = userLoginField
+        formBio.value = userBioField
 
         userName.innerHTML = userName.innerHTML.replace(userName.textContent.trim(), '');
         userName.innerHTML = `${userNameField} ${userSurnameField}` + userName.innerHTML;
@@ -242,17 +252,30 @@ function applyChangesEditProfile() {
 };
 
 
+var saveClicked = false;
 function saveAllSettings() {
-    confirmationDialog('Are you sure you want to save changes? Data such as the login can be changed once every 14 days!').then((value) => {
+    document.querySelector('#id_username').value = document.querySelector('.mc-profile-user-second-username').textContent;
+    confirmationDialog('Are you sure you want to save changes? Data such as the username can be changed once every 14 days!').then((value) => {
         if (value) {
-            s
+            saveClicked = true;
+            document.querySelector("#form-save-button").click();
+        } else {
+            saveClicked = false;
         };
     });
 };
 
 window.addEventListener('beforeunload', (e) => {
-    if (checkAllChanges()) {
+    if (checkAllChanges() && !saveClicked) {
         e.preventDefault()
-        console.log(e.returnValue, '<----- Value')
     };
 });
+
+
+function logout(){
+    confirmationDialog('Are you sure you want to leave your account?').then((value) => {
+        if (value) {
+            document.location.href = `${window.location.origin}/logout`
+        }
+    });
+};

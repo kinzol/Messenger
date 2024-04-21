@@ -1,493 +1,412 @@
-{% extends 'main/base.html' %}
+{% extends 'main/base-expanded.html' %}
 {% load static %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'main/css/home.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'main/css/profile.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
 {% endblock %}
 
 {% block body %}
-<div class="mobile-buttons">
-    <a class="m-buttons-link" href="#">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
-    </a>
-    <a class="m-buttons-link" href="#">
-        <div class="mc-sb-c-links-message">12</div>
-        <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
-    </a>
-    <a class="m-buttons-link" href="#">
-        <div class="mc-sb-c-links-notify">12</div>
-        <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
-    </a>
-    <a class="m-buttons-link" href="#">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
-    </a>
-    <div class="m-buttons-link" onclick="showMobileMenu()">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/menu.svg' %}" alt="svg-image">
+<div class="mc-profile-user">
+    {% if user.username != user_profile.username %}
+        <div class="mc-profile-user-follow" onclick="profileFollow()">Follow</div>
+        <div class="mc-profile-user-unfollow" onclick="profileUnfollow()">Following</div>
+    {% endif %}
+
+    <img class="mc-profile-user-background-img" src="{{ user.profile.background_avatar.url }}" alt="{{ user.username }}'s avatar">
+    <div class="mc-profile-user-avatar">
+        <div class="mc-profile-user-avatar-story">
+            <a href="#" class="mc-profile-user-avatar-story-a">
+                <img class="mc-profile-user-avatar-story-img" src="{{ user.profile.avatar.url }}"  alt="{{ user.username }}'s avatar">
+            </a>
+        </div>
+        <!-- <img class="mc-profile-user-avatar-img" src="{{ user.profile.avatar.url }}" onclick="OnFullScreenPhoto(this)" alt="{{ user.username }}'s avatar"> -->
+        {% if user.profile.online_status %}
+            <div class="mc-profile-user-avatar-online" title="online"></div>
+        {% else %}
+            <div class="mc-profile-user-avatar-online" title="online" style="display:none;"></div>
+        {% endif %}
     </div>
+    <div class="mc-profile-user-online">
+        <!-- <span class="mc-profile-user-online-time">Last seen at 18:50</span> -->
+
+        {% if user.profile.online_status %}
+            <span class="mc-profile-user-online-time">Online</span>
+        {% else %}
+            <span class="mc-profile-user-online-time">{{ user.profile.last_online }}</span>
+        {% endif %}
+
+    </div>
+    <h1 class="mc-profile-user-username">
+        {{ user.profile.full_name }}
+        {% if user.profile.verify %}
+            <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
+        {% endif %}
+    </h1>
+    <h2 class="mc-profile-user-second-username">{{ user.username }}</h2>
+
+    {% if user.profile.bio != '' %}
+        <span class="mc-profile-user-description">{{ user.profile.bio }}</span>
+    {% endif %}
+
 </div>
 
-<div class="mobile-full-buttons">
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
-        Search
-    </a>
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
-        Create
-    </a>
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
-        Activity
-    </a>
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
-        Settings
-    </a>
-</div>
+{% if user.profile.private %}
+    <div class="mc-profile-user-content-stat-container">
+        <div href="#" class="mc-profile-user-stat-container">Posts
+            <span class="mc-profile-user-stat-span">{{ user.profile.amount_article }}</span>
+        </div>
+        <div class="mc-profile-user-stat-container">Followers
+            <span class="mc-profile-user-stat-span">{{ user.profile.amount_followers }}</span>
+        </div>
+        <div class="mc-profile-user-stat-container">Following
+            <span class="mc-profile-user-stat-span">{{ user.profile.amount_following }}</span>
+        </div>
+    </div>
+{% else %}
+    <div class="mc-profile-user-content-stat-container">
+        <div href="#" class="mc-profile-user-stat-container">Posts
+            <span class="mc-profile-user-stat-span">{{ user.profile.amount_article }}</span>
+        </div>
+        <a href="#" class="mc-profile-user-stat-container">Followers
+            <span class="mc-profile-user-stat-span">{{ user.profile.amount_followers }}</span>
+        </a>
+        <a href="#" class="mc-profile-user-stat-container">Following
+            <span class="mc-profile-user-stat-span">{{ user.profile.amount_following }}</span>
+        </a>
+    </div>
+{% endif %}
 
-<div class="main-container">
-    <div class="mc-container-sidebar-container">
-        <aside class="mc-sidebar-container">
-            <div class="mc-sidebar-container-logo">Messenger</div>
-            <div class="mc-sidebar-container-links">
-                <a class="mc-sb-c-links-a" href="#">
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
-                    Home
-                </a>
-                <a style="position: relative;" href="#">
-                    <div class="mc-sb-c-links-message">12</div>
-                    <div class="mc-sb-c-links-a">
-                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
-                        Messages
+<!-- ЕСЛИ БУДЕТ ЗАКРЫТЫЙ АКК -->
+
+{% if not user.profile.private %}
+    <div class="mc-profile-user-content-stat-container">
+        <a href="#" class="mc-profile-user-buttons-button">
+            <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image">
+            <span class="mc-profile-user-buttons-button-span">call</span>
+        </a>
+        <a href="#" class="mc-profile-user-buttons-button">
+            <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/video-call.svg' %}" alt="svg-image">
+            <span class="mc-profile-user-buttons-button-span">video</span>
+        </a>
+        <a href="#" class="mc-profile-user-buttons-button">
+            <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/chat.svg' %}" alt="svg-image">
+            <span class="mc-profile-user-buttons-button-span">chat</span>
+        </a>
+    </div>
+{% endif %}
+
+{% if user.profile.private %}
+    <div class="mc-profile-user-content-stat-container">
+        <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}" alt="svg-image">
+        <span class="mc-profile-user-lock-span">This profile is private</span>
+    </div>
+{% else %}
+
+    <div class="change-style-articles">
+        <div class="cs-articles-mini" onclick="changeStyleArticlesMini()">
+            <img class="cs-article-img" src="{% static 'main/svg/row-mini.svg' %}" alt="svg-image">
+            Minimal
+        </div>
+        <div class="cs-articles-full" onclick="changeStyleArticlesFull()">
+            <img class="cs-article-img" src="{% static 'main/svg/row-full.svg' %}" alt="svg-image">
+            Full
+        </div>
+    </div>
+
+    <div class="mc-feed-article-container-mini mc-feed-article-container-show">
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
+        </a>
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
+            <video class="mc-feed-article-mini-img" src="{% static 'main/images/v1.mp4' %}"></video>
+        </a>
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
+            <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
+        </a>
+
+        <a href="#" class="mc-feed-article-mini">
+            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
+            <div class="mc-feed-article-mini-text">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</div>
+        </a>
+
+    </div>
+
+    <div class="mc-feed-article-container">
+
+        <article data-id="126" class="mc-feed-article">
+        
+            <div data-id="126" class="mc-feed-article-share-container">
+                <header class="mc-feed-article-share-header">
+                    Share
+                    <img data-id="126" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
+                </header>
+                <input data-id="126" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
+
+                <div class="mc-feed-article-share-userlist custom-scrollbar">
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
+                            <div class="mc-feed-article-share-user-second-name">blg</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
                     </div>
-                </a>
-                <a class="mc-sb-c-links-a" href="#">
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
-                    Search
-                </a>
-                <a style="position: relative;" href="#">
-                    <div class="mc-sb-c-links-notify">12</div>
-                    <div class="mc-sb-c-links-a">
-                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
-                        Notifications
+                
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
+                            <div class="mc-feed-article-share-user-second-name">egor</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
                     </div>
-                </a>
-                <a class="mc-sb-c-links-a" href="#">
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
-                    Create
-                </a>
+                
+                </div>
             </div>
-        </aside>
-    </div>
+        
+            <div class="mc-feed-article-userinfo">
+                <a href="#">
+                    <div class="mc-feed-article-story">
+                        <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                    </div>
+                </a>
+                <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
+                <a href="#"><h2 class="mc-feed-article-username">Emmanuel Shamsulin</h2></a>
+                <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
+                <img data-id="126" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
+                <div data-id="126" class="mc-feed-article-menu">
+                    <div data-id="126" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
+                    <div data-id="126" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
+                </div>
+            </div>
+            <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
+            <div class="mc-feed-article-hashtags">
+                <span>#summer</span>
+                <span>#cars</span>
+            </div>
+            <div class="mc-feed-article-pictures-container">
+                <span class="mc-feed-article-scrollable">Scrollable</span>
+                <div class="mc-feed-article-pictures-content">
+                    <video controls preload="none" playsinline class="mc-feed-article-article-img">
+                        <source src="{% static 'main/images/v1.mp4' %}" type="video/mp4" />
+                    </video>
+                    <img class="mc-feed-article-article-img" src="{% static 'main/images/p1.jpg' %}"  onclick="OnFullScreenPhoto(this)" alt="article">
+                    <img class="mc-feed-article-article-img" src="{% static 'main/images/p3.jpg' %}"  onclick="OnFullScreenPhoto(this)" alt="article">
+                </div>
+            </div>
+            <div class="mc-feed-article-activity">
+                <div data-id="126" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}"></div>
+                <div data-id="126" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}"></div>
+                <div data-id="126" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}"></div>
+                <div data-id="126" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}"></div>
+                <div data-id="126" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}"></div>
+                <div data-id="126" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}"></div>
+            </div>
+            <div class="display-grid">
+                <span class="mc-feed-article-text-count">Likes: <span data-id="126" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
+                <span class="mc-feed-article-text-count">Comments: <span data-id="126" class="mc-feed-article-count">1123</span></span>
+                <span class="mc-feed-article-time">18:40</span>
+            </div>
+        </article>
     
-    <main class="mc-container-feed-container">
-        
-        <div class="mc-profile-user">
-            <div class="mc-profile-user-follow" onclick="profileFollow()">Follow</div>
-            <div class="mc-profile-user-unfollow" onclick="profileUnfollow()">Following</div>
+    
+        <article data-id="125" class="mc-feed-article">
+            <div data-id="125" class="mc-feed-article-share-container">
+                <header class="mc-feed-article-share-header">
+                    Share
+                    <img data-id="125" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
+                </header>
+                <input data-id="125" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
 
-            <img class="mc-profile-user-background-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-            <div class="mc-profile-user-avatar">
-                <div class="mc-profile-user-avatar-story">
-                    <a href="#" class="mc-profile-user-avatar-story-a">
-                        <img class="mc-profile-user-avatar-story-img" src="{% static 'main/images/ilon.jpg' %}"  alt="user's avatar">
-                    </a>
+                <div class="mc-feed-article-share-userlist custom-scrollbar">
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
+                            <div class="mc-feed-article-share-user-second-name">elon</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
+                    </div>
+                
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
+                            <div class="mc-feed-article-share-user-second-name">egor</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
+                    </div>
+                
                 </div>
-                <!-- <img class="mc-profile-user-avatar-img" src="{% static 'main/images/ilon.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's avatar"> -->
-                <div class="mc-profile-user-avatar-online" title="online"></div>
             </div>
-            <div class="mc-profile-user-online">
-                <!-- <span class="mc-profile-user-online-time">Last seen at 18:50</span> -->
-                <span class="mc-profile-user-online-time">Online</span>
-            </div>
-            <h1 class="mc-profile-user-username">
-                Emmanuel Shamsulin
+        
+            <div class="mc-feed-article-userinfo">
+                <a href="#">
+                    <div class="mc-feed-article-story">
+                        <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                    </div>
+                </a>
+                <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
+                <a href="#"><h2 class="mc-feed-article-username">Radmir Shamsulin</h2></a>
                 <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-            </h1>
-            <h2 class="mc-profile-user-second-username">shamsulin</h2>
-            <span class="mc-profile-user-description">TYT BUDET OPISANIE</span>
-        </div>
-
-        <div class="mc-profile-user-content-stat-container">
-            <div href="#" class="mc-profile-user-stat-container">Posts
-                <span class="mc-profile-user-stat-span">2304</span>
+                <img data-id="125" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
+                <div data-id="125" class="mc-feed-article-menu">
+                    <div data-id="125" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
+                    <div data-id="125" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
+                </div>
             </div>
-            <a href="#" class="mc-profile-user-stat-container">Followers
-                <span class="mc-profile-user-stat-span">222304</span>
-            </a>
-            <a href="#" class="mc-profile-user-stat-container">Following
-                <span class="mc-profile-user-stat-span">2304</span>
-            </a>
-        </div>
-
-        <!-- ЕСЛИ БУДЕТ ЗАКРЫТЫЙ АКК -->
-        <div class="mc-profile-user-content-stat-container">
-            <div href="#" class="mc-profile-user-stat-container">Posts
-                <span class="mc-profile-user-stat-span">2304</span>
+            <p class="mc-feed-article-description-solo">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
+            <div class="mc-feed-article-hashtags">
+                <span>#summer</span>
+                <span>#cars</span>
             </div>
-            <div class="mc-profile-user-stat-container">Followers
-                <span class="mc-profile-user-stat-span">222304</span>
+            <div class="mc-feed-article-activity">
+                <div data-id="125" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image"></div>
+                <div data-id="125" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}" alt="svg-image"></div>
+                <div data-id="125" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image"></div>
+                <div data-id="125" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}" alt="svg-image"></div>
+                <div data-id="125" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image"></div>
+                <div data-id="125" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}" alt="svg-image"></div>
             </div>
-            <div class="mc-profile-user-stat-container">Following
-                <span class="mc-profile-user-stat-span">2304</span>
+            <div class="display-grid">
+                <span class="mc-feed-article-text-count">Likes: <span data-id="125" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
+                <span class="mc-feed-article-text-count">Comments: <span data-id="125" class="mc-feed-article-count">1123</span></span>
+                <span class="mc-feed-article-time">18:40</span>
             </div>
-        </div>
+        </article>
+    
+        <article data-id="124" class="mc-feed-article">
+            <div data-id="124" class="mc-feed-article-share-container">
+                <header class="mc-feed-article-share-header">
+                    Share
+                    <img data-id="124" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
+                </header>
+                <input data-id="124" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
 
-        <div class="mc-profile-user-content-stat-container">
-            <a href="#" class="mc-profile-user-buttons-button">
-                <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image">
-                <span class="mc-profile-user-buttons-button-span">call</span>
-            </a>
-            <a href="#" class="mc-profile-user-buttons-button">
-                <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/video-call.svg' %}" alt="svg-image">
-                <span class="mc-profile-user-buttons-button-span">video</span>
-            </a>
-            <a href="#" class="mc-profile-user-buttons-button">
-                <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/chat.svg' %}" alt="svg-image">
-                <span class="mc-profile-user-buttons-button-span">chat</span>
-            </a>
-        </div>
-
-        <div class="mc-profile-user-content-stat-container">
-            <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}" alt="svg-image">
-            <span class="mc-profile-user-lock-span">This profile is private</span>
-        </div>
-
-        <div class="change-style-articles">
-            <div class="cs-articles-mini" onclick="changeStyleArticlesMini()">
-                <img class="cs-article-img" src="{% static 'main/svg/row-mini.svg' %}" alt="svg-image">
-                Minimal
+                <div class="mc-feed-article-share-userlist custom-scrollbar">
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
+                            <div class="mc-feed-article-share-user-second-name">egor</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
+                    </div>
+                
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
+                            <div class="mc-feed-article-share-user-second-name">egor</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
+                    </div>
+                
+                </div>
             </div>
-            <div class="cs-articles-full" onclick="changeStyleArticlesFull()">
-                <img class="cs-article-img" src="{% static 'main/svg/row-full.svg' %}" alt="svg-image">
-                Full
-            </div>
-        </div>
-
-        <div class="mc-feed-article-container-mini mc-feed-article-container-show">
-            <a href="#" class="mc-feed-article-mini">
-                <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
-            </a>
-
-            <a href="#" class="mc-feed-article-mini">
-                <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
-                <video class="mc-feed-article-mini-img" src="{% static 'main/images/v1.mp4' %}"></video>
-            </a>
-
-            <a href="#" class="mc-feed-article-mini">
-                <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
-                <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
-            </a>
-
-            <a href="#" class="mc-feed-article-mini">
-                <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
-                <div class="mc-feed-article-mini-text">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</div>
-            </a>
-
-        </div>
-
-        <div class="mc-feed-article-container">
-
-            <article data-id="126" class="mc-feed-article">
         
-                <div data-id="126" class="mc-feed-article-share-container">
-                    <header class="mc-feed-article-share-header">
-                        Share
-                        <img data-id="126" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
-                    </header>
-                    <input data-id="126" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
-                    
-                    <div class="mc-feed-article-share-userlist custom-scrollbar">
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
-                                <div class="mc-feed-article-share-user-second-name">blg</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
-                                <div class="mc-feed-article-share-user-second-name">egor</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
+            <div class="mc-feed-article-userinfo">
+                <a href="#">
+                    <div class="mc-feed-article-story">
+                        <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
                     </div>
-                </div>
-        
-                <div class="mc-feed-article-userinfo">
-                    <a href="#">
-                        <div class="mc-feed-article-story">
-                            <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                        </div>
-                    </a>
-                    <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
-                    <a href="#"><h2 class="mc-feed-article-username">Emmanuel Shamsulin</h2></a>
-                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-                    <img data-id="126" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
-                    <div data-id="126" class="mc-feed-article-menu">
-                        <div data-id="126" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
-                        <div data-id="126" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
-                    </div>
-                </div>
-                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
-                <div class="mc-feed-article-hashtags">
-                    <span>#summer</span>
-                    <span>#cars</span>
-                </div>
-                <div class="mc-feed-article-pictures-container">
-                    <span class="mc-feed-article-scrollable">Scrollable</span>
-                    <div class="mc-feed-article-pictures-content">
-                        <video controls preload="none" playsinline class="mc-feed-article-article-img">
-                            <source src="{% static 'main/images/v1.mp4' %}" type="video/mp4" />
-                        </video>
-                        <img class="mc-feed-article-article-img" src="{% static 'main/images/p1.jpg' %}"  onclick="OnFullScreenPhoto(this)" alt="article">
-                        <img class="mc-feed-article-article-img" src="{% static 'main/images/p3.jpg' %}"  onclick="OnFullScreenPhoto(this)" alt="article">
-                    </div>
-                </div>
-                <div class="mc-feed-article-activity">
-                    <div data-id="126" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}"></div>
-                    <div data-id="126" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}"></div>
-                    <div data-id="126" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}"></div>
-                    <div data-id="126" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}"></div>
-                    <div data-id="126" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}"></div>
-                    <div data-id="126" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}"></div>
-                </div>
-                <div class="display-grid">
-                    <span class="mc-feed-article-text-count">Likes: <span data-id="126" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
-                    <span class="mc-feed-article-text-count">Comments: <span data-id="126" class="mc-feed-article-count">1123</span></span>
-                    <span class="mc-feed-article-time">18:40</span>
-                </div>
-            </article>
-        
-        
-            <article data-id="125" class="mc-feed-article">
-                <div data-id="125" class="mc-feed-article-share-container">
-                    <header class="mc-feed-article-share-header">
-                        Share
-                        <img data-id="125" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
-                    </header>
-                    <input data-id="125" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
-                    
-                    <div class="mc-feed-article-share-userlist custom-scrollbar">
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
-                                <div class="mc-feed-article-share-user-second-name">elon</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
-                                <div class="mc-feed-article-share-user-second-name">egor</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                    </div>
-                </div>
-        
-                <div class="mc-feed-article-userinfo">
-                    <a href="#">
-                        <div class="mc-feed-article-story">
-                            <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                        </div>
-                    </a>
-                    <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
-                    <a href="#"><h2 class="mc-feed-article-username">Radmir Shamsulin</h2></a>
-                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-                    <img data-id="125" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
-                    <div data-id="125" class="mc-feed-article-menu">
-                        <div data-id="125" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
-                        <div data-id="125" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
-                    </div>
-                </div>
-                <p class="mc-feed-article-description-solo">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
-                <div class="mc-feed-article-hashtags">
-                    <span>#summer</span>
-                    <span>#cars</span>
-                </div>
-                <div class="mc-feed-article-activity">
-                    <div data-id="125" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image"></div>
-                    <div data-id="125" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}" alt="svg-image"></div>
-                    <div data-id="125" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image"></div>
-                    <div data-id="125" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}" alt="svg-image"></div>
-                    <div data-id="125" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image"></div>
-                    <div data-id="125" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}" alt="svg-image"></div>
-                </div>
-                <div class="display-grid">
-                    <span class="mc-feed-article-text-count">Likes: <span data-id="125" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
-                    <span class="mc-feed-article-text-count">Comments: <span data-id="125" class="mc-feed-article-count">1123</span></span>
-                    <span class="mc-feed-article-time">18:40</span>
-                </div>
-            </article>
-        
-            <article data-id="124" class="mc-feed-article">
-                <div data-id="124" class="mc-feed-article-share-container">
-                    <header class="mc-feed-article-share-header">
-                        Share
-                        <img data-id="124" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
-                    </header>
-                    <input data-id="124" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
-                    
-                    <div class="mc-feed-article-share-userlist custom-scrollbar">
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
-                                <div class="mc-feed-article-share-user-second-name">egor</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
-                                <div class="mc-feed-article-share-user-second-name">egor</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                    </div>
-                </div>
-        
-                <div class="mc-feed-article-userinfo">
-                    <a href="#">
-                        <div class="mc-feed-article-story">
-                            <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                        </div>
-                    </a>
-                    <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
-                    <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
-                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-                    <img data-id="124" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
-                    <div data-id="124" class="mc-feed-article-menu">
-                        <div data-id="124" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
-                        <div data-id="124" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
-                    </div>
-                </div>
-                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
-                <div class="mc-feed-article-hashtags">
-                    <span>#summer</span>
-                    <span>#cars</span>
-                </div>
-                <video controls preload="none" playsinline class="mc-feed-article-article-img">
-                    <source src="{% static 'main/images/v1.mp4' %}" type="video/mp4" />
-                </video>
-                <div class="mc-feed-article-activity">
-                    <div data-id="124" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image"></div>
-                    <div data-id="124" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}" alt="svg-image"></div>
-                    <div data-id="124" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image"></div>
-                    <div data-id="124" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}" alt="svg-image"></div>
-                    <div data-id="124" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image"></div>
-                    <div data-id="124" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}" alt="svg-image"></div>
-                </div>
-                <div class="display-grid">
-                    <span class="mc-feed-article-text-count">Likes: <span data-id="124" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
-                    <span class="mc-feed-article-text-count">Comments: <span data-id="124" class="mc-feed-article-count">1123</span></span>
-                    <span class="mc-feed-article-time">18:40</span>
-                </div>
-            </article>
-        
-            <article data-id="123" class="mc-feed-article">
-                <div data-id="123" class="mc-feed-article-share-container">
-                    <header class="mc-feed-article-share-header">
-                        Share
-                        <img data-id="123" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
-                    </header>
-                    <input data-id="123" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
-                    
-                    <div class="mc-feed-article-share-userlist custom-scrollbar">
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
-                                <div class="mc-feed-article-share-user-second-name">elon</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                        <div class="mc-feed-article-share-user">
-                            <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                            <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
-                                <div class="mc-feed-article-share-user-second-name">egor</div>
-                            </div></a>
-                            <div class="mc-feed-article-share-user-share">Share</div>
-                        </div>
-        
-                    </div>
-                </div>
-        
-                <div class="mc-feed-article-userinfo">
-                    <a href="#">
-                        <div class="mc-feed-article-story">
-                            <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                        </div>
-                    </a>
-                    <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
-                    <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
-                    <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-                    <img data-id="123" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
-                    <div data-id="123" class="mc-feed-article-menu">
-                        <div data-id="123" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
-                        <div data-id="123" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
-                    </div>
-                </div>
-                <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
-                <div class="mc-feed-article-hashtags">
-                    <span>#summer</span>
-                    <span>#cars</span>
-                </div>
-                <img class="mc-feed-article-article-img" src="{% static 'main/images/p1.jpg' %}"  onclick="OnFullScreenPhoto(this)">
-                <div class="mc-feed-article-activity">
-                    <div data-id="123" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image"></div>
-                    <div data-id="123" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}" alt="svg-image"></div>
-                    <div data-id="123" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image"></div>
-                    <div data-id="123" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}" alt="svg-image"></div>
-                    <div data-id="123" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image"></div>
-                    <div data-id="123" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}" alt="svg-image"></div>
-                </div>
-                <div class="display-grid">
-                    <span class="mc-feed-article-text-count">Likes: <span data-id="123" class="mc-feed-article-count mc-fd-art-c-like">4539604</span></span>
-                    <span class="mc-feed-article-text-count">Comments: <span data-id="123" class="mc-feed-article-count">1123</span></span>
-                    <span class="mc-feed-article-time">18:40</span>
-                </div>
-            </article>
-        </div>
-    </main>
-    <div class="mc-container-second-sidebar-container">
-        <aside class="mc-second-sidebar-container">
-            <a href="#"><img class="mc-second-sidebar-container-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a>
-            <a href="#"><h1 class="mc-second-sidebar-container-username">Emmanuel Shamsulin</h1></a>
-            <h2 class="mc-second-sidebar-container-userid">shamsulin</h2>
-            <div class="mc-second-sidebar-container-verify">
-                Verified profile
+                </a>
+                <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
+                <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
                 <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
+                <img data-id="124" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
+                <div data-id="124" class="mc-feed-article-menu">
+                    <div data-id="124" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
+                    <div data-id="124" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
+                </div>
             </div>
-            <div class="mc-second-sidebar-container-description">TYT BUDET OPISANIE</div>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
-                My Profile
-            </a>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
-                Activity
-            </a>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image">
-                Bookmarks
-            </a>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
-                Settings
-            </a>
-        </aside>
+            <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
+            <div class="mc-feed-article-hashtags">
+                <span>#summer</span>
+                <span>#cars</span>
+            </div>
+            <video controls preload="none" playsinline class="mc-feed-article-article-img">
+                <source src="{% static 'main/images/v1.mp4' %}" type="video/mp4" />
+            </video>
+            <div class="mc-feed-article-activity">
+                <div data-id="124" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image"></div>
+                <div data-id="124" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}" alt="svg-image"></div>
+                <div data-id="124" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image"></div>
+                <div data-id="124" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}" alt="svg-image"></div>
+                <div data-id="124" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image"></div>
+                <div data-id="124" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}" alt="svg-image"></div>
+            </div>
+            <div class="display-grid">
+                <span class="mc-feed-article-text-count">Likes: <span data-id="124" class="mc-feed-article-count mc-fd-art-c-like">45394</span></span>
+                <span class="mc-feed-article-text-count">Comments: <span data-id="124" class="mc-feed-article-count">1123</span></span>
+                <span class="mc-feed-article-time">18:40</span>
+            </div>
+        </article>
+    
+        <article data-id="123" class="mc-feed-article">
+            <div data-id="123" class="mc-feed-article-share-container">
+                <header class="mc-feed-article-share-header">
+                    Share
+                    <img data-id="123" class="mc-feed-article-share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer(this)" alt="svg-image">
+                </header>
+                <input data-id="123" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
+
+                <div class="mc-feed-article-share-userlist custom-scrollbar">
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
+                            <div class="mc-feed-article-share-user-second-name">elon</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
+                    </div>
+                
+                    <div class="mc-feed-article-share-user">
+                        <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                        <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
+                            <div class="mc-feed-article-share-user-second-name">egor</div>
+                        </div></a>
+                        <div class="mc-feed-article-share-user-share">Share</div>
+                    </div>
+                
+                </div>
+            </div>
+        
+            <div class="mc-feed-article-userinfo">
+                <a href="#">
+                    <div class="mc-feed-article-story">
+                        <img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                    </div>
+                </a>
+                <!-- <a href="#"><img class="mc-feed-article-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a> -->
+                <a href="#"><h2 class="mc-feed-article-username">Elon Musk</h2></a>
+                <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
+                <img data-id="123" class="mc-feed-article-menu-img" src="{% static 'main/svg/dots-vertical.svg' %}" onclick="openArticleMenu(this)" alt="svg-image">
+                <div data-id="123" class="mc-feed-article-menu">
+                    <div data-id="123" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
+                    <div data-id="123" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
+                </div>
+            </div>
+            <p class="mc-feed-article-description">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</p>
+            <div class="mc-feed-article-hashtags">
+                <span>#summer</span>
+                <span>#cars</span>
+            </div>
+            <img class="mc-feed-article-article-img" src="{% static 'main/images/p1.jpg' %}"  onclick="OnFullScreenPhoto(this)">
+            <div class="mc-feed-article-activity">
+                <div data-id="123" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image"></div>
+                <div data-id="123" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}" alt="svg-image"></div>
+                <div data-id="123" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image"></div>
+                <div data-id="123" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}" alt="svg-image"></div>
+                <div data-id="123" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image"></div>
+                <div data-id="123" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}" alt="svg-image"></div>
+            </div>
+            <div class="display-grid">
+                <span class="mc-feed-article-text-count">Likes: <span data-id="123" class="mc-feed-article-count mc-fd-art-c-like">4539604</span></span>
+                <span class="mc-feed-article-text-count">Comments: <span data-id="123" class="mc-feed-article-count">1123</span></span>
+                <span class="mc-feed-article-time">18:40</span>
+            </div>
+        </article>
     </div>
-</div>
+{% endif %}
 
 <script src="{% static 'main/JS/home.js' %}"></script>
 <script src="{% static 'main/JS/profile.js' %}"></script>

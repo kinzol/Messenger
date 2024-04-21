@@ -1,0 +1,40 @@
+.ccc-date,
+.ccc-message-text,
+.ccc-message-text-reply,
+.ccc-media-text,
+.ccc-audio-container,
+.ccc-call-container,
+.ccc-file-container,
+.ccc-post-container,
+.ccc-reactions,
+.post-drag{
+    background-color: #a7c6e8 !important;
+}
+
+.error-home  {
+    color: #a7c6e8 !important;
+    -webkit-text-fill-color: #a7c6e8 !important;
+}
+
+.auth-form-confirm-button {
+    background: linear-gradient(150deg, #4fa4ff, #2b7cff) !important;
+	background-size: 400% 400% !important;
+	animation: gradient-story 7s ease-in-out infinite !important;
+}
+
+body {
+	background: radial-gradient(circle at 50% 100%, #82df7a 0%, #90cd90 60%);
+	background-attachment: fixed !important;
+}
+
+@keyframes gradient-story {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

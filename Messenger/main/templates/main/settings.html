@@ -1,57 +1,13 @@
-{% extends 'main/base.html' %}
+{% extends 'main/base-expanded.html' %}
 {% load static %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'main/css/profile.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'main/css/home.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'main/css/settings.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'main/css/blue-style.css' %}" type="text/css">
 {% endblock %}
 
-{% block body %}
-
-<div class="overlay-background"></div>
-
-<div class="mobile-buttons">
-    <a class="m-buttons-link" href="#">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
-    </a>
-    <a class="m-buttons-link" href="#">
-        <div class="mc-sb-c-links-message">12</div>
-        <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
-    </a>
-    <a class="m-buttons-link" href="#">
-        <div class="mc-sb-c-links-notify">12</div>
-        <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
-    </a>
-    <a class="m-buttons-link" href="#">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
-    </a>
-    <div class="m-buttons-link" onclick="showMobileMenu()">
-        <img class="m-buttons-link-img" src="{% static 'main/svg/menu.svg' %}" alt="svg-image">
-    </div>
-</div>
-
-<div class="mobile-full-buttons">
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
-        Search
-    </a>
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
-        Create
-    </a>
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
-        Activity
-    </a>
-    <a class="m-mc-sb-c-links-a" href="#">
-        <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
-        Settings
-    </a>
-</div>
-
-
+{% block body-non-main %}
 <div class="save-container">
     <span class="save-title">Do you want to save the settings?</span>
     <div class="save-buttons">
@@ -60,11 +16,20 @@
 </div>
 
 
+<div style="background-color: red; position: absolute; z-index: 2; display: none;">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" id="form-save-button">save</div>
+    </form>
+</div>
+
+
 <div class="edit-profile-info-container" onclick="hideEditProfileInfo()">
     <div class="edit-profile-info" onclick="event.stopPropagation()">
         <span class="epi-title">Name Surname</span>
-        <input type="text" class="epi-input epi-name" maxlength="12" placeholder="Name">
-        <input type="text" class="epi-input epi-surname" maxlength="14" placeholder="Surname">
+        <input type="text" class="epi-input epi-name" maxlength="15" placeholder="Name">
+        <input type="text" class="epi-input epi-surname" maxlength="15" placeholder="Surname">
         <span class="epi-title">Login</span>
         <input type="text" class="epi-input epi-login" maxlength="15" placeholder="Login">
         <span class="epi-title">Bio</span>
@@ -72,116 +37,68 @@
         <div class="epi-save" onclick="applyChangesEditProfile()">Apply</div>
     </div>
 </div>
+{% endblock %}
 
+{% block body %}
 
-<div class="main-container">
-    <div class="mc-container-sidebar-container">
-        <aside class="mc-sidebar-container">
-            <div class="mc-sidebar-container-logo">Messenger</div>
-            <div class="mc-sidebar-container-links">
-                <a class="mc-sb-c-links-a" href="#">
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
-                    Home
-                </a>
-                <a style="position: relative;" href="#">
-                    <div class="mc-sb-c-links-message">12</div>
-                    <div class="mc-sb-c-links-a">
-                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
-                        Messages
-                    </div>
-                </a>
-                <a class="mc-sb-c-links-a" href="#">
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
-                    Search
-                </a>
-                <a style="position: relative;" href="#">
-                    <div class="mc-sb-c-links-notify">12</div>
-                    <div class="mc-sb-c-links-a">
-                        <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
-                        Notifications
-                    </div>
-                </a>
-                <a class="mc-sb-c-links-a" href="#">
-                    <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
-                    Create
-                </a>
-            </div>
-        </aside>
+<div class="overlay-background"></div>
+
+<div class="mc-profile-user">
+    <!-- <input type="file" class="settings-edit-background-input" onchange="changeBackgroundImage(this)" accept="image/png, image/jpeg"> -->
+    <img class="settings-edit-background" src="{% static 'main/svg/pen.svg' %}" alt="svg-image" onclick="document.querySelector('#id_background_avatar').click()">
+    <img class="mc-profile-user-background-img" src="{{ user_profile.profile.background_avatar.url }}" alt="{{ user_profile.username }}'s avatar">
+    <div class="mc-profile-user-avatar">
+        <!-- <input type="file" class="settings-edit-avatar-input" onchange="changeAvatarImage(this)" accept="image/png, image/jpeg"> -->
+        <img class="settings-edit-avatar" src="{% static 'main/svg/pen.svg' %}" alt="svg-image" onclick="document.querySelector('#id_avatar').click()">
+        <img class="mc-profile-user-avatar-img" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s avatar">
+        <div class="mc-profile-user-avatar-online" title="online"></div>
     </div>
-    
-    <main class="mc-container-feed-container">
+    <h1 class="mc-profile-user-username">
+        {{ user_profile.profile.full_name }}
+        {% if user_profile.profile.verify %}
+            <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
+        {% endif %}
+        <img class="settings-edit-name" src="{% static 'main/svg/pen.svg' %}" onclick="showEditProfileInfo()" alt="svg-image">
+    </h1>
+    <h2 class="mc-profile-user-second-username">{{ user_profile.username }}</h2>
+    <span class="mc-profile-user-description">{{ user_profile.profile.bio }}</span>
+</div>
 
-        <div class="mc-profile-user">
-            <input type="file" class="settings-edit-background-input" onchange="changeBackgroundImage(this)" accept="image/png, image/jpeg">
-            <img class="settings-edit-background" src="{% static 'main/svg/pen.svg' %}" alt="svg-image" onclick="document.querySelector('.settings-edit-background-input').click()">
-            <img class="mc-profile-user-background-img" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
-            <div class="mc-profile-user-avatar">
-                <input type="file" class="settings-edit-avatar-input" onchange="changeAvatarImage(this)" accept="image/png, image/jpeg">
-                <img class="settings-edit-avatar" src="{% static 'main/svg/pen.svg' %}" alt="svg-image" onclick="document.querySelector('.settings-edit-avatar-input').click()">
-                <img class="mc-profile-user-avatar-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                <div class="mc-profile-user-avatar-online" title="online"></div>
-            </div>
-            <h1 class="mc-profile-user-username">
-                Emmanuel Shamsulin
-                <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-                <img class="settings-edit-name" src="{% static 'main/svg/pen.svg' %}" onclick="showEditProfileInfo()" alt="svg-image">
-            </h1>
-            <h2 class="mc-profile-user-second-username">shamsulin</h2>
-            <span class="mc-profile-user-description">TYT BUDET OPISANIE</span>
-        </div>
-
-        <div class="mc-profile-user-content-stat-container" style="justify-content: space-between;">
-            <div class="settings-background-color settings-background-color-blue" onclick="changeBackgroundColor(0)"></div>
-            <div class="settings-background-color settings-background-color-green" onclick="changeBackgroundColor(1)"></div>
-            <div class="settings-background-color settings-background-color-pink" onclick="changeBackgroundColor(2)"></div>
-            <div class="settings-background-color settings-background-color-black" onclick="changeBackgroundColor(3)"></div>
-        </div>
-
-        <div class="mc-profile-user-content-stat-container">
-            <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}" onclick="changePrivate(this);" alt="svg-image">
-            <span class="mc-profile-user-lock-span">Your profile is private
-                <span class="settings-lock-description">click on the lock to change status</span>
-            </span>
-        </div>
-
-    </main>
-    <div class="mc-container-second-sidebar-container">
-        <aside class="mc-second-sidebar-container">
-            <a href="#"><img class="mc-second-sidebar-container-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar"></a>
-            <a href="#"><h1 class="mc-second-sidebar-container-username">Emmanuel Shamsulin</h1></a>
-            <h2 class="mc-second-sidebar-container-userid">shamsulin</h2>
-            <div class="mc-second-sidebar-container-verify">
-                Verified profile
-                <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="Verified">
-            </div>
-            <div class="mc-second-sidebar-container-description">TYT BUDET OPISANIE</div>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
-                My Profile
-            </a>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
-                Activity
-            </a>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image">
-                Bookmarks
-            </a>
-            <a class="mc-sb-c-links-a" href="#">
-                <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
-                Settings
-            </a>
-        </aside>
+<div class="mc-profile-user-content-stat-container mc-profile-user-content-stat-container-background" style="justify-content: space-between;">
+    Background
+    <div class="settings-background-color-container">
+        <div class="settings-background-color settings-background-color-blue" onclick="changeBackgroundColor(0)"></div>
+        <div class="settings-background-color settings-background-color-green" onclick="changeBackgroundColor(1)"></div>
+        <div class="settings-background-color settings-background-color-pink" onclick="changeBackgroundColor(2)"></div>
+        <div class="settings-background-color settings-background-color-black" onclick="changeBackgroundColor(3)"></div>
     </div>
 </div>
+
+{% if user_profile.profile.private %}
+    <div class="mc-profile-user-content-stat-container">
+        <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}" onclick="changePrivate(this);" alt="svg-image">
+        <span class="mc-profile-user-lock-span">Your profile is private
+            <span class="settings-lock-description">click on the lock to change status</span>
+        </span>
+    </div>
+{% else %}
+    <div class="mc-profile-user-content-stat-container">
+        <img class="mc-profile-user-lock-img" src="{% static 'main/svg/Unlock.svg' %}" onclick="changePrivate(this);" alt="svg-image">
+        <span class="mc-profile-user-lock-span">Your profile is public 
+            <span class="settings-lock-description">click on the lock to change status</span>
+        </span>
+    </div>
+{% endif %}
+
+<div class="logout-button" onclick="logout()">Logout</div>
 
 
 <script>
     var svgLock = "{% static 'main/svg/lock.svg' %}";
     var svgUnlock = "{% static 'main/svg/Unlock.svg' %}";
 
-    var clientPrivateStatus = true;
-    var clientBackground = 0;
+    var clientPrivateStatus = document.querySelector('#id_private').checked;
+    var clientBackground = document.querySelector('#id_background_style').value;
 </script>
 <script src="{% static 'main/JS/settings.js' %}"></script>
 {% endblock %}

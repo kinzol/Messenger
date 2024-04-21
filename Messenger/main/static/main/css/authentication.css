@@ -127,6 +127,8 @@
     border-radius: 10px;
     cursor: pointer;
     margin-top: 20px;
+    border: none;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
 @media (max-width: 500px) {
