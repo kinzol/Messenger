@@ -55,18 +55,18 @@
     
 
     <div class="mobile-buttons">
-        <a class="m-buttons-link" href="/">
+        <a class="m-buttons-link" href="{% url 'home' %}">
             <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
         </a>
         <a class="m-buttons-link" href="#">
             <div class="mc-sb-c-links-message">12</div>
             <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
         </a>
-        <a class="m-buttons-link" href="#">
+        <a class="m-buttons-link" href="{% url 'profile_notification' %}">
             <div class="mc-sb-c-links-notify">12</div>
             <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
         </a>
-        <a class="m-buttons-link" href="/profile/{{ user_profile.username }}">
+        <a class="m-buttons-link" href="{% url 'profile' username=user_profile.username %}">
             <img class="m-buttons-link-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
         </a>
         <div class="m-buttons-link" onclick="showMobileMenu()">
@@ -75,19 +75,19 @@
     </div>
     
     <div class="mobile-full-buttons">
-        <a class="m-mc-sb-c-links-a" href="#">
+        <a class="m-mc-sb-c-links-a" href="{% url 'search' %}">
             <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
             Search
         </a>
-        <a class="m-mc-sb-c-links-a" href="#">
+        <a class="m-mc-sb-c-links-a" href="{% url 'create_post' %}">
             <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
             Create
         </a>
-        <a class="m-mc-sb-c-links-a" href="#">
+        <a class="m-mc-sb-c-links-a" href="{% url 'activity' %}">
             <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
             Activity
         </a>
-        <a class="m-mc-sb-c-links-a" href="/settings">
+        <a class="m-mc-sb-c-links-a" href="{% url 'settings' %}">
             <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
             Settings
         </a>
@@ -98,7 +98,7 @@
             <aside class="mc-sidebar-container">
                 <div class="mc-sidebar-container-logo">Messenger</div>
                 <div class="mc-sidebar-container-links">
-                    <a class="mc-sb-c-links-a" href="/">
+                    <a class="mc-sb-c-links-a" href="{% url 'home' %}">
                         <img class="mc-sb-c-links-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
                         Home
                     </a>
@@ -109,18 +109,18 @@
                             Messages
                         </div>
                     </a>
-                    <a class="mc-sb-c-links-a" href="#">
+                    <a class="mc-sb-c-links-a" href="{% url 'search' %}">
                         <img class="mc-sb-c-links-img" src="{% static 'main/svg/search-sidebar.svg' %}" alt="svg-image">
                         Search
                     </a>
-                    <a style="position: relative;" href="#">
+                    <a style="position: relative;" href="{% url 'profile_notification' %}">
                         <div class="mc-sb-c-links-notify">12</div>
                         <div class="mc-sb-c-links-a">
                             <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
                             Notifications
                         </div>
                     </a>
-                    <a class="mc-sb-c-links-a" href="#">
+                    <a class="mc-sb-c-links-a" href="{% url 'create_post' %}">
                         <img class="mc-sb-c-links-img" src="{% static 'main/svg/create-sidebar.svg' %}" alt="svg-image">
                         Create
                     </a>
@@ -137,8 +137,8 @@
         </main>
         <div class="mc-container-second-sidebar-container">
             <aside class="mc-second-sidebar-container">
-                <a href="/profile/{{ user_profile.username }}"><img class="mc-second-sidebar-container-avatar" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s avatar"></a>
-                <a href="/profile/{{ user_profile.username }}"><h1 class="mc-second-sidebar-container-username">{{ user_profile.profile.full_name}}</h1></a>
+                <a href="{% url 'profile' username=user_profile.username %}"><img class="mc-second-sidebar-container-avatar" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s avatar"></a>
+                <a href="{% url 'profile' username=user_profile.username %}"><h1 class="mc-second-sidebar-container-username">{{ user_profile.profile.full_name}}</h1></a>
                 <h2 class="mc-second-sidebar-container-userid">{{ user_profile.username}}</h2>
                 {% if user_profile.profile.verify %}
                     <div class="mc-second-sidebar-container-verify">
@@ -150,19 +150,19 @@
                 {% if user_profile.profile.bio != '' %}
                     <div class="mc-second-sidebar-container-description">{{ user_profile.profile.bio }}</div>
                 {% endif %}
-                <a class="mc-sb-c-links-a" href="/profile/{{ user_profile.username }}">
+                <a class="mc-sb-c-links-a" href="{% url 'profile' username=user_profile.username %}">
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/profile.svg' %}" alt="svg-image">
                     My Profile
                 </a>
-                <a class="mc-sb-c-links-a" href="#">
+                <a class="mc-sb-c-links-a" href="{% url 'activity' %}">
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/history.svg' %}" alt="svg-image">
                     Activity
                 </a>
-                <a class="mc-sb-c-links-a" href="#">
+                <a class="mc-sb-c-links-a" href="{% url 'activity_bookmarks' %}">
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/save.svg' %}" alt="svg-image">
                     Bookmarks
                 </a>
-                <a class="mc-sb-c-links-a" href="/settings">
+                <a class="mc-sb-c-links-a" href="{% url 'settings' %}">
                     <img class="mc-sb-c-links-img" src="{% static 'main/svg/settings.svg' %}" alt="svg-image">
                     Settings
                 </a>

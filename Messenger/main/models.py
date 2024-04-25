@@ -1,3 +1,6 @@
+import datetime
+import mimetypes
+
 import os
 
 from django.core.validators import FileExtensionValidator
@@ -5,12 +8,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class ProfileNotification(models.Model):
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
-    type = models.CharField(max_length=255)
-    time_create = models.DateTimeField(auto_now_add=True)
-
-
+# Profile models
 def avatar_directory_path(instance, filename):
     user_id = instance.user.id
     return os.path.join('uploads', f'user_{user_id}', 'avatar.jpg')
@@ -26,8 +24,8 @@ class Profile(models.Model):
     uuid = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
     bio = models.TextField(max_length=255, blank=True, null=True, default='')
-    followers = models.ManyToManyField(User, related_name='profile_followers')
-    following = models.ManyToManyField(User, related_name='profile_following')
+    # followers = models.ManyToManyField(User, related_name='profile_followers')
+    # following = models.ManyToManyField(User, related_name='profile_following')
 
     avatar = models.ImageField(upload_to=avatar_directory_path, default='default_avatar.jpg')
     background_avatar = models.ImageField(upload_to=bg_avatar_directory_path, default='default_background_avatar.jpg')
@@ -37,7 +35,7 @@ class Profile(models.Model):
     amount_following = models.IntegerField(default=0)
     amount_article = models.IntegerField(default=0)
 
-    notifications = models.ManyToManyField(ProfileNotification, related_name='profile_notification')
+    # notifications = models.ManyToManyField(ProfileNotification, related_name='profile_notification')
     recommendations = models.TextField(null=True, default='')
 
     verify = models.BooleanField(blank=True, default=False)
@@ -58,31 +56,66 @@ class Profile(models.Model):
         super(Profile, self).save(*args, **kwargs)
 
 
-class ArticleComment(models.Model):
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
-    content = models.TextField(max_length=300)
+class ProfileFollow(models.Model):
+    profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+
+
+class ProfileNotification(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(max_length=255)
     time_create = models.DateTimeField(auto_now_add=True)
 
 
-class ArticleTag(models.Model):
-    content = models.CharField(max_length=255)
-
-
-class Article(models.Model):
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
-    content = models.TextField(max_length=255)
+# Post models
+class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=255, blank=True, null=True)
     time_create = models.DateTimeField(auto_now_add=True)
 
-    likes = models.ManyToManyField(User, related_name='articles_likes')
-    comments = models.ManyToManyField(ArticleComment)
-    tags = models.ManyToManyField(ArticleTag, related_name='articles_likes')
-
+    tags = models.CharField(max_length=255, blank=True, null=True)
     amount_likes = models.IntegerField(default=0)
     amount_comments = models.IntegerField(default=0)
 
 
+def post_file_directory_path(instance, filename):
+    user_id = instance.post.author.id
+    post_id = instance.post.pk
+    return os.path.join('uploads', f'user_{user_id}', 'posts',
+                        f'post_{post_id}', f'file.{filename.split(".")[-1]}')
+
+
+class PostFile(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    file = models.FileField(upload_to=post_file_directory_path)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def get_extension(self):
+        mime, _ = mimetypes.guess_type(self.file.name)
+        return mime.split('/')[0]
+
+
+class PostLike(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class PostBookmark(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class PostComment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=300)
+    time_create = models.DateTimeField(auto_now_add=True)
+
+
+# Story models
 class Story(models.Model):
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     viewers = models.ManyToManyField(User, related_name='story_viewers')
     view_count = models.IntegerField(default=0)
     preview = models.ImageField(upload_to='story_video_preview')

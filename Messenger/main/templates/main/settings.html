@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block body-non-main %}
+<div class="overlay-background"></div>
+
 <div class="save-container">
     <span class="save-title">Do you want to save the settings?</span>
     <div class="save-buttons">
@@ -20,7 +22,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
-        <button type="submit" id="form-save-button">save</div>
+        <button type="submit" id="form-save-button">save</button>
     </form>
 </div>
 
@@ -40,8 +42,6 @@
 {% endblock %}
 
 {% block body %}
-
-<div class="overlay-background"></div>
 
 <div class="mc-profile-user">
     <!-- <input type="file" class="settings-edit-background-input" onchange="changeBackgroundImage(this)" accept="image/png, image/jpeg"> -->

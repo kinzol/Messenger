@@ -3,33 +3,54 @@
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'main/css/activity-like.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/profile.css' %}" type="text/css">
 {% endblock %}
 
 {% block body %}
 
 <div class="selection-menu">
-    <span class="selection-menu-title">Posts where you put likes</span>
+    {% if type == 'likes' %}
+        <span class="selection-menu-title">Posts where you put likes</span>
+    {% elif type == 'bookmarks' %}
+        <span class="selection-menu-title">Posts you added to the bookmarks</span>
+    {% endif %}
     <div class="selection-menu-line"></div>
     <div class="selection-menu-container">
+        {% if posts|length == 0 %}
+            <span class="nothing">Nothing here</span>
+        {% else %}
 
-        <a href="#" class="mc-feed-article-mini">
-            <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
-        </a>
+        {% for post in posts %}
+            {% with post.post.postfile_set.all as post_files %}
 
-        <a href="#" class="mc-feed-article-mini">
-            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
-            <video class="mc-feed-article-mini-img" src="{% static 'main/images/v1.mp4' %}"></video>
-        </a>
+            <a href="{% url 'post' pk=post.post.pk %}" class="mc-feed-article-mini">
+                {% if post_files|length == 1 %}
 
-        <a href="#" class="mc-feed-article-mini">
-            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
-            <img class="mc-feed-article-mini-img" src="{% static 'main/images/ilon.jpg' %}" alt="article-photo">
-        </a>
+                    {% if post_files.0.get_extension == 'video' %}
+                        <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
+                        <video class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}"></video>
+                    {% elif post_files.0.get_extension == 'image' %}
+                        <img class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}" alt="article-photo">
+                    {% endif %}
 
-        <a href="#" class="mc-feed-article-mini">
-            <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
-            <div class="mc-feed-article-mini-text">ТУТ СДЕЛАЙ ТОЛЬКО 1000 символов!!! привет! Как ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd де</div>
-        </a>
+                {% elif post_files|length > 1 %}
+
+                    <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
+                    {% if post_files.0.get_extension == 'video' %}
+                        <video class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}"></video>
+                    {% elif post_files.0.get_extension == 'image' %}
+                        <img class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}" alt="article-photo">
+                    {% endif %}
+
+                {% elif post_files|length == 0 %}
+                    <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
+                    <div class="mc-feed-article-mini-text">{{ post.post.content }}</div>
+                {% endif %}
+            </a>
+
+            {% endwith %}
+        {% endfor %}
+        {% endif %}
         
     </div>
 

@@ -216,7 +216,7 @@
 
 .post-file-file:hover {
     transition: all 250ms ease-in-out; 
-    border: 2px solid #ff4c4c;
+    border: 2px solid #ffffffe3;
 }
 
 .post-file-input {
@@ -235,6 +235,8 @@
     opacity: 0.8;
     cursor: pointer;
     padding: 5px 0px;
+    border: none;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
 .post-create:hover {

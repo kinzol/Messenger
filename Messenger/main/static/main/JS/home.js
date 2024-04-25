@@ -127,7 +127,7 @@ function showShareContainer(thisArticle) {
     var shareContainer = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article-share-container`);
     var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
 
-    shareArticle.style.backgroundColor = "#a7c6e8";
+    shareArticle.classList.add('share-background')
 
     shareContainer.classList.remove('block-hide-share');
     shareContainer.classList.add('block-show-share');
@@ -139,7 +139,7 @@ function hideShareContainer(thisArticle) {
     var shareContainer = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article-share-container`);
     var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
 
-    shareArticle.style.removeProperty('background-color');
+    shareArticle.classList.remove('share-background');
     shareContainer.classList.remove('block-show-share');
     shareContainer.classList.add('block-hide-share');
     statusBlockShare = false;
@@ -211,7 +211,7 @@ document.addEventListener('click', function(event) {
 
                 var shareArticle = document.querySelector(`[data-id="${block.getAttribute('data-id')}"].mc-feed-article`);
 
-                shareArticle.style.removeProperty('background-color');
+                shareArticle.classList.remove('share-background');
             };
         });
     };

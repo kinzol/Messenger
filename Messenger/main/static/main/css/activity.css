@@ -54,3 +54,9 @@
     color: #fff;
     -webkit-text-fill-color: #fff;
 }
+
+.nothing {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffffb8;
+}

@@ -67,3 +67,10 @@
     text-overflow: ellipsis;
 }
 
+.nothing {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffffb8;
+    text-align: center;
+}
+

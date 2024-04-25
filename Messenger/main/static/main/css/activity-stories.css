@@ -91,3 +91,10 @@
     flex-wrap: wrap;
     gap: 5px;
 }
+
+.nothing {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffffb8;
+    text-align: center;
+}

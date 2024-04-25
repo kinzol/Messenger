@@ -27,6 +27,16 @@ body {
 	background-attachment: fixed !important;
 }
 
+.share-background {
+	background-color: #a1d4a1 !important;
+}
+
+.mc-feed-stories-story {
+	background: linear-gradient(150deg, #bedcbe, #a2d0a2);
+    background-size: 400% 400% !important;
+    animation: gradient-story 10s ease-in-out infinite !important;
+}
+
 @keyframes gradient-story {
 	0% {
 		background-position: 0% 50%;

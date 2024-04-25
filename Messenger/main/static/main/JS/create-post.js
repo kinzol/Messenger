@@ -1,5 +1,4 @@
 var tags = [];
-var files = [];
 
 function appendTag(element) {
     if (element.value.includes(' ')) {
@@ -55,12 +54,24 @@ function textareaRedo() {
 // });
 
 function openChooseFile() {
-    document.querySelector('.post-file-input').click();
+    document.querySelector('#id_files_content').click();
 };
 
 function openFile() {
-    var postFileInput = document.querySelector('.post-file-input');
-    addNewFile(postFileInput.files[0]);
+    var idFilesContent = document.querySelector('#id_files_content');
+    var postFileInput = Array.from(idFilesContent.files);
+    var postFile = document.querySelector('.post-file');
+
+    postFile.innerHTML = `<img src="${svgPlusLarge}" alt="svg-image" class="post-file-append" onclick="openChooseFile()">
+                          <div class="post-file-title" onclick="openChooseFile()">Click to add photo or video</div>`;
+
+    if (postFileInput.length > 7) {
+        idFilesContent.value = '';
+        return notification(3, 'Maximum number of files 7')
+    }
+
+    postFileInput.forEach((element) => addNewFile(element));
+
 }
 
 function addNewFile(file) {
@@ -69,10 +80,6 @@ function addNewFile(file) {
     var postFileTitle = document.querySelector('.post-file-title');
     var postFileAdd = document.querySelector('.post-file-add');
 
-    if (files.length == 7) {
-        return notification(2, "Maximum number of files 7")
-    };
-
     var fileUrl = URL.createObjectURL(file)
 
     if (file.type.includes('image/')) {
@@ -80,20 +87,18 @@ function addNewFile(file) {
         postFileTitle.style.display = 'none';
         postFileAppend.style.display = 'none';
         postFileAdd.style.display = 'flex';
-        postFile.innerHTML += `<img onclick="removeFile(this)" src="${fileUrl}" alt="image" class="post-file-file">`;
+        postFile.innerHTML += `<img onclick="OnFullScreenPhoto(this)" name='${file}' src="${fileUrl}" alt="image" class="post-file-file">`;
     
     } else if (file.type.includes('video/')) {
         postFile.style.justifyContent = 'flex-start';
         postFileTitle.style.display = 'none';
         postFileAppend.style.display = 'none';
         postFileAdd.style.display = 'flex';
-        postFile.innerHTML += `<video class="post-file-file" muted autoplay loop onclick="removeFile(this)" src="${fileUrl}"></video>`;
+        postFile.innerHTML += `<video class="post-file-file" muted autoplay loop controls src="${fileUrl}"></video>`;
     
     } else {
         return notification(3, 'An error occurred while saving the file');
     }; 
-
-    files.push(fileUrl);
 };
 
 function removeFile(element) {
@@ -151,3 +156,39 @@ if (dropZone) {
         addNewFile(fileContent[0]);
     });
 }
+
+var sendData = false;
+function submitForm() {
+    var idContent = document.querySelector('#id_content');
+    var idTags = document.querySelector('#id_tags');
+    var idFilesContent = document.querySelector('#id_files_content');
+    var postTagsTextarea = document.querySelector('.post-tags-textarea');
+    var formSaveButton = document.querySelector('#form-save-button');
+
+    if (postTagsTextarea.value.length == 0 && idFilesContent.files.length == 0) {
+        return notification(2, 'To leave a post without comment you need to add a photo or video!')
+    } else if (tags.length == 0) {
+        return notification(2, 'At least one tag must be specified!')
+    };
+
+    confirmationDialog('Are you sure you want to publish a post?').then((value) => {
+        if (value) {
+            idContent.value = postTagsTextarea.value
+            idTags.value = tags.join(' ')
+            sendData = true;
+            formSaveButton.click();
+        }
+    });
+};
+
+
+window.addEventListener('beforeunload', (e) => {
+    var idFilesContent = document.querySelector('#id_files_content');
+    var postTagsTextarea = document.querySelector('.post-tags-textarea');
+
+    if (!sendData) {
+        if (postTagsTextarea.value.length != 0 || tags.length != 0 || idFilesContent.files.length != 0) {
+            e.preventDefault()
+        };
+    };
+});

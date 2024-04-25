@@ -7,6 +7,14 @@
 
 {% block body %}
 
+<div style="background-color: red; position: absolute; z-index: 2; display: none;">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" id="form-save-button">save</button>
+    </form>
+</div>
+
 <div class="post">
     <div class="post-title">New post</div>
 
@@ -23,16 +31,12 @@
     </div>
 
     <div class="post-file">
-        <input type="file" class="post-file-input" accept="image/*,video/*" onchange="openFile()">
-
-        <!-- <img src="{% static 'main/images/ilon.jpg' %}" alt="image" class="post-file-file">
-        <video class="post-file-file" muted autoplay loop><source src="{% static 'main/images/v2.mp4' %}"></video> -->
         <img src="{% static 'main/svg/plus-large.svg' %}" alt="svg-image" class="post-file-append" onclick="openChooseFile()">
         <div class="post-file-title" onclick="openChooseFile()">Click to add photo or video</div>
     </div>
-    <div class="post-file-add" onclick="openChooseFile()">Add more content</div>
+    <div class="post-file-add" onclick="openChooseFile()">Choose files anew</div>
 
-    <div class="post-create">Publish</div>
+    <div class="post-create" onclick="submitForm()">Publish</div>
 
     <div class="post-drag"><div class="post-drag-content">Drag file here</div></div>
 </div>

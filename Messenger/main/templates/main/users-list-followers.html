@@ -1,0 +1,37 @@
+{% extends 'main/base-expanded.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/users-list.css' %}" type="text/css">
+{% endblock %}
+
+{% block body %}
+
+<div class="userlist">
+    <span class="userlist-title">{{ user.username }}'s followers</span>
+    <div class="userlist-line"></div>
+
+    {% if users|length == 0%}
+        <span class="nothing">Nothing here</span>
+    {% else %}
+    
+    <span class="userlist-total">Total Users: {{ user.profile.amount_followers }}</span>
+
+    {% for user in users %}
+        <a href="{% url 'profile' username=user.user.username %}" class="userlist-user">
+            <img src="{{ user.user.profile.avatar.url }}" alt="{{ user.user.username }}'s avatar" class="userlist-user-avatar">
+            <div class="userlist-user-username">
+                <span class="userlist-user-username-name">
+                    {{ user.user.profile.full_name }}
+                    {% if user.user.profile.verify %}
+                        <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
+                    {% endif %}
+                </span>
+                <span class="userlist-user-username-login">{{ user.user.username }}</span>
+            </div>
+        </a>
+    {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock %}
