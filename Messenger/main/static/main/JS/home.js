@@ -70,38 +70,88 @@ changeLikeCount();
 
 function addLikeArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-liked`);
-    element.style.display = 'block';
-    thisElement.style.display = 'none';
 
+    $.ajax({
+        url: '/api/v1/activity/',
+        method: 'post',
+        dataType: 'json',
+        data: {post_id: thisElement.getAttribute('data-id'), activity_type: 'like'},
+        success: function(data){
+            if (data.status) {
+                var likeCount = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-fd-art-c-like`);
+                var likeCountNew = parseInt(likeCount.innerHTML.replace(/ /g, '', 10)) + 1;
+                likeCount.innerHTML = likeCountNew.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                element.style.display = 'block';
+                thisElement.style.display = 'none';
+            } else {
+                notification(3, 'Error occurred!')
+            };
+        }
+    });
 
-    var likeCount = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-fd-art-c-like`);
-    var likeCountNew = parseInt(likeCount.innerHTML.replace(/ /g, '', 10)) + 1;
-    likeCount.innerHTML = likeCountNew.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 };
 
 
 function removeLikeArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-like`);
-    element.style.display = 'block';
-    thisElement.style.display = 'none';
 
-    var likeCount = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-fd-art-c-like`);
-    var likeCountNew = parseInt(likeCount.innerHTML.replace(/ /g, '', 10)) - 1;
-    likeCount.innerHTML = likeCountNew.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    $.ajax({
+        url: '/api/v1/activity/',
+        method: 'delete',
+        dataType: 'json',
+        data: {post_id: thisElement.getAttribute('data-id'), activity_type: 'like'},
+        success: function(data){
+            if (data.status) {
+                var likeCount = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-fd-art-c-like`);
+                var likeCountNew = parseInt(likeCount.innerHTML.replace(/ /g, '', 10)) - 1;
+                likeCount.innerHTML = likeCountNew.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                element.style.display = 'block';
+                thisElement.style.display = 'none';
+            } else {
+                notification(3, 'Error occurred!')
+            };
+        }
+    });
 };
 
 
 function addSaveArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-save-filled`);
-    element.style.display = 'block';
-    thisElement.style.display = 'none';
+
+    $.ajax({
+        url: '/api/v1/activity/',
+        method: 'post',
+        dataType: 'json',
+        data: {post_id: thisElement.getAttribute('data-id'), activity_type: 'bookmark'},
+        success: function(data){
+            if (data.status) {
+                element.style.display = 'block';
+                thisElement.style.display = 'none';
+            } else {
+                notification(3, 'Error occurred!')
+            };
+        }
+    });
 };
 
 
 function removerSaveArticle(thisElement) {
     var element = document.querySelector(`[data-id="${thisElement.getAttribute('data-id')}"].mc-feed-article-save`);
-    element.style.display = 'block';
-    thisElement.style.display = 'none';
+
+    $.ajax({
+        url: '/api/v1/activity/',
+        method: 'delete',
+        dataType: 'json',
+        data: {post_id: thisElement.getAttribute('data-id'), activity_type: 'bookmark'},
+        success: function(data){
+            if (data.status) {
+                element.style.display = 'block';
+                thisElement.style.display = 'none';
+            } else {
+                notification(3, 'Error occurred!')
+            };
+        }
+    });
 };
 
 
@@ -128,7 +178,6 @@ function showShareContainer(thisArticle) {
     var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
 
     shareArticle.classList.add('share-background')
-
     shareContainer.classList.remove('block-hide-share');
     shareContainer.classList.add('block-show-share');
     statusBlockShare = true;
@@ -187,7 +236,7 @@ document.addEventListener('click', function(event) {
             if (articleMenu.classList.contains('block-show-article-menu')) {
 
                 var shareArticle = document.querySelector(`[data-id="${articleMenu.getAttribute('data-id')}"].mc-feed-article`);
-                shareArticle.style.removeProperty('background-color');
+                shareArticle.classList.remove('share-background');
                 
                 articleMenu.classList.remove('block-show-article-menu');
                 articleMenu.classList.add('block-hide-article-menu');
@@ -230,7 +279,7 @@ function openArticleMenu(element) {
     var articleMenu = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article-menu`);
     var shareArticle = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article`);
 
-    shareArticle.style.backgroundColor = "#a7c6e8";
+    shareArticle.classList.add('share-background')
     
     articleMenu.classList.remove('block-hide-article-menu');
     articleMenu.classList.add('block-show-article-menu');
@@ -249,4 +298,42 @@ function articleNotInterested(element) {
     setTimeout(() => {
         getArticle.innerHTML = '<div class="mc-feed-article-not-interested">We will show less of content like this</div>';
     }, 500);
+};
+
+
+function articleDelete(element) {
+    var mcFeedArticle = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-feed-article`);
+    confirmationDialog('Are you sure you want to delete post?').then((value) => {
+        if (value) {
+
+            $.ajax({
+                url: '/api/v1/post/',
+                method: 'delete',
+                dataType: 'json',
+                data: {post_id: element.getAttribute('data-id')},
+                success: function(data){
+                    if (data.status == true) {
+                        dataRemoveArticle(mcFeedArticle);
+                    };
+                }
+            });
+        };
+    });
+};
+
+
+function dataRemoveArticle(mcFeedArticle) {
+    mcFeedArticle.style.height = `${mcFeedArticle.offsetHeight}px`;
+    mcFeedArticle.style.opacity = '0';
+    setTimeout(() => {
+        mcFeedArticle.style.height = `50px`;
+        mcFeedArticle.style.display = 'flex';
+        mcFeedArticle.style.alignItems = 'center';
+        mcFeedArticle.style.justifyContent = 'center';
+    }, 150);
+    setTimeout(() => {
+        mcFeedArticle.innerHTML = '<span class="nothing">Post was deleted</span>';
+        mcFeedArticle.style.height = `50px`;
+        mcFeedArticle.style.opacity = '1';
+    }, 350);
 };

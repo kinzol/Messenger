@@ -19,7 +19,7 @@
 
 
 <div style="background-color: red; position: absolute; z-index: 2; display: none;">
-    <form method="post" enctype="multipart/form-data">
+    <form id='settingsForm' method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
         <button type="submit" id="form-save-button">save</button>
@@ -96,6 +96,7 @@
 <script>
     var svgLock = "{% static 'main/svg/lock.svg' %}";
     var svgUnlock = "{% static 'main/svg/Unlock.svg' %}";
+    var username = "{{ user_profile.username }}"
 
     var clientPrivateStatus = document.querySelector('#id_private').checked;
     var clientBackground = document.querySelector('#id_background_style').value;

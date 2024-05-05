@@ -57,17 +57,176 @@ function changeStyleArticlesFull() {
 function profileFollow() {
     var followButton = document.querySelector('.mc-profile-user-follow');
     var unfollowButton = document.querySelector('.mc-profile-user-unfollow');
+    var mcProfileUserStatSpan = document.querySelectorAll('.mc-profile-user-stat-span')[1];
 
-    followButton.style.display = 'none';
-    unfollowButton.style.display = 'flex';
+    $.ajax({
+        url: '/api/v1/follow/',
+        method: 'post',
+        dataType: 'json',
+        data: {user_id: user_id},
+        success: function(data){
+            if (data.status == true) {
+                followButton.style.display = 'none';
+                unfollowButton.style.display = 'flex';
+                mcProfileUserStatSpan.textContent = parseInt(
+                    mcProfileUserStatSpan.textContent.replace(' ', '')) + 1;
+                mcProfileUserStatSpan.textContent = mcProfileUserStatSpan.textContent.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            } else {
+                notification(3, 'Could not subscribe, error occurred!')
+            };
+        }
+    });
 };
 
 
 function profileUnfollow() {
-    followButton = document.querySelector('.mc-profile-user-follow');
-    unfollowButton = document.querySelector('.mc-profile-user-unfollow');
+    var followButton = document.querySelector('.mc-profile-user-follow');
+    var unfollowButton = document.querySelector('.mc-profile-user-unfollow');
+    var mcProfileUserStatSpan = document.querySelectorAll('.mc-profile-user-stat-span')[1];
 
-    unfollowButton.style.display = 'none';
-    followButton.style.display = 'flex';
+    $.ajax({
+        url: '/api/v1/follow/',
+        method: 'delete',
+        dataType: 'json',
+        data: {user_id: user_id},
+        success: function(data){
+            if (data.status == true) {
+                unfollowButton.style.display = 'none';
+                followButton.style.display = 'flex';
+                mcProfileUserStatSpan.textContent = parseInt(
+                    mcProfileUserStatSpan.textContent.replace(' ', '')) - 1;
+                mcProfileUserStatSpan.textContent = mcProfileUserStatSpan.textContent.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            } else {
+                notification(3, 'Could not unsubscribe, error occurred!')
+            };
+        }
+    });
 }
 
+var dataLoading = true;
+var outset = 12;
+window.onscroll = function(ev) {
+    if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
+
+        dataLoading = false;
+
+        $.ajax({
+            url: '/api/v1/post/',         /* Куда отправить запрос */
+            method: 'get',             /* Метод запроса (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {outset: outset, author: 1},     /* Данные передаваемые в массиве */
+            success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
+                dataProcessing(data); /* В переменной data содержится ответ от index.php. */
+            }
+        });
+        
+    }
+};
+
+function dataProcessing(posts) {
+    if (posts.posts.length == 0) {
+        return;
+    }
+
+    posts.posts.forEach((post) => {
+
+        $.ajax({
+            url: '/api/v1/post/file/',
+            method: 'get',
+            dataType: 'json',
+            data: {post_id: post.pk},
+            success: function(data){
+                createPost(post, data.files);
+            }
+        });
+
+    });
+
+    dataLoading = true;
+    outset += 12;
+}
+
+// Перед каждым AJAX-запросом включаем CSRF токен
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function test() {
+    $.ajax({
+        url: '/api/v1/follow/',
+        method: 'post',
+        dataType: 'json',
+        data: {user_id: "2"},
+        success: function(data){
+            console.log(data);
+        }
+    });
+};
+
+
+function formatDate(dateTimeString) {
+    const date = new Date(dateTimeString);
+    
+    const options1 = { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    const formattedDate1 = new Intl.DateTimeFormat(undefined, options1).format(date);
+
+    const options2 = { month: 'long', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit' };
+    const formattedDate2 = new Intl.DateTimeFormat(undefined, options2).format(date);
+    
+    return { format1: formattedDate1, format2: formattedDate2 };
+}
+
+function formatDateOnline(dateTimeString) {
+    const date = new Date(dateTimeString);
+    
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+    let formattedDate;
+    if (diffDays > 355) {
+        const options = { month: 'long', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit'};
+        formattedDate = new Intl.DateTimeFormat(undefined, options).format(date);
+    } else {
+        const options = { month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        formattedDate = new Intl.DateTimeFormat(undefined, options).format(date);
+    };
+
+    return formattedDate;
+};
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    var mcFeedArticleTime = document.querySelectorAll('.mc-feed-article-time');
+    var mcFeedArticleCount = document.querySelectorAll('.mc-feed-article-count');
+    var mcProfileUserOnlineTime = document.querySelector('.mc-profile-user-online-time');
+
+    if (mcProfileUserOnlineTime.innerHTML != 'Online') {
+        mcProfileUserOnlineTime.innerHTML = formatDateOnline(mcProfileUserOnlineTime.innerHTML);
+    };
+
+    mcFeedArticleCount.forEach((count) => {
+        count.textContent = count.textContent.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    });
+    
+    mcFeedArticleTime.forEach((post) => {
+        var formattedDates = formatDate(post.innerHTML);
+        post.innerHTML = formattedDates.format2;
+    });
+});

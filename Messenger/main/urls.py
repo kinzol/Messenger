@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from .views import *
 
 urlpatterns = [
@@ -17,6 +17,9 @@ urlpatterns = [
     path('post/likes/<slug:pk>/', PostLikesView.as_view(), name='post_likes'),
     path('create/post/', PostCreateView.as_view(), name='create_post'),
 
+    # Story
+    path('story/create/', StoryCreateView.as_view(), name='story_create'),
+
     # Activity
     path('activity/', ActivityView.as_view(), name='activity'),
     path('activity/likes', ActivityLikesView.as_view(), name='activity_likes'),
@@ -28,4 +31,15 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('login/', LoginUserView.as_view(), name='login'),
     path('registration/', RegisterUserView.as_view(), name='register'),
+
+    # API
+    re_path(r'^api/v1/post/$', PostAPIView.as_view()),
+    re_path(r'^api/v1/post/file/$', PostFileAPIView.as_view()),
+    re_path(r'^api/v1/post/comment/$', PostCommentAPIView.as_view()),
+    re_path(r'^api/v1/user/list/$', UserListAPIView.as_view()),
+    re_path(r'^api/v1/search/$', SearchAPIView.as_view()),
+    re_path(r'^api/v1/follow/$', ProfileFollowAPIView.as_view()),
+    re_path(r'^api/v1/notification/$', ProfileNotificationAPIView.as_view()),
+    re_path(r'^api/v1/activity/$', ActivityAPIView.as_view()),
+    path('api/v1/story/create/', StoryCreateAPIView.as_view()),
 ]

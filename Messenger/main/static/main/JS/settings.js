@@ -279,3 +279,27 @@ function logout(){
         }
     });
 };
+
+
+$(document).ready(function(){
+    $('#settingsForm').submit(function(event){
+        event.preventDefault();
+        
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function(response){
+                console.log(response);
+                if (response.status == true) {
+                    location.reload()
+                } else if ((response.status == false) && (response.error == 'username')) {
+                    document.querySelector('.mc-profile-user-second-username').innerHTML = username;
+                    document.querySelector('#id_username').value = username;
+                    notification(3, response.message)
+                    checkChanges();
+                }
+            },
+        });
+    });
+});

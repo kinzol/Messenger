@@ -24,8 +24,6 @@ class Profile(models.Model):
     uuid = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
     bio = models.TextField(max_length=255, blank=True, null=True, default='')
-    # followers = models.ManyToManyField(User, related_name='profile_followers')
-    # following = models.ManyToManyField(User, related_name='profile_following')
 
     avatar = models.ImageField(upload_to=avatar_directory_path, default='default_avatar.jpg')
     background_avatar = models.ImageField(upload_to=bg_avatar_directory_path, default='default_background_avatar.jpg')
@@ -35,7 +33,6 @@ class Profile(models.Model):
     amount_following = models.IntegerField(default=0)
     amount_article = models.IntegerField(default=0)
 
-    # notifications = models.ManyToManyField(ProfileNotification, related_name='profile_notification')
     recommendations = models.TextField(null=True, default='')
 
     verify = models.BooleanField(blank=True, default=False)
@@ -62,10 +59,12 @@ class ProfileFollow(models.Model):
 
 
 class ProfileNotification(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notify_profile')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=255)
-    time_create = models.DateTimeField(auto_now_add=True)
+    type_id = models.IntegerField(default=0)
+    time_create = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    read = models.BooleanField(default=False)
 
 
 # Post models
@@ -114,11 +113,15 @@ class PostComment(models.Model):
 
 
 # Story models
+def story_file_directory_path(instance, filename):
+    user_id = instance.author.id
+    return os.path.join('uploads', f'user_{user_id}', 'story', 'story.mp4')
+
+
 class Story(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    viewers = models.ManyToManyField(User, related_name='story_viewers')
+    viewers = models.ManyToManyField(User, related_name='viewer_users')
     view_count = models.IntegerField(default=0)
-    preview = models.ImageField(upload_to='story_video_preview')
-    video_content = models.FileField(upload_to='story_video', validators=[FileExtensionValidator(
+    video_content = models.FileField(upload_to=story_file_directory_path, validators=[FileExtensionValidator(
                     allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
     time_create = models.DateTimeField(auto_now_add=True)

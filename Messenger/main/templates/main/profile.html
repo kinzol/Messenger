@@ -11,8 +11,10 @@
     {% if user.pk != user_profile.pk %}
         {% if is_following %}
             <div class="mc-profile-user-unfollow" onclick="profileUnfollow()">Following</div>
+            <div class="mc-profile-user-follow" style="display:none;" onclick="profileFollow()">Follow</div>
         {% else %}
             <div class="mc-profile-user-follow" onclick="profileFollow()">Follow</div>
+            <div class="mc-profile-user-unfollow" style="display:none;" onclick="profileUnfollow()">Following</div>
         {% endif %}
     {% endif %}
 
@@ -36,7 +38,7 @@
         {% if user.profile.online_status %}
             <span class="mc-profile-user-online-time">Online</span>
         {% else %}
-            <span class="mc-profile-user-online-time">{{ user.profile.last_online }}</span>
+            <span class="mc-profile-user-online-time">{{ user.profile.last_online|date:'Y-m-d\TH:i:s.uO' }}</span>
         {% endif %}
 
     </div>
@@ -271,8 +273,8 @@
                         <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}"></div>
                         <div data-id="{{ post.pk }}" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}"></div>
                     {% else %}
-                    <div data-id="{{ post.pk }}" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}"></div>
-                    <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}"></div>
+                        <div data-id="{{ post.pk }}" class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}"></div>
+                        <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}"></div>
                     {% endif %}
                     <a href="{% url 'post' pk=post.pk %}" data-id="{{ post.pk }}" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}"></a>
                     <div data-id="{{ post.pk }}" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}"></div>
@@ -281,15 +283,15 @@
                         <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}"></div>
                         <div data-id="{{ post.pk }}" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}"></div>
                     {% else %}
-                    <div data-id="{{ post.pk }}" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}"></div>
-                    <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}"></div>
+                        <div data-id="{{ post.pk }}" class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}"></div>
+                        <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}"></div>
                     {% endif %}
 
                 </div>
                 <div class="display-grid">
                     <a href="{% url 'post_likes' pk=post.pk %}" class="mc-feed-article-text-count">Likes: <span data-id="{{ post.pk }}" class="mc-feed-article-count mc-fd-art-c-like">{{ post.amount_likes }}</span></a>
                     <span class="mc-feed-article-text-count">Comments: <span data-id="{{ post.pk }}" class="mc-feed-article-count">{{ post.amount_comments }}</span></span>
-                    <span class="mc-feed-article-time">time</span>
+                    <span class="mc-feed-article-time">{{ post.time_create|date:'Y-m-d\TH:i:s.uO' }}</span>
                 </div>
 
                 {% endwith %}
@@ -300,4 +302,23 @@
 
 <script src="{% static 'main/JS/home.js' %}"></script>
 <script src="{% static 'main/JS/profile.js' %}"></script>
+<script src="{% static 'main/JS/profile-api-post.js' %}"></script>
+<script>
+    var svgPlay = "{% static 'main/svg/play.svg' %}";
+    var svgPhotos = "{% static 'main/svg/photos.svg' %}";
+    var svgText = "{% static 'main/svg/text.svg' %}";
+    var svgVerify = "{% static 'main/svg/verify.svg' %}";
+    var svgDotsVertical = "{% static 'main/svg/dots-vertical.svg' %}";
+    var svgLikeWhite = "{% static 'main/svg/like-white.svg' %}";
+    var svgLikeRed = "{% static 'main/svg/like-red.svg' %}";
+    var svgCommentDots = "{% static 'main/svg/comment-dots.svg' %}";
+    var svgShare = "{% static 'main/svg/share.svg' %}";
+    var svgSave = "{% static 'main/svg/save.svg' %}";
+    var svgSaveFilled = "{% static 'main/svg/save-filled.svg' %}";
+    var svgClose = "{% static 'main/svg/close.svg' %}";
+    
+    var username = '{{ user_profile.username }}';
+    var user_id = '{{ user.pk }}'
+    var createPost = createPost;
+</script>
 {% endblock %}

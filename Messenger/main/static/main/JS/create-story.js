@@ -132,7 +132,7 @@ function changeStyle() {
         cameraTimeline.style.opacity = '1';
 
         liveStart.classList.remove('live-start-show');
-        setTimeout(() => liveStart.style.display = 'flex', 250);
+        setTimeout(() => liveStart.style.display = 'none', 250);
     };
 };
 
@@ -185,3 +185,75 @@ function scrollToBottomAnyway() {
         chatFieldScroll.scroll({ top: chatFieldScroll.scrollHeight, behavior: 'smooth' });
     };
 };
+
+
+function reloadResult() {
+    confirmationDialog("Are you sure you want to record story again?").then((value) => {
+        if (value) {
+            location.reload();
+        };
+    });
+};
+
+
+function closeCreateStory() {
+    if (recordedChunks.length != 0 || recordStatus == true) {
+        confirmationDialog("Are you sure you want to close this page?").then((value) => {
+            if (value) {
+                window.location.href = window.location.origin;
+            };
+        });
+    } else {
+        window.location.href = window.location.origin;
+    };
+};
+
+
+function publishStory() {
+    confirmationDialog("Are you sure you want to publish a story?").then((value) => {
+        if (value) {
+            var file = new File(recordedChunks, 'video.mp4', { type: 'video/mp4' });
+            var formData = new FormData();
+            formData.append('video_content', file);
+
+            $.ajax({
+                url: '/api/v1/story/create/',
+                method: 'post',
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function(data){
+                    console.log(data)
+                    if (data.status) {
+                        window.location.href = `${window.location.origin}/`;
+                    } else {
+                        notification(3, 'An error occurred while publishing story!');
+                    };
+                }
+            });
+        };
+    });
+};
+
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}

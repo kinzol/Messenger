@@ -11,24 +11,46 @@
     <span class="selection-menu-title">Notifications</span>
     <div class="selection-menu-line"></div>
 
-    <a href="#" class="selection-menu-button">
-        <img class="selection-menu-button-svg" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image">
-        <span class="selection-menu-button-name">Likes</span>
-        <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
-    </a>
+    {% if notifications|length == 0 %}
+            <span class="nothing">Nothing here</span>
+    {% else %}
 
-    <a href="#" class="selection-menu-button">
-        <img class="selection-menu-button-svg" src="{% static 'main/svg/profile-plus.svg' %}" alt="svg-image">
-        <span class="selection-menu-button-name">Bookmarks</span>
-        <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
-    </a>
+    {% for notification in notifications %} 
 
-    <a href="#" class="selection-menu-button">
-        <img class="selection-menu-button-svg" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image">
-        <span class="selection-menu-button-name">Comment history</span>
-        <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
-    </a>
+        {% if notification.type == 'like' %}
+            <a href="{% url 'profile' username=notification.user.username %}" class="selection-menu-button">
+                <img class="selection-menu-button-svg" src="{% static 'main/svg/like-white.svg' %}" alt="svg-image">
+                <span class="selection-menu-button-name">{{ notification.user.username }} likes your post</span>
+                <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
+            </a>
+
+        {% elif notification.type == 'follow' %}
+
+            <a href="{% url 'profile' username=notification.user.username %}" class="selection-menu-button">
+                <img class="selection-menu-button-svg" src="{% static 'main/svg/profile-plus.svg' %}" alt="svg-image">
+                <span class="selection-menu-button-name">{{ notification.user.username }} subscribes to you</span>
+                <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
+            </a>
+        
+        {% elif notification.type == 'comment' %}
+
+            <a href="{% url 'profile' username=notification.user.username %}" class="selection-menu-button">
+                <img class="selection-menu-button-svg" src="{% static 'main/svg/comment-dots.svg' %}" alt="svg-image">
+                <span class="selection-menu-button-name">{{ notification.user.username }} wrote a comment on your post</span>
+                <img class="selection-menu-button-svg" style="margin-left: auto" src="{% static 'main/svg/right-arrow.svg' %}" alt="svg-image">
+            </a>
+        
+        {% endif %}
+
+    {% endfor %}
+    {% endif %}
 </div>
 
-<script src="{% static 'main/JS/search.js' %}"></script>
+<script src="{% static 'main/JS/profile-notification.js' %}"></script>
+<script>
+    var svgLikeWhite = "{% static 'main/svg/like-white.svg' %}";
+    var svgRightArrow = "{% static 'main/svg/right-arrow.svg' %}";
+    var svgProfilePlus = "{% static 'main/svg/profile-plus.svg' %}";
+    var svgCommentDots = "{% static 'main/svg/comment-dots.svg' %}";
+</script>
 {% endblock %}

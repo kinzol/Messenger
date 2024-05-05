@@ -18,9 +18,9 @@
     <span class="userlist-total">Total Users: {{ user.profile.amount_followers }}</span>
 
     {% for user in users %}
-        <a href="{% url 'profile' username=user.user.username %}" class="userlist-user">
+        <div class="userlist-user">
             <img src="{{ user.user.profile.avatar.url }}" alt="{{ user.user.username }}'s avatar" class="userlist-user-avatar">
-            <div class="userlist-user-username">
+            <a href="{% url 'profile' username=user.user.username %}" class="userlist-user-username">
                 <span class="userlist-user-username-name">
                     {{ user.user.profile.full_name }}
                     {% if user.user.profile.verify %}
@@ -28,10 +28,31 @@
                     {% endif %}
                 </span>
                 <span class="userlist-user-username-login">{{ user.user.username }}</span>
-            </div>
-        </a>
+            </a>
+            {% if user.user.pk != user_profile.pk %}
+                {% if user.is_follow %}
+                    <div class="mc-profile-user-unfollow" data-id="{{user.user.pk}}" onclick="profileUnfollow(this)">Following</div>
+                    <div class="mc-profile-user-follow" data-id="{{user.user.pk}}" style="display:none;" onclick="profileFollow(this)">Follow</div>
+                {% else %}
+                    <div class="mc-profile-user-follow" data-id="{{user.user.pk}}" onclick="profileFollow(this)">Follow</div>
+                    <div class="mc-profile-user-unfollow" data-id="{{user.user.pk}}" style="display:none;" onclick="profileUnfollow(this)">Following</div>
+                {% endif %}
+            {% endif %}
+        </div>
     {% endfor %}
     {% endif %}
 </div>
+
+<script>
+    var user_id = '{{ user.pk  }}';
+    var apiType = 'follower';
+    var svgVerify = "{% static 'main/svg/verify.svg' %}";
+    var post_id = '0';
+    var my_id = '{{ user_profile.pk }}'
+</script>
+
+{% if users|length != 0%}
+    <script src="{% static 'main/JS/user-list-api.js' %}"></script>
+{% endif %}
 
 {% endblock %}

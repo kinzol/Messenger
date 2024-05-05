@@ -64,6 +64,7 @@ h1, h2, h3, h4, h5, h6 {
 	/* background-size: 400% 400%;
 	animation: gradient-story 10s ease-in-out infinite; */
     position: relative;
+    overflow: hidden;
 }
 
 .mc-feed-stories-story-container::-webkit-scrollbar {
@@ -228,7 +229,7 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 0;
     display: none;
     user-select: none;
-    z-index: 1;
+    z-index: 2;
 }
 
 .mc-feed-stories-scroll-right {
@@ -246,7 +247,7 @@ h1, h2, h3, h4, h5, h6 {
     right: 4px;
     display: none;
     user-select: none;
-    z-index: 1;
+    z-index: 2;
 }
 
 .mc-feed-stories-scroll-img {
@@ -261,6 +262,9 @@ h1, h2, h3, h4, h5, h6 {
     height: 100%;
     object-fit: cover;
     border-radius: 25px;
+    z-index: 0;
+    position: relative;
+    filter: blur(1px);
 }
 
 .mc-feed-stories-story-userinfo {
@@ -286,6 +290,9 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 20px;
     align-content: center;
     display: grid;
+    text-wrap: nowrap;
+    padding: 0px 2px;
+    z-index: 1;
 }
 
 .mc-feed-stories-story-userinfo-img {
@@ -303,6 +310,7 @@ h1, h2, h3, h4, h5, h6 {
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #fff;
+    z-index: 1;
 }
 
 .mc-second-sidebar-container-avatar {
@@ -1046,4 +1054,12 @@ h1, h2, h3, h4, h5, h6 {
     color: #ffffffec;
     -webkit-text-fill-color: #ffffffec;
     margin: 5px 0px;
+    font-weight: 500;
+}
+
+.nothing {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffffb8;
+    text-align: center;
 }

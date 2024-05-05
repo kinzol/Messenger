@@ -56,4 +56,13 @@
 
 </div>
 
+<script src="{% static 'main/JS/api-activity-post.js' %}"></script>
+<script>
+    var activityType = '{{type}}';
+
+    var svgPlay = "{% static 'main/svg/play.svg' %}";
+    var svgPhotos = "{% static 'main/svg/photos.svg' %}";
+    var svgText = "{% static 'main/svg/text.svg' %}";
+</script>
+
 {% endblock %}

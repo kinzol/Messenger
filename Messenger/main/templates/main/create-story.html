@@ -16,7 +16,7 @@
     </div>
 
     <div class="camera-top-buttons">
-        <img class="camera-top-button-img" src="{% static 'main/svg/close.svg' %}" alt="svg-image">
+        <img class="camera-top-button-img" onclick="closeCreateStory()" src="{% static 'main/svg/close.svg' %}" alt="svg-image">
     </div>
 
     <video class="camera-video" autoplay disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false" muted></video>
@@ -31,8 +31,8 @@
     <div class="camera-timeline"><div class="camera-timeline-move"></div></div>
 
     <div class="camera-video-result-buttons">
-        <div class="camera-video-result-reload">Try again</div>
-        <div class="camera-video-result-publish">Publish story</div>
+        <div class="camera-video-result-reload" onclick="reloadResult()">Try again</div>
+        <div class="camera-video-result-publish" onclick="publishStory()">Publish story</div>
     </div>
 
     <div class="live-start" onclick="liveStart()"><img class="live-start-img" src="{% static 'main/svg/live.svg' %}" alt="svg-image"></div>

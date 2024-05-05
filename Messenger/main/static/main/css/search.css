@@ -101,3 +101,10 @@
         font-size: 13px;
     }
 }
+
+.nothing {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffffb8;
+    text-align: center;
+}

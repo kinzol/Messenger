@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'main/css/popup.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'main/css/home.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'main/css/' %}{{ background_style }}" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'main/images/logo-180x180.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'main/images/logo-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'main/images/logo-16x16.png' %}">
@@ -63,7 +64,15 @@
             <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
         </a>
         <a class="m-buttons-link" href="{% url 'profile_notification' %}">
-            <div class="mc-sb-c-links-notify">12</div>
+
+            {% if notification_count == 21 %}
+                <div class="mc-sb-c-links-notify">20+</div>
+            {% elif notification_count > 0 %}
+                <div class="mc-sb-c-links-notify">{{ notification_count }}</div>
+            {% elif notification_count == 0 %}
+                <div class="mc-sb-c-links-notify" style="display: none;">0</div>
+            {% endif %}
+
             <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
         </a>
         <a class="m-buttons-link" href="{% url 'profile' username=user_profile.username %}">
@@ -114,7 +123,15 @@
                         Search
                     </a>
                     <a style="position: relative;" href="{% url 'profile_notification' %}">
-                        <div class="mc-sb-c-links-notify">12</div>
+
+                        {% if notification_count == 21 %}
+                            <div class="mc-sb-c-links-notify">20+</div>
+                        {% elif notification_count > 0 %}
+                            <div class="mc-sb-c-links-notify">{{ notification_count }}</div>
+                        {% elif notification_count == 0 %}
+                            <div class="mc-sb-c-links-notify" style="display: none;">0</div>
+                        {% endif %}
+                        
                         <div class="mc-sb-c-links-a">
                             <img class="mc-sb-c-links-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
                             Notifications

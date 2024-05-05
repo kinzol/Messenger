@@ -123,7 +123,7 @@
     <div class="display-grid">
         <a href="{% url 'post_likes' pk=post.pk %}" class="mc-feed-article-text-count">Likes: <span data-id="{{ post.pk }}" class="mc-feed-article-count mc-fd-art-c-like">{{ post.amount_likes }}</span></a>
         <span class="mc-feed-article-text-count">Comments: <span data-id="{{ post.pk }}" class="mc-feed-article-count">{{ post.amount_comments }}</span></span>
-        <span class="mc-feed-article-time">time</span>
+        <span class="mc-feed-article-time">{{ post.time_create|date:'Y-m-d\TH:i:s.uO' }}</span>
     </div>
 
     {% endwith %}
@@ -136,51 +136,43 @@
         </div>
 
         {% for comment in post.comments %}
-            {% if comment.user == user_profile %}
-                <div class="post-comment">
-                    <img class="post-comment-trash" alt="svg-image" src="{% static 'main/svg/trash-white.svg' %}" title="delete">
-                    <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}'s avatar" class="post-comment-user-avatar">
+                <div data-id="{{ comment.pk }}" class="post-comment">
+                    {% if comment.user == user_profile %}
+                        <img data-id="{{ comment.pk }}" class="post-comment-trash" alt="svg-image" onclick="deleteComment(this)" src="{% static 'main/svg/trash-white.svg' %}" title="delete">
+                    {% endif %}
+                    <a href="{% url 'profile' username=comment.user.username %}"><img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}'s avatar" class="post-comment-user-avatar"></a>
 
                     <div class="post-text-content">
-                        <div class="post-text-content-user">
+                        <a href="{% url 'profile' username=comment.user.username %}" class="post-text-content-user">
                             
                             {{ comment.user.profile.full_name }}
                             {% if comment.user.profile.verify %}
                                 <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
                             {% endif %}
-                        </div>
+                        </a>
                         <div class="post-comment-message">
                             {{ comment.content }}
                         </div>
                     </div>
+
+                    <span class="post-comment-time" title="{{ comment.time_create|date:'Y-m-d\TH:i:s.uO' }}">{{ comment.time_create|date:'M d, H:i' }}</span>
                 </div>
-            {% endif %}
-        {% endfor %}
-
-        {% for comment in post.comments %}
-            {% if comment.user != user_profile %}
-                <div class="post-comment">
-                    <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}'s avatar" class="post-comment-user-avatar">
-
-                    <div class="post-text-content">
-                        <div class="post-text-content-user">
-                            
-                            {{ comment.user.profile.full_name }}
-                            {% if comment.user.profile.verify %}
-                                <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
-                            {% endif %}
-
-                        </div>
-                        <div class="post-comment-message">
-                            {{ comment.content }}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
         {% endfor %}
 
     </div>
 
 <script src="{% static 'main/JS/post.js' %}"></script>
 <script src="{% static 'main/JS/home.js' %}"></script>
+<script>
+    var post_id = '{{ post.pk }}';
+    var post_author = '{{ post.author.pk }}';
+    var my_username = '{{ user_profile.username }}';
+    var my_full_name = '{{ user_profile.profile.full_name }}';
+    var my_avatar = '{{ user_profile.profile.avatar.url }}';
+    var my_verify = '{{ user_profile.profile.verify }}';
+
+    var svgVerify = "{% static 'main/svg/verify.svg' %}";
+    var svgTrashWhite = "{% static 'main/svg/trash-white.svg' %}";
+    var svgSend = "{% static 'main/svg/send.svg' %}";
+</script>
 {% endblock %}

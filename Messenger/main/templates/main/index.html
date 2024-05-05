@@ -14,20 +14,25 @@
             <img class="mc-feed-stories-scroll-img" src="{% static 'main/svg/form-next.svg' %}" alt="svg-image">
         </div>
         <div class="mc-feed-stories-story-container">
-            <a class="mc-feed-stories-story" href="#">
+            <a class="mc-feed-stories-story" href="{% url 'story_create' %}">
                 <img class="mc-feed-stories-story-userinfo-img" src="{% static 'main/svg/plus-large.svg' %}" alt="svg-image">
                 <div class="mc-feed-stories-story-userinfo">Add content</div>
             </a>
-            <a class="mc-feed-stories-story" href="#">
-                <img class="mc-feed-stories-story-userinfo-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's story">
-                <div class="mc-feed-stories-story-userinfo">Your stories</div>
-                <img class="mc-feed-stories-story-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's story">
-            </a>
-            <a class="mc-feed-stories-story" href="#">
-                <img class="mc-feed-stories-story-userinfo-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's story">
-                <div class="mc-feed-stories-story-userinfo">Elon Mask</div>
-                <img class="mc-feed-stories-story-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's story">
-            </a>
+            {% if exist_my_stories %}
+                <a class="mc-feed-stories-story" href="/story/{{ user_profile.username }}/">
+                    <img class="mc-feed-stories-story-userinfo-img" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s story">
+                    <div class="mc-feed-stories-story-userinfo">Your stories</div>
+                    <img class="mc-feed-stories-story-img" src="{{ user_profile.profile.background_avatar.url }}">
+                </a>
+            {% endif %}
+
+            {% for story in stories %}
+                <a class="mc-feed-stories-story" href="/story/{{ story.author }}/">
+                    <img class="mc-feed-stories-story-userinfo-img" src="{{ story.author.profile.avatar.url }}" alt="{{ story.author }}'s story">
+                    <div class="mc-feed-stories-story-userinfo">{{ story.author.profile.full_name }}</div>
+                    <img class="mc-feed-stories-story-img" src="{{ story.author.profile.background_avatar.url }}">
+                </a>
+            {% endfor %}
         </div>
     </div>
 
