@@ -4,30 +4,35 @@ var statusBlockMenu = false;
 var statusBlockShare = false;
 
 if (storiesContainer != null) {
-    if (storiesContainer.scrollWidth > storiesContainer.clientWidth) {
+    if ((storiesContainer.scrollWidth > storiesContainer.clientWidth) && (window.innerWidth >= 510)) {
         var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
         storiesRightButton.style.display = 'block';
     
         storiesContainer.addEventListener('scroll', function () {
-            var scrollPosition = storiesContainer.scrollLeft;
-            var maxScrollPosition = storiesContainer.scrollWidth - storiesContainer.clientWidth;
-        
-            if (scrollPosition == 0) {
-                var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-left');
-                storiesRightButton.style.display = 'none';
-            } else {
-                var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-left');
-                storiesRightButton.style.display = 'block';
-            };
-        
-            if (scrollPosition == maxScrollPosition) {
-                var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
-                storiesRightButton.style.display = 'none';
-            } else {
-                var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
-                storiesRightButton.style.display = 'block';
-            };
+            changeBottonsVisibility();
         });
+    };
+};
+
+
+function changeBottonsVisibility() {
+    var scrollPosition = storiesContainer.scrollLeft;
+    var maxScrollPosition = storiesContainer.scrollWidth - storiesContainer.clientWidth;
+
+    if (scrollPosition == 0) {
+        var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-left');
+        storiesRightButton.style.display = 'none';
+    } else {
+        var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-left');
+        storiesRightButton.style.display = 'block';
+    };
+
+    if (scrollPosition == maxScrollPosition) {
+        var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
+        storiesRightButton.style.display = 'none';
+    } else {
+        var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
+        storiesRightButton.style.display = 'block';
     };
 };
 
@@ -336,4 +341,67 @@ function dataRemoveArticle(mcFeedArticle) {
         mcFeedArticle.style.height = `50px`;
         mcFeedArticle.style.opacity = '1';
     }, 350);
+};
+
+
+var dataLoading = true;
+var outset = 21;
+var isViewedStories = isViewedStr == 'True';
+
+
+storiesContainer.onscroll = function(ev) {
+    var scrollPosition = storiesContainer.scrollLeft;
+    var maxScrollPosition = storiesContainer.scrollWidth - storiesContainer.clientWidth;
+    if ((scrollPosition == maxScrollPosition) && dataLoading) {
+        storyAjaxQuery();
+    }
+};
+
+
+function storyAjaxQuery() {
+    $.ajax({
+        url: '/api/v1/home/stories/',
+        method: 'get',
+        dataType: 'json',
+        data: {outset: outset, is_viewed_stories: isViewedStories},
+        success: function(data){
+            console.log(data)
+            storyDataLoad(data)
+        }
+    });
+};
+
+
+function storyDataLoad(data) {
+    console.log(data.stories)
+
+    if ((data.stories.length < 21) && !isViewedStories) {
+        dataLoading = true;
+        isViewedStories = true;
+        outset = 0;
+        storyAjaxQuery();
+    } else if ((data.stories.length < 21) && isViewedStories) {
+        dataLoading = false;
+    };
+
+
+    var mcFeedStoriesStoryContainer = document.querySelector('.mc-feed-stories-story-container');
+    var result = '';
+    outset += 21;
+
+    data.stories.forEach((story) => {
+        result += `<a class="stories-story" href="/${story.author.username}">`;
+        console.log(story.is_viewed)
+        if (story.is_viewed) {
+            result += `<img class="stories-story-avatar-viewed-img" src="${story.author_avatar}" alt="${story.author.username}'s avatar">`;
+        } else {
+            result += `<div class="stories-story-avatar">
+                <img class="stories-story-avatar-img" src="${story.author_avatar}" alt="${story.author.username}'s avatar"></div>`;
+        };
+
+        result += `<span class="stories-story-username">${story.author_full_name}</span></a>`;
+    });
+
+    mcFeedStoriesStoryContainer.innerHTML = mcFeedStoriesStoryContainer.innerHTML + result;
+    changeBottonsVisibility();
 };

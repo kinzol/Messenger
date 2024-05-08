@@ -42,4 +42,5 @@ urlpatterns = [
     re_path(r'^api/v1/notification/$', ProfileNotificationAPIView.as_view()),
     re_path(r'^api/v1/activity/$', ActivityAPIView.as_view()),
     path('api/v1/story/create/', StoryCreateAPIView.as_view()),
+    re_path(r'^api/v1/home/stories/$', HomeStoriesAPIView.as_view()),
 ]

@@ -1,13 +1,17 @@
 import json
+import random
 import uuid
 import datetime
+from itertools import chain
+from random import shuffle, sample, choice
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db import connection
-from django.db.models import Exists, OuterRef, Q, F, Case, When, BooleanField, Subquery, Prefetch, Max
+from django.db.models import Exists, OuterRef, Q, F, Case, When, BooleanField, Subquery, Prefetch, Max, Count, Window
+from django.db.models.functions import RowNumber, Random
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -36,8 +40,8 @@ class HomeView(DataMixin, LoginRequiredMixin, TemplateView):
     def fetch_followed_stories(self):
         user_following = ProfileFollow.objects.filter(user=self.request.user).values('profile')
         is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
-
-        latest_story = Story.objects.filter(author=OuterRef('author'))
+        latest_story = Story.objects.filter(author=OuterRef('author')).order_by('-pk')
+        is_viewer = Story.objects.filter(viewers=self.request.user, id=OuterRef('id'))
 
         stories = Story.objects.filter(
             id__in=Subquery(latest_story.values('id')[:1]),
@@ -45,17 +49,61 @@ class HomeView(DataMixin, LoginRequiredMixin, TemplateView):
             time_create__gte=timezone.now() - datetime.timedelta(days=1)
         ).annotate(
             is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
-            is_follower=Exists(is_follower)
+            is_follower=Exists(is_follower),
+            is_viewed=Exists(is_viewer)
+        ).filter(
+            (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=False)
+        ).select_related('author__profile')[:21]
+
+        if len(stories) < 21:
+            viewed_stories = Story.objects.filter(
+                id__in=Subquery(latest_story.values('id')[:1]),
+                author__in=Subquery(user_following),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ).annotate(
+                is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
+                is_follower=Exists(is_follower),
+                is_viewed=Exists(is_viewer)
+            ).filter(
+                (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=True)
+            ).select_related('author__profile')[:21]
+
+            stories = chain(stories, viewed_stories)
+            return [stories, True]
+        else:
+            return [stories, False]
+
+    def get_recommendations(self):
+        posts = Post.objects.filter(author=OuterRef('profile')).order_by().values('author')
+        user_following = ProfileFollow.objects.filter(user=self.request.user).annotate(
+            num_posts=Subquery(posts.annotate(c=Count('id')).values('c')))
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('profile'))
+
+        user_following = user_following.filter(num_posts__gte=2).annotate(
+            is_private=Exists(Profile.objects.filter(user=OuterRef('profile'), private=True)),
+            is_follower=Exists(is_follower),
         ).filter(
             Q(is_private=False) | Q(is_follower=True)
-        ).select_related('author__profile')[:7]
+        ).order_by('pk')[:1].values_list('profile', flat=True)
+        print(user_following)
 
-        return stories
+        latest_post = Post.objects.filter(author=OuterRef('author')).order_by('?')[:10]
+
+        posts = Post.objects.filter(
+            id__in=Subquery(latest_post.values('id')),
+            author__in=Subquery(user_following),
+        ).order_by('?').select_related('author__profile')
+
+        recommendation = ''
+        return posts
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        stories, is_viewed_stories = self.fetch_followed_stories()
+        recommendation = self.get_recommendations()
         c_def = self.get_user_context(title=f'Feed', exist_my_stories=self.exist_my_stories(),
-                                      stories=self.fetch_followed_stories())
+                                      stories=stories, is_viewed_stories=is_viewed_stories,
+                                      recommendations=recommendation)
         return {**context, **c_def}
 
 
@@ -753,3 +801,37 @@ class ActivityAPIView(APIView):
             bookmark = PostBookmark.objects.get(post=post, user=self.request.user)
             bookmark.delete()
             return Response({'status': True})
+
+
+class HomeStoriesAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        is_viewed_stories = request.GET.get('is_viewed_stories') == 'true'
+        outset = int(request.GET.get('outset'))
+
+        stories = self.get_stories(is_viewed_stories, outset)
+        return Response({
+            'stories': HomeStoriesSerializer(stories, many=True).data,
+            'is_viewed_stories': is_viewed_stories
+        })
+
+    def get_stories(self, is_viewed_stories, outset):
+        user_following = ProfileFollow.objects.filter(user=self.request.user).values('profile')
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
+        latest_story = Story.objects.filter(author=OuterRef('author')).order_by('-pk')
+        is_viewer = Story.objects.filter(viewers=self.request.user, id=OuterRef('id'))
+
+        stories = Story.objects.filter(
+            id__in=Subquery(latest_story.values('id')[:1]),
+            author__in=Subquery(user_following),
+            time_create__gte=timezone.now() - datetime.timedelta(days=1)
+        ).annotate(
+            is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
+            is_follower=Exists(is_follower),
+            is_viewed=Exists(is_viewer)
+        ).filter(
+            (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=is_viewed_stories)
+        ).select_related('author__profile').prefetch_related('author__profile')[outset:outset + 21]
+
+        return stories
+

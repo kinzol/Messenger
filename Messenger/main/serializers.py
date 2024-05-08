@@ -69,3 +69,17 @@ class ActivityCommentSerializer(serializers.Serializer):
 
 class ActivityStorySerializer(serializers.Serializer):
     pass
+
+
+class HomeStoriesSerializer(serializers.Serializer):
+    author = serializers.CharField()
+    author_full_name = serializers.SerializerMethodField()
+    author_avatar = serializers.SerializerMethodField()
+    is_viewed = serializers.BooleanField()
+
+    def get_author_full_name(self, obj):
+        return obj.author.profile.full_name
+
+    def get_author_avatar(self, obj):
+        return obj.author.profile.avatar.url
+

@@ -125,3 +125,5 @@ class Story(models.Model):
     video_content = models.FileField(upload_to=story_file_directory_path, validators=[FileExtensionValidator(
                     allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
     time_create = models.DateTimeField(auto_now_add=True)
+
+

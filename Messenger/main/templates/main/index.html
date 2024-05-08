@@ -19,18 +19,23 @@
                 <div class="mc-feed-stories-story-userinfo">Add content</div>
             </a>
             {% if exist_my_stories %}
-                <a class="mc-feed-stories-story" href="/story/{{ user_profile.username }}/">
-                    <img class="mc-feed-stories-story-userinfo-img" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s story">
-                    <div class="mc-feed-stories-story-userinfo">Your stories</div>
-                    <img class="mc-feed-stories-story-img" src="{{ user_profile.profile.background_avatar.url }}">
+            <!-- {{ user_profile.profile.avatar.url }} -->
+                <a class="stories-story" href="{{ user_profile.username }}">
+                    <img class="stories-story-avatar-viewed-img" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s avatar">
+                    <span class="stories-story-username">Your stories</span>
                 </a>
             {% endif %}
 
             {% for story in stories %}
-                <a class="mc-feed-stories-story" href="/story/{{ story.author }}/">
-                    <img class="mc-feed-stories-story-userinfo-img" src="{{ story.author.profile.avatar.url }}" alt="{{ story.author }}'s story">
-                    <div class="mc-feed-stories-story-userinfo">{{ story.author.profile.full_name }}</div>
-                    <img class="mc-feed-stories-story-img" src="{{ story.author.profile.background_avatar.url }}">
+                <a class="stories-story" href="/{{ story.author.username }}">
+                    {% if story.is_viewed %}
+                        <img class="stories-story-avatar-viewed-img" src="{{ story.author.profile.avatar.url }}" alt="{{ story.author }}'s avatar">
+                    {% else %}
+                        <div class="stories-story-avatar">
+                            <img class="stories-story-avatar-img" src="{{ story.author.profile.avatar.url }}" alt="{{ story.author }}'s avatar">
+                        </div>
+                    {% endif %}
+                    <span class="stories-story-username">{{ story.author.profile.full_name }}</span>
                 </a>
             {% endfor %}
         </div>
@@ -38,6 +43,15 @@
 
 
     <div class="mc-feed-article-container">
+        <hr>
+        {{ recommendations }}
+        <hr>
+        {% for i in recommendations %}
+            ({{ i.author }})[{{i.pk}}]
+        {% endfor %}
+        <hr>
+        {{recommendations|length}}
+        <hr>
 
         <article data-id="126" class="mc-feed-article">
     
@@ -313,4 +327,7 @@
     </div>
 
 <script src="{% static 'main/JS/home.js' %}"></script>
+<script>
+    var isViewedStr = '{{ is_viewed_stories }}';
+</script>
 {% endblock %}
