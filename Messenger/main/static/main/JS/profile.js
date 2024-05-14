@@ -104,19 +104,19 @@ function profileUnfollow() {
 }
 
 var dataLoading = true;
-var outset = 12;
+var offset = 12;
 window.onscroll = function(ev) {
     if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
 
         dataLoading = false;
 
         $.ajax({
-            url: '/api/v1/post/',         /* Куда отправить запрос */
-            method: 'get',             /* Метод запроса (post или get) */
-            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
-            data: {outset: outset, author: 1},     /* Данные передаваемые в массиве */
-            success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
-                dataProcessing(data); /* В переменной data содержится ответ от index.php. */
+            url: '/api/v1/post/',
+            method: 'get',
+            dataType: 'json',
+            data: {offset: offset, author: parseInt(user_id)},
+            success: function(data){
+                dataProcessing(data);
             }
         });
         
@@ -129,21 +129,11 @@ function dataProcessing(posts) {
     }
 
     posts.posts.forEach((post) => {
-
-        $.ajax({
-            url: '/api/v1/post/file/',
-            method: 'get',
-            dataType: 'json',
-            data: {post_id: post.pk},
-            success: function(data){
-                createPost(post, data.files);
-            }
-        });
-
+        createPost(post);
     });
 
     dataLoading = true;
-    outset += 12;
+    offset += 12;
 }
 
 // Перед каждым AJAX-запросом включаем CSRF токен
@@ -167,19 +157,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-
-function test() {
-    $.ajax({
-        url: '/api/v1/follow/',
-        method: 'post',
-        dataType: 'json',
-        data: {user_id: "2"},
-        success: function(data){
-            console.log(data);
-        }
-    });
-};
 
 
 function formatDate(dateTimeString) {

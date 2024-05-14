@@ -1,6 +1,29 @@
-// document.addEventListener("DOMContentLoaded", (event) => {
-//     document.querySelector('.story-video').click();
-//   });
+var stories_id
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    stories_id = document.querySelector('.story-data-div');
+    stories_id = stories_id.textContent.slice(0, -1).split(' ');
+
+    var storyInfoTime = document.querySelector('.story-info-time');
+    storyInfoTime.innerHTML = timeAgoOrFullDate(storyInfoTime.innerHTML);
+    storyInfoTime.style.opacity = '1';
+
+    var storyTimeline = document.querySelector('.story-timeline');
+    var viewedStoriesTimeline = true;
+
+    stories_id.forEach(story => {
+        if (story == story_id){
+            storyTimeline.innerHTML += '<div class="story-timeline-underviewed"><div class="story-timeline-now"></div></div>';
+            viewedStoriesTimeline = false;
+        } else if (viewedStoriesTimeline){
+            storyTimeline.innerHTML += '<div class="story-timeline-viewed"></div>';
+        } else if (!viewedStoriesTimeline){
+            storyTimeline.innerHTML += '<div class="story-timeline-underviewed"></div>';
+        };
+    });
+
+    console.log(stories_id);
+});
 
 
 var menuStatus = false;
@@ -11,20 +34,21 @@ function startVideo(element) {
         var svgPlay = document.querySelector('.start-video-svg');
         var timelineNow = document.querySelector('.story-timeline-now');
         var controls = document.querySelector('.control-stories');
-
+        var storyVideoBackground = document.querySelector('.story-video-background');
+        
         svgPlay.classList.add('start-video-svg-hide')
         controls.style.display = 'flex';
-
+        
+        storyVideoBackground.play();
         element.play();
         element.removeAttribute('onclick')
+        
+        timelineNow.style.transition = `all ${element.getAttribute('data-len')}s linear`;
+        timelineNow.style.width = '100%';
 
-        console.log(timelineNow.duration)
-
-        timelineNow.style.transition = `all ${element.duration}s linear`;
-        timelineNow.style.maxWidth = '100%';
+        setTimeout(() => {storyNext()}, parseFloat(element.getAttribute('data-len'))*1000)
     };
 };
-
 
 function showMenu() {
     var menu = document.querySelector('.story-menu');
@@ -87,15 +111,72 @@ function shareFilter(inputFields) {
 
 
 function storyNext() {
-    console.log('next story')
+    var indexStory = stories_id.indexOf(story_id)
+    var storiesLength = stories_id.length
+    var baseURL = window.location.href.split('?')[0];
+
+    if ((indexStory + 2) > storiesLength) {
+        window.location.href = window.location.origin;
+    } else {
+        window.location.href = `${baseURL}?story_id=${stories_id[indexStory + 1]}`;
+    }; 
 };
 
 function storyPrevious() {
-    console.log('previous story')
+    var indexStory = stories_id.indexOf(story_id)
+    var storiesLength = stories_id.length
+    var baseURL = window.location.href.split('?')[0];
+
+    if ((indexStory - 1) < 0) {
+        window.location.href = window.location.href;
+    } else {
+        window.location.href = `${baseURL}?story_id=${stories_id[indexStory - 1]}`;
+    }; 
 };
 
 
 function storyCopyLink() {
-    navigator.clipboard.writeText(`${window.location.origin}/story/NONE`);
+    var indexStory = stories_id.indexOf(story_id)
+    var baseURL = window.location.href.split('?')[0];
+    var storyLink = `${baseURL}?story_id=${stories_id[indexStory]}`;
+    navigator.clipboard.writeText(storyLink);
     notification(1, "Link successfully copied");
 };
+
+
+function timeAgoOrFullDate(dateTimeString) {
+    // Преобразование строки в объект Date
+    const dateTime = new Date(dateTimeString);
+
+    // Текущая дата и время
+    const now = new Date();
+
+    // Разница в миллисекундах между текущим временем и временем из строки
+    const timeDiff = now - dateTime;
+
+    // Перевод разницы в часы и минуты
+    const hoursAgo = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutesAgo = Math.floor(timeDiff / (1000 * 60));
+
+    // Если прошел меньше дня
+    if (timeDiff < 24 * 60 * 60 * 1000) {
+        // Если прошло менее часа
+        if (hoursAgo < 1) {
+            if (minutesAgo < 2) {
+                return `${minutesAgo} minute ago`;
+            } else {
+                return `${minutesAgo} minutes ago`;
+            };
+        } else {
+            if (hoursAgo < 2) {
+                return `${hoursAgo} hour ago`;
+            } else {
+                return `${hoursAgo} hours ago`;
+            }
+        }
+    } else {
+        const options2 = { month: 'long', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit' };
+        return new Intl.DateTimeFormat(undefined, options2).format(dateTime);
+    }
+}
+

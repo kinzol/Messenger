@@ -345,7 +345,7 @@ function dataRemoveArticle(mcFeedArticle) {
 
 
 var dataLoading = true;
-var outset = 21;
+var offset_stories = 21;
 var isViewedStories = isViewedStr == 'True';
 
 
@@ -363,7 +363,7 @@ function storyAjaxQuery() {
         url: '/api/v1/home/stories/',
         method: 'get',
         dataType: 'json',
-        data: {outset: outset, is_viewed_stories: isViewedStories},
+        data: {offset: offset_stories, is_viewed_stories: isViewedStories},
         success: function(data){
             console.log(data)
             storyDataLoad(data)
@@ -378,7 +378,7 @@ function storyDataLoad(data) {
     if ((data.stories.length < 21) && !isViewedStories) {
         dataLoading = true;
         isViewedStories = true;
-        outset = 0;
+        offset_stories = 0;
         storyAjaxQuery();
     } else if ((data.stories.length < 21) && isViewedStories) {
         dataLoading = false;
@@ -387,7 +387,7 @@ function storyDataLoad(data) {
 
     var mcFeedStoriesStoryContainer = document.querySelector('.mc-feed-stories-story-container');
     var result = '';
-    outset += 21;
+    offset_stories += 21;
 
     data.stories.forEach((story) => {
         result += `<a class="stories-story" href="/${story.author.username}">`;
@@ -405,3 +405,71 @@ function storyDataLoad(data) {
     mcFeedStoriesStoryContainer.innerHTML = mcFeedStoriesStoryContainer.innerHTML + result;
     changeBottonsVisibility();
 };
+
+
+function formatDate(dateTimeString) {
+    const date = new Date(dateTimeString);
+    
+    const options1 = { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    const formattedDate1 = new Intl.DateTimeFormat(undefined, options1).format(date);
+
+    const options2 = { month: 'long', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit' };
+    const formattedDate2 = new Intl.DateTimeFormat(undefined, options2).format(date);
+    
+    return { format1: formattedDate1, format2: formattedDate2 };
+}
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    var mcFeedArticleTime = document.querySelectorAll('.mc-feed-article-time');
+    var mcFeedArticleCount = document.querySelectorAll('.mc-feed-article-count');
+
+    mcFeedArticleCount.forEach((count) => {
+        count.textContent = count.textContent.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    });
+    
+    mcFeedArticleTime.forEach((post) => {
+        var formattedDates = formatDate(post.innerHTML);
+        post.innerHTML = formattedDates.format2;
+    });
+});
+
+
+// Перед каждым AJAX-запросом включаем CSRF токен
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+// window.onscroll = function(ev) {
+//     if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) {
+
+//         $.ajax({
+//             url: '/api/v1/post/recommendations/',
+//             method: 'get',
+//             dataType: 'json',
+//             data: {},
+//             success: function(data){
+//                 console.log(data);
+//             }
+//         });
+        
+//     }
+// };
+

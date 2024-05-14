@@ -1,16 +1,15 @@
 var dataLoading = true;
-var outset = 12;
+var offset = 12;
 window.onscroll = function(ev) {
     if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
 
         dataLoading = false;
-        outset += 12;
 
         $.ajax({
             url: '/api/v1/notification/',
             method: 'get',
             dataType: 'json',
-            data: {outset: outset},
+            data: {offset: offset},
             success: function(data){
                 appendUsers(data);
             }
@@ -25,6 +24,7 @@ function appendUsers(data) {
 
     dataLoading = true;
     result = '';
+    offset += 12;
     var selectionMenu = document.querySelector('.selection-menu');
 
     data.notifications.forEach((element) => {

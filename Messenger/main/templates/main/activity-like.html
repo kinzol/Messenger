@@ -21,34 +21,32 @@
         {% else %}
 
         {% for post in posts %}
-            {% with post.post.postfile_set.all as post_files %}
 
-            <a href="{% url 'post' pk=post.post.pk %}" class="mc-feed-article-mini">
-                {% if post_files|length == 1 %}
+            <a href="{% url 'post' pk=post.pk %}" class="mc-feed-article-mini">
+                {% if post.postfile_set.all|length == 1 %}
 
-                    {% if post_files.0.get_extension == 'video' %}
+                    {% if post.postfile_set.all.0.get_extension == 'video' %}
                         <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
-                        <video class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}"></video>
-                    {% elif post_files.0.get_extension == 'image' %}
-                        <img class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}" alt="article-photo">
+                        <video class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}"></video>
+                    {% elif post.postfile_set.all.0.get_extension == 'image' %}
+                        <img class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}" alt="article-photo">
                     {% endif %}
 
-                {% elif post_files|length > 1 %}
+                {% elif post.postfile_set.all|length > 1 %}
 
                     <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
-                    {% if post_files.0.get_extension == 'video' %}
-                        <video class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}"></video>
-                    {% elif post_files.0.get_extension == 'image' %}
-                        <img class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}" alt="article-photo">
+                    {% if post.postfile_set.all.0.get_extension == 'video' %}
+                        <video class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}"></video>
+                    {% elif post.postfile_set.all.0.get_extension == 'image' %}
+                        <img class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}" alt="article-photo">
                     {% endif %}
 
-                {% elif post_files|length == 0 %}
+                {% elif post.postfile_set.all|length == 0 %}
                     <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
-                    <div class="mc-feed-article-mini-text">{{ post.post.content }}</div>
+                    <div class="mc-feed-article-mini-text">{{ post.content }}</div>
                 {% endif %}
             </a>
 
-            {% endwith %}
         {% endfor %}
         {% endif %}
         

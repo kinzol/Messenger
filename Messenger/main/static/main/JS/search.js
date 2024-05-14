@@ -1,5 +1,5 @@
 var inputContent = null
-var outset = 0;
+var offset = 0;
 var dataLoading = false;
 
 function searchInput(element) {
@@ -9,14 +9,14 @@ function searchInput(element) {
         if ((inputContent == tempInputContent) && (inputContent == searchInputElement.value) && (searchInputElement.value != '')) {
             console.log(searchInputElement.value);
 
-            outset = 0;
+            offset = 0;
             dataLoading = true;
 
             $.ajax({
                 url: '/api/v1/search/',
                 method: 'get',
                 dataType: 'json',
-                data: {outset: outset, query: searchInputElement.value},
+                data: {offset: offset, query: searchInputElement.value},
                 success: function(data){
                     appendSearchedUsers(data, true);
                 }
@@ -40,17 +40,23 @@ function appendSearchedUsers(users, new_data) {
     };
 
     users.users.forEach((user) => {
+        var followed = `<div class="mc-profile-user-unfollow" data-id="${user.pk}" onclick="profileUnfollow(this)">Following</div>
+                    <div class="mc-profile-user-follow" data-id="${user.pk}" style="display:none;" onclick="profileFollow(this)">Follow</div>`;
+
+        var notFollowed = `<div class="mc-profile-user-follow" data-id="${user.pk}" onclick="profileFollow(this)">Follow</div>
+                           <div class="mc-profile-user-unfollow" data-id="${user.pk}" style="display:none;" onclick="profileUnfollow(this)">Following</div>`;
+
         searchUsersContent += `
-        <a href="/profile/${user.username}" class="search-users-container">
-            <img src="${user.avatar}" alt="${user.username}'s image" class="search-users-container-avatar">
-            <div class="search-users-container-userinfo">
+        <div class="search-users-container">
+            <a href="/profile/${user.username}" style="display: flex;"><img src="${user.avatar}" alt="${user.username}'s image" class="search-users-container-avatar"></a>
+            <a href="/profile/${user.username}" class="search-users-container-userinfo">
                 <div class="sucu-name">${user.full_name}
                     ${user.verify ? verified : ''}
                 </div>
                 <div class="sucu-login">${user.username}</div>
-            </div>
-            <img class="search-users-container-avatar" style="margin-left: auto; opacity: 0.6;" src="${svgRightArrow}" alt="svg-image">
-        </a>`;      
+            </a>
+            ${my_id != user.pk ? (user.is_follow ? followed : notFollowed) : ''}
+        </div>`;      
     });
 
     if (new_data) {
@@ -66,7 +72,7 @@ window.onscroll = function(ev) {
     if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
 
         dataLoading = false;
-        outset += 12;
+        offset += 12;
         var searchInputElement = document.querySelector('.search-input');
 
         if (searchInputElement.value == '') {return};
@@ -75,7 +81,7 @@ window.onscroll = function(ev) {
             url: '/api/v1/search/',
             method: 'get',
             dataType: 'json',
-            data: {outset: outset, query: searchInputElement.value},
+            data: {offset: offset, query: searchInputElement.value},
             success: function(data){
                 appendSearchedUsers(data, false);
             }
@@ -83,3 +89,68 @@ window.onscroll = function(ev) {
         
     }
 };
+
+
+function profileFollow(element) {
+    var followButton = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-profile-user-follow`);
+    var unfollowButton = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-profile-user-unfollow`);
+
+    $.ajax({
+        url: '/api/v1/follow/',
+        method: 'post',
+        dataType: 'json',
+        data: {user_id: element.getAttribute('data-id')},
+        success: function(data){
+            if (data.status == true) {
+                followButton.style.display = 'none';
+                unfollowButton.style.display = 'flex';
+            } else {
+                notification(3, 'Could not subscribe, error occurred!')
+            };
+        }
+    });
+};
+
+
+function profileUnfollow(element) {
+    var followButton = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-profile-user-follow`);
+    var unfollowButton = document.querySelector(`[data-id="${element.getAttribute('data-id')}"].mc-profile-user-unfollow`);
+
+    $.ajax({
+        url: '/api/v1/follow/',
+        method: 'delete',
+        dataType: 'json',
+        data: {user_id: element.getAttribute('data-id')},
+        success: function(data){
+            if (data.status == true) {
+                unfollowButton.style.display = 'none';
+                followButton.style.display = 'flex';
+            } else {
+                notification(3, 'Could not unsubscribe, error occurred!')
+            };
+        }
+    });
+}
+
+// Перед каждым AJAX-запросом включаем CSRF токен
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+

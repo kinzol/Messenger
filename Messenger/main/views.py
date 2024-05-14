@@ -10,7 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db import connection
-from django.db.models import Exists, OuterRef, Q, F, Case, When, BooleanField, Subquery, Prefetch, Max, Count, Window
+from django.db.models import Exists, OuterRef, Q, F, Case, When, BooleanField, Subquery, Prefetch, Max, Count, Window, \
+    Func, Value, IntegerField
 from django.db.models.functions import RowNumber, Random
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -28,16 +29,87 @@ from .utils import *
 from .serializers import *
 
 
-class HomeView(DataMixin, LoginRequiredMixin, TemplateView):
-    template_name = 'main/index.html'
-    login_url = 'login'
+# Mixins
+class RecommendationMixin:
+
+    def get_follow_recommendations(self):
+        posts = Post.objects.filter(author=OuterRef('profile')).order_by().values('author')
+        user_following = ProfileFollow.objects.filter(user=self.request.user).annotate(
+            num_posts=Subquery(posts.annotate(c=Count('id')).values('c')))
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('profile'))
+
+        user_following = user_following.filter(num_posts__gte=2).annotate(
+            is_private=Exists(Profile.objects.filter(user=OuterRef('profile'), private=True)),
+            is_follower=Exists(is_follower),
+        ).filter(
+            Q(is_private=False) | Q(is_follower=True)
+        ).order_by('?')[:2].values_list('profile', flat=True)
+
+        latest_post = Post.objects.filter(author=OuterRef('author')).order_by('?')[:3]
+
+        posts = Post.objects.filter(
+            id__in=Subquery(latest_post.values('id')),
+            author__in=Subquery(user_following),
+        ).annotate(
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')
+
+        return posts
+
+    def get_for_user_recommendations(self):
+        profile_recommendations = self.request.user.profile.recommendations.split(' ')
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
+
+        posts = Post.objects.filter(
+            Q(**{f'tags__tag__in': profile_recommendations})
+        ).annotate(
+            is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
+            is_follower=Exists(is_follower),
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+        ).filter(
+            Q(is_private=False) | Q(is_follower=True)
+        ).select_related('author__profile').prefetch_related('tags', 'postfile_set').order_by('?').distinct()[:3]
+
+        return posts
+
+    def get_random_recommendations(self):
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
+
+        posts = Post.objects.annotate(
+            is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
+            is_follower=Exists(is_follower),
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+        ).filter(
+            Q(is_private=False) | Q(is_follower=True)
+        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')[:5]
+
+        return posts
+
+    def generate_recommendations(self):
+        follow_recommendation = self.get_follow_recommendations()
+        for_user_recommendations = self.get_for_user_recommendations()
+        random_recommendations = self.get_random_recommendations()
+
+        if (len(follow_recommendation) + len(for_user_recommendations)) > 10:
+            recommendations = [item for item in chain(follow_recommendation, for_user_recommendations,
+                                                      random_recommendations)]
+        else:
+            recommendations = [item for item in chain(for_user_recommendations, random_recommendations)]
+        random.shuffle(recommendations)
+        return recommendations
+
+
+class StoryMixin:
 
     def exist_my_stories(self):
         recent_time = timezone.now() - datetime.timedelta(days=1)
-        story = Story.objects.filter(author=self.request.user, time_create__gte=recent_time).first()
-        return story
+        exist_story = Story.objects.filter(author=self.request.user, time_create__gte=recent_time).exists()
+        return exist_story
 
-    def fetch_followed_stories(self):
+    def get_stories(self, is_viewed_stories, offset):
         user_following = ProfileFollow.objects.filter(user=self.request.user).values('profile')
         is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
         latest_story = Story.objects.filter(author=OuterRef('author')).order_by('-pk')
@@ -52,58 +124,33 @@ class HomeView(DataMixin, LoginRequiredMixin, TemplateView):
             is_follower=Exists(is_follower),
             is_viewed=Exists(is_viewer)
         ).filter(
-            (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=False)
-        ).select_related('author__profile')[:21]
+            (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=is_viewed_stories)
+        ).select_related('author__profile').prefetch_related('author__profile')[offset:offset + 21]
 
-        if len(stories) < 21:
-            viewed_stories = Story.objects.filter(
-                id__in=Subquery(latest_story.values('id')[:1]),
-                author__in=Subquery(user_following),
-                time_create__gte=timezone.now() - datetime.timedelta(days=1)
-            ).annotate(
-                is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
-                is_follower=Exists(is_follower),
-                is_viewed=Exists(is_viewer)
-            ).filter(
-                (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=True)
-            ).select_related('author__profile')[:21]
+        return stories
 
-            stories = chain(stories, viewed_stories)
-            return [stories, True]
-        else:
-            return [stories, False]
 
-    def get_recommendations(self):
-        posts = Post.objects.filter(author=OuterRef('profile')).order_by().values('author')
-        user_following = ProfileFollow.objects.filter(user=self.request.user).annotate(
-            num_posts=Subquery(posts.annotate(c=Count('id')).values('c')))
-        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('profile'))
 
-        user_following = user_following.filter(num_posts__gte=2).annotate(
-            is_private=Exists(Profile.objects.filter(user=OuterRef('profile'), private=True)),
-            is_follower=Exists(is_follower),
-        ).filter(
-            Q(is_private=False) | Q(is_follower=True)
-        ).order_by('pk')[:1].values_list('profile', flat=True)
-        print(user_following)
-
-        latest_post = Post.objects.filter(author=OuterRef('author')).order_by('?')[:10]
-
-        posts = Post.objects.filter(
-            id__in=Subquery(latest_post.values('id')),
-            author__in=Subquery(user_following),
-        ).order_by('?').select_related('author__profile')
-
-        recommendation = ''
-        return posts
+class HomeView(DataMixin, RecommendationMixin, StoryMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'main/index.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        stories, is_viewed_stories = self.fetch_followed_stories()
-        recommendation = self.get_recommendations()
+        recommendations = self.generate_recommendations()
+        unviewed_stories = self.get_stories(is_viewed_stories=False, offset=0)
+
+        if len(unviewed_stories) < 21:
+            viewed_stories = self.get_stories(is_viewed_stories=True, offset=0)
+            stories = chain(unviewed_stories, viewed_stories)
+            is_viewed_stories = True
+        else:
+            stories = unviewed_stories
+            is_viewed_stories = False
+
         c_def = self.get_user_context(title=f'Feed', exist_my_stories=self.exist_my_stories(),
                                       stories=stories, is_viewed_stories=is_viewed_stories,
-                                      recommendations=recommendation)
+                                      recommendations=recommendations)
         return {**context, **c_def}
 
 
@@ -169,37 +216,30 @@ class ProfileView(DataMixin, LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         username = self.kwargs.get('username')
-        if username:
-            user = get_object_or_404(User, username=username)
-            return user
-        else:
-            raise Http404('Username not provided in URL')
+        user = User.objects.filter(
+            username=username
+        ).annotate(
+            is_follower=Exists(ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('pk'))),
+            is_following=Exists(ProfileFollow.objects.filter(profile=OuterRef('pk'), user=self.request.user))
+        ).select_related('profile').first()
 
-    def get_posts(self):
-        user = self.get_object()
-        posts = (Post.objects.filter(author=user)
-                 .order_by('-pk')
-                 .select_related('author')
-                 .annotate(like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-                           bookmark_exists=Exists(
-                               PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))))[:12])
+        return user
+
+    def get_posts(self, user):
+        posts = Post.objects.filter(
+            author=user
+        ).annotate(
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+        ).select_related('author__profile').prefetch_related('tags', 'postfile_set').order_by('-pk')[:12]
+
         return posts
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.get_object()
+        posts = self.get_posts(self.object)
 
-        posts = self.get_posts()
-        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=user).exists()
-        is_following = ProfileFollow.objects.filter(profile=user, user=self.request.user).exists()
-
-        for post in posts:
-            post.tags = post.tags.split(' ')
-            post.like = post.like_exists
-            post.bookmark = post.bookmark_exists
-
-        c_def = self.get_user_context(title=f'{self.request.user.username} - Profile', posts=posts,
-                                      is_follower=is_follower, is_following=is_following)
+        c_def = self.get_user_context(title=f'{self.object.username} - Profile', posts=posts)
         return {**context, **c_def}
 
 
@@ -208,11 +248,10 @@ class ProfileNotificationView(DataMixin, LoginRequiredMixin, ListView):
     template_name = 'main/notifications.html'
     login_url = 'login'
 
-    def get_object(self):
-        notifications = ProfileNotification.objects.filter(profile=self.request.user).order_by('-pk')[:12]
-        return notifications
-
     def get_context_data(self, **kwargs):
+        notifications = ProfileNotification.objects.filter(
+            profile=self.request.user
+        ).select_related('user').order_by('-pk')[:12]
         read_notifications = ProfileNotification.objects.filter(profile=self.request.user, read=False)
 
         for notification in read_notifications:
@@ -220,7 +259,7 @@ class ProfileNotificationView(DataMixin, LoginRequiredMixin, ListView):
             notification.save()
 
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title=f'Notifications', notifications=self.get_object())
+        c_def = self.get_user_context(title=f'Notifications', notifications=notifications)
         return {**context, **c_def}
 
 
@@ -232,13 +271,12 @@ class ListFollowersView(DataMixin, LoginRequiredMixin, ListView):
     def get_object(self):
         username = self.kwargs.get('username')
         if username:
-            user = get_object_or_404(User, username=username)
-            followers = ProfileFollow.objects.filter(profile=user)[:12]
-            follow = ProfileFollow.objects.filter(user=self.request.user, profile__in=[f.user for f in followers])
-            follow_set = set(f.profile for f in follow)
-
-            for follower in followers:
-                follower.is_follow = follower.user in follow_set
+            user = User.objects.filter(username=username).select_related('profile').first()
+            followers = ProfileFollow.objects.filter(
+                profile=user
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=self.request.user, profile=OuterRef('user')))
+            ).order_by('-pk').select_related('user__profile')[:12]
 
             is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=user).exists()
 
@@ -264,13 +302,12 @@ class ListFollowingView(DataMixin, LoginRequiredMixin, ListView):
     def get_object(self):
         username = self.kwargs.get('username')
         if username:
-            user = get_object_or_404(User, username=username)
-            following = ProfileFollow.objects.filter(user=user)[:12]
-            follow = ProfileFollow.objects.filter(user=self.request.user, profile__in=[f.profile for f in following])
-            follow_set = set(f.profile for f in follow)
-
-            for follow in following:
-                follow.is_follow = follow.profile in follow_set
+            user = User.objects.filter(username=username).select_related('profile').first()
+            following = ProfileFollow.objects.filter(
+                user=user
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=self.request.user, profile=OuterRef('profile')))
+            ).order_by('-pk').select_related('profile__profile')[:12]
 
             is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=user).exists()
 
@@ -284,7 +321,7 @@ class ListFollowingView(DataMixin, LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user, users = self.get_object()
-        c_def = self.get_user_context(title=f'{self.kwargs.get("username")} - Following', user=user, users=users)
+        c_def = self.get_user_context(title=f'{self.kwargs.get("username")} - Following', r_user=user, users=users)
         return {**context, **c_def}
 
 
@@ -296,26 +333,22 @@ class PostView(DataMixin, LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         post_id = self.kwargs.get('pk')
-        if post_id:
-            post = Post.objects.filter(pk=post_id).annotate(
-                like_exists=Exists(PostLike.objects.filter(user=self.request.user, post_id=OuterRef('pk'))),
-                bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post_id=OuterRef('pk'))),
-            ).first()
 
-            is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=post.author).exists()
-            if post.author.profile.private and not is_follower and post.author != self.request.user:
-                raise Http404('This page is not available')
+        post = Post.objects.filter(pk=post_id).annotate(
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post_id=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post_id=OuterRef('pk'))),
+        ).select_related('author__profile').prefetch_related('tags', 'postfile_set').first()
 
-            post.tags = post.tags.split(' ')
-            post.comments = PostComment.objects.filter(post_id=post.pk).order_by('-pk')[:12]
-            return post
-        else:
-            raise Http404('Id not provided in URL')
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=post.author).exists()
+        if post.author.profile.private and not is_follower and post.author != self.request.user:
+            raise Http404('This page is not available')
+
+        post.comments = PostComment.objects.filter(post_id=post.pk).select_related('user__profile').order_by('-pk')[:12]
+        return post
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post = self.get_object()
-        c_def = self.get_user_context(title=f'{post.author.username} - Post', post=post)
+        c_def = self.get_user_context(title=f'{self.object.author.username} - Post')
         return {**context, **c_def}
 
 
@@ -327,15 +360,16 @@ class PostLikesView(DataMixin, LoginRequiredMixin, ListView):
     def get_object(self):
         post_id = self.kwargs.get('pk')
         if post_id:
-            post = Post.objects.get(pk=post_id)
-            users = PostLike.objects.filter(post=post_id)[:12]
-            follow = ProfileFollow.objects.filter(user=self.request.user, profile__in=[f.user for f in users])
-            follow_set = set(f.profile for f in follow)
+            post = Post.objects.filter(pk=post_id).select_related('author__profile').first()
 
-            for user in users:
-                user.is_follow = user.user in follow_set
+            users = PostLike.objects.filter(
+                post=post_id
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=self.request.user, profile=OuterRef('user')))
+            ).order_by('-pk').select_related('user__profile')[:12]
 
             is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=post.author).exists()
+
             if post.author.profile.private and not is_follower and post.author != self.request.user:
                 raise Http404('This page is not available')
 
@@ -361,11 +395,16 @@ class PostCreateView(DataMixin, LoginRequiredMixin, CreateView):
         return {**context, **c_def}
 
     def form_valid(self, form):
-        post = Post.objects.create(
+        post = Post(
             author=self.request.user,
-            content=form.cleaned_data.get('content'),
-            tags=form.cleaned_data.get('tags')
+            content=form.cleaned_data.get('content')
         )
+        post.save()
+
+        tags = form.cleaned_data.get('tags').split(' ')
+        for tag_name in tags:
+            tag, created = PostTag.objects.get_or_create(tag=tag_name)
+            post.tags.add(tag)
 
         files = self.request.FILES.getlist('files_content')
 
@@ -384,11 +423,67 @@ class PostCreateView(DataMixin, LoginRequiredMixin, CreateView):
 # Story
 class StoryCreateView(DataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'main/create-story.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title=f'Create story')
         return {**context, **c_def}
+
+
+class StoryView(DataMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'main/story.html'
+    login_url = 'login'
+
+    def get_stories(self):
+        author = self.request.user
+        request_story = self.request.GET.get('story_id')
+        if request_story:
+            request_story = int(request_story)
+
+        if self.kwargs.get('username') != author.username:
+            author = User.objects.filter(
+                username=self.kwargs.get('username')
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=OuterRef('pk'), profile=self.request.user)),
+            ).filter(
+                Q(profile__private=False) | Q(is_follow=True)
+            ).select_related('profile').first()
+
+            if not author:
+                raise Http404
+
+        recent_time = timezone.now() - datetime.timedelta(days=1)
+        stories = Story.objects.filter(
+            author=author,
+            time_create__gte=recent_time
+        ).annotate(
+            is_viewed=Exists(Story.viewers.through.objects.filter(story_id=OuterRef('pk'),
+                                                                  user_id=self.request.user.id))
+        ).order_by('pk')
+
+        if len(stories) == 0:
+            raise Http404
+
+        for story in stories:
+            if (request_story and story.pk == request_story) or (not story.is_viewed and not request_story):
+                story_id = story.pk
+                if not self.request.user in story.viewers.all():
+                    story.viewers.add(self.request.user)
+                    story.view_count += 1
+                    story.save()
+                break
+        else:
+            story_id = stories[0].pk
+
+        return {'stories_author': author, 'stories': stories,
+                'story_id': story_id, 'last_story': stories[len(stories)-1]}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        stories = self.get_stories()
+        c_def = self.get_user_context(title=f'Story')
+        return {**context, **c_def, **stories}
 
 
 # Activities
@@ -408,8 +503,11 @@ class ActivityLikesView(DataMixin, LoginRequiredMixin, ListView):
     login_url = 'login'
 
     def get_object(self):
-        posts = PostLike.objects.filter(user=self.request.user).order_by('-pk')[:12]
-        return posts
+        posts = PostLike.objects.filter(
+            user=self.request.user
+        ).select_related('post').prefetch_related('post__postfile_set').order_by('-pk')[:12]
+
+        return [post.post for post in posts]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -423,8 +521,11 @@ class ActivityBookmarksView(DataMixin, LoginRequiredMixin, ListView):
     login_url = 'login'
 
     def get_object(self):
-        posts = PostBookmark.objects.filter(user=self.request.user).order_by('-pk')[:12]
-        return posts
+        posts = PostBookmark.objects.filter(
+            user=self.request.user
+        ).select_related('post').prefetch_related('post__postfile_set').order_by('-pk')[:12]
+
+        return [post.post for post in posts]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -438,7 +539,7 @@ class ActivityCommentsView(DataMixin, LoginRequiredMixin, ListView):
     login_url = 'login'
 
     def get_object(self):
-        comments = PostComment.objects.filter(user=self.request.user).order_by('-pk')[:12]
+        comments = PostComment.objects.filter(user=self.request.user).select_related('post').order_by('-pk')[:12]
         return comments
 
     def get_context_data(self, **kwargs):
@@ -507,7 +608,7 @@ def logout_user(request):
 class PostAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
-        outset = int(request.GET.get('outset'))
+        offset = int(request.GET.get('offset'))
         author = int(request.GET.get('author'))
 
         user = User.objects.get(pk=author)
@@ -516,19 +617,12 @@ class PostAPIView(APIView):
         if user.profile.private and not is_follower and user != self.request.user:
             raise PermissionDenied({'error': 'Forbidden'})
 
-        posts = (Post.objects.filter(author=author)
-                 .order_by('-pk')
-                 .select_related('author')
-                 .annotate(like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-                           bookmark_exists=Exists(
-                               PostBookmark.objects.filter(user=self.request.user,
-                                                           post=OuterRef('pk'))))[outset:outset+12])
-
-        for post in posts:
-            post.author_full_name = post.author.profile.full_name
-            post.author_verify = post.author.profile.verify
-            post.author_avatar = post.author.profile.avatar
-            post.author_background_avatar = post.author.profile.background_avatar
+        posts = Post.objects.filter(
+            author=author
+        ).annotate(
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+        ).order_by('-pk').select_related('author__profile').prefetch_related('tags', 'postfile_set')[offset:offset+12]
 
         return Response({'posts': PostSerializer(posts, many=True).data})
 
@@ -538,28 +632,13 @@ class PostAPIView(APIView):
 
         if post.author == self.request.user:
             post.delete()
+
+            profile = self.request.user.profile
+            profile.amount_article = profile.amount_article - 1
+            profile.save()
             return Response({'status': True})
 
         return Response({'status': False})
-
-
-class PostFileAPIView(APIView):
-
-    def get(self, request, *args, **kwargs):
-        post = int(request.GET.get('post_id'))
-        files = PostFile.objects.filter(post=post)
-
-        if len(files) > 0:
-            user = files[0].post.author
-            is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=user).exists()
-
-            if user.profile.private and not is_follower and user != self.request.user:
-                raise PermissionDenied({'error': 'Forbidden'})
-
-        for file in files:
-            file.extension = file.get_extension()
-
-        return Response({'files': PostFileSerializer(files, many=True).data})
 
 
 class PostCommentAPIView(APIView):
@@ -567,20 +646,16 @@ class PostCommentAPIView(APIView):
     def get(self, request, *args, **kwargs):
         post_author = request.GET.get('post_author')
         post_id = int(request.GET.get('post_id'))
-        outset = int(request.GET.get('outset'))
-        post_author = User.objects.get(pk=post_author)
+        offset = int(request.GET.get('offset'))
+        post_author = User.objects.filter(pk=post_author).select_related('profile').first()
         is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=post_author).exists()
 
         if post_author.profile.private and not is_follower and post_author != self.request.user:
             raise PermissionDenied({'error': 'Forbidden'})
 
-        comments = PostComment.objects.filter(post=post_id).order_by('-pk')[outset:outset+12]
-
-        for comment in comments:
-            comment.username = comment.user.username
-            comment.full_name = comment.user.profile.full_name
-            comment.avatar = comment.user.profile.avatar
-            comment.verify = comment.user.profile.verify
+        comments = PostComment.objects.filter(
+            post=post_id
+        ).select_related('user', 'user__profile').order_by('-pk')[offset:offset+12]
 
         return Response({'comments': PostCommentSerializer(comments, many=True).data})
 
@@ -626,48 +701,49 @@ class UserListAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         request_type = request.GET.get('type')
-        outset = int(request.GET.get('outset'))
+        offset = int(request.GET.get('offset'))
         user_id = request.GET.get('user_id')
         post_id = request.GET.get('post_id')
         users = []
 
-        user = User.objects.get(pk=user_id)
+        user = User.objects.filter(pk=user_id).select_related('profile').first()
         is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=user).exists()
 
         if user.profile.private and not is_follower and user != self.request.user:
             raise PermissionDenied({'error': 'Forbidden'})
 
         if request_type == 'follower':
-            queryset = ProfileFollow.objects.filter(profile=user_id).select_related('user')[outset:outset+12]
-            users = [follow.user for follow in queryset]
-            following_users = ProfileFollow.objects.filter(user=self.request.user, profile__in=users)
-            following_users_set = set(f.profile for f in following_users)
+            query = ProfileFollow.objects.filter(
+                profile=user
+            ).order_by('-pk').values('user')[offset:offset + 12]
 
-            for follower in users:
-                follower.is_follow = follower in following_users_set
+            users = User.objects.filter(
+                id__in=query
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=self.request.user, profile=OuterRef('pk'))),
+            ).select_related('profile')
 
         elif request_type == 'following':
-            queryset = ProfileFollow.objects.filter(user=user_id).select_related('profile')[outset:outset+12]
-            users = [follow.profile for follow in queryset]
-            followed_users = ProfileFollow.objects.filter(user=self.request.user, profile__in=users)
-            followed_users_set = set(f.profile for f in followed_users)
+            query = ProfileFollow.objects.filter(
+                user=user
+            ).order_by('-pk').values('profile')[offset:offset + 12]
 
-            for follow in users:
-                follow.is_follow = follow in followed_users_set
+            users = User.objects.filter(
+                id__in=query
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=self.request.user, profile=OuterRef('pk'))),
+            ).select_related('profile')
 
         elif request_type == 'like':
-            queryset = PostLike.objects.filter(post=post_id).select_related('user')[outset:outset + 12]
-            users = [follow.user for follow in queryset]
-            following_users = ProfileFollow.objects.filter(user=self.request.user, profile__in=users)
-            following_users_set = set(f.profile for f in following_users)
+            query = PostLike.objects.filter(
+                post=post_id
+            ).order_by('-pk').select_related('user').values('user')[offset:offset + 12]
 
-            for user in users:
-                user.is_follow = user in following_users_set
-
-        for user in users:
-            user.full_name = user.profile.full_name
-            user.verify = user.profile.verify
-            user.avatar = user.profile.avatar
+            users = User.objects.filter(
+                id__in=query
+            ).annotate(
+                is_follow=Exists(ProfileFollow.objects.filter(user=self.request.user, profile=OuterRef('pk'))),
+            ).select_related('profile')
 
         return Response({'users': UserListSerializer(users, many=True).data})
 
@@ -676,15 +752,13 @@ class SearchAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         query = request.GET.get('query')
-        outset = int(request.GET.get('outset'))
+        offset = int(request.GET.get('offset'))
 
-        users = Profile.objects.filter(Q(user__username__icontains=query) |
-                                       Q(full_name__icontains=query))[outset:outset+12]
-
-        for user in users:
-            user.pk = user.user.pk
-            user.username = user.user.username
-            user.is_follow = False
+        users = User.objects.filter(
+            Q(username__icontains=query) | Q(profile__full_name__icontains=query)
+        ).annotate(
+            is_follow = Exists(ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('pk')))
+        ).select_related('profile')[offset:offset+12]
 
         return Response({'users': UserListSerializer(users, many=True).data})
 
@@ -728,8 +802,10 @@ class ProfileFollowAPIView(APIView):
 class ProfileNotificationAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
-        outset = int(request.GET.get('outset'))
-        notifications = ProfileNotification.objects.filter(profile=self.request.user).order_by('-pk')[outset:outset+12]
+        offset = int(request.GET.get('offset'))
+        notifications = ProfileNotification.objects.filter(
+            profile=self.request.user
+        ).select_related('user', 'profile').order_by('-pk')[offset:offset+12]
 
         return Response({'notifications': ProfileNotificationSerializer(notifications, many=True).data})
 
@@ -738,30 +814,35 @@ class StoryCreateAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         video_content = request.data.get('video_content')
-        print(video_content)
-        Story.objects.create(author=self.request.user, video_content=video_content)
+        video_content_length = request.data.get('video_duration')
+        Story.objects.create(author=self.request.user, video_content=video_content,
+                             video_content_length=video_content_length)
         return Response({'status': True})
 
 class ActivityAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
-        outset = int(request.GET.get('outset'))
+        offset = int(request.GET.get('offset'))
         activity_type = request.GET.get('activity_type')
 
         if activity_type == 'likes':
-            post_likes = PostLike.objects.filter(user=self.request.user
-                                                 ).select_related('post').order_by('-pk')[outset:outset+12]
+            post_likes = PostLike.objects.filter(
+                user=self.request.user
+            ).select_related('post').prefetch_related('post__postfile_set').order_by('-pk')[offset:offset+12]
+
             posts = [post_like.post for post_like in post_likes]
             return Response({'posts': ActivityPostSerializer(posts, many=True).data})
 
         elif activity_type == 'bookmarks':
-            post_likes = PostBookmark.objects.filter(user=self.request.user
-                                                     ).select_related('post').order_by('-pk')[outset:outset + 12]
+            post_likes = PostBookmark.objects.filter(
+                user=self.request.user
+            ).select_related('post').prefetch_related('post__postfile_set').order_by('-pk')[offset:offset + 12]
+
             posts = [post_like.post for post_like in post_likes]
             return Response({'posts': ActivityPostSerializer(posts, many=True).data})
 
         elif activity_type == 'comment':
-            comments = PostComment.objects.filter(user=self.request.user).select_related('post').order_by('-pk')[outset:outset + 12]
+            comments = PostComment.objects.filter(user=self.request.user).select_related('post').order_by('-pk')[offset:offset + 12]
 
             for comment in comments:
                 comment.post_id = comment.post.pk
@@ -778,11 +859,14 @@ class ActivityAPIView(APIView):
             post.amount_likes = post.amount_likes + 1
             post.save()
 
+            self.change_recommendation(post)
+
             ProfileNotification.objects.get_or_create(profile=post.author, user=self.request.user, type='like')
             return Response({'status': True})
 
         elif activity_type == 'bookmark':
             PostBookmark.objects.get_or_create(post=post, user=self.request.user)
+            self.change_recommendation(post)
             return Response({'status': True})
 
     def delete(self, request, *args, **kwargs):
@@ -802,36 +886,35 @@ class ActivityAPIView(APIView):
             bookmark.delete()
             return Response({'status': True})
 
+    def change_recommendation(self, post):
+        profile = self.request.user.profile
+        recommendations = profile.recommendations.split(' ')
 
-class HomeStoriesAPIView(APIView):
+        tags = post.tags.all()
+        for tag in tags:
+            if not tag.tag in recommendations:
+                recommendations.insert(0, tag.tag)
+
+        profile.recommendations = ' '.join(recommendations[:20])
+        profile.save()
+
+
+class HomeStoriesAPIView(StoryMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         is_viewed_stories = request.GET.get('is_viewed_stories') == 'true'
-        outset = int(request.GET.get('outset'))
+        offset = int(request.GET.get('offset'))
 
-        stories = self.get_stories(is_viewed_stories, outset)
+        stories = self.get_stories(is_viewed_stories, offset)
         return Response({
             'stories': HomeStoriesSerializer(stories, many=True).data,
             'is_viewed_stories': is_viewed_stories
         })
 
-    def get_stories(self, is_viewed_stories, outset):
-        user_following = ProfileFollow.objects.filter(user=self.request.user).values('profile')
-        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
-        latest_story = Story.objects.filter(author=OuterRef('author')).order_by('-pk')
-        is_viewer = Story.objects.filter(viewers=self.request.user, id=OuterRef('id'))
 
-        stories = Story.objects.filter(
-            id__in=Subquery(latest_story.values('id')[:1]),
-            author__in=Subquery(user_following),
-            time_create__gte=timezone.now() - datetime.timedelta(days=1)
-        ).annotate(
-            is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
-            is_follower=Exists(is_follower),
-            is_viewed=Exists(is_viewer)
-        ).filter(
-            (Q(is_private=False) | Q(is_follower=True)) & Q(is_viewed=is_viewed_stories)
-        ).select_related('author__profile').prefetch_related('author__profile')[outset:outset + 21]
+class PostRecommendationAPIView(RecommendationMixin, APIView):
 
-        return stories
+    def get(self, request, *args, **kwargs):
+        posts = self.generate_recommendations()
 
+        return Response({'posts': PostSerializer(posts, many=True).data})

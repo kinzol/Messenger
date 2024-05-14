@@ -9,7 +9,7 @@
 {% block body %}
 <div class="mc-profile-user">
     {% if user.pk != user_profile.pk %}
-        {% if is_following %}
+        {% if user.is_following %}
             <div class="mc-profile-user-unfollow" onclick="profileUnfollow()">Following</div>
             <div class="mc-profile-user-follow" style="display:none;" onclick="profileFollow()">Follow</div>
         {% else %}
@@ -51,14 +51,14 @@
     <h2 class="mc-profile-user-second-username">{{ user.username }}</h2>
 
     {% if user.profile.bio != '' %}
-        {% if not user.profile.private or user.pk == user_profile.pk or is_follower %}
+        {% if not user.profile.private or user.pk == user_profile.pk or user.is_follower %}
             <span class="mc-profile-user-description">{{ user.profile.bio }}</span>
         {% endif %}
     {% endif %}
 
 </div>
 
-{% if not user.profile.private or user.pk == user_profile.pk or is_follower %}
+{% if not user.profile.private or user.pk == user_profile.pk or user.is_follower %}
     <div class="mc-profile-user-content-stat-container">
         <div class="mc-profile-user-stat-container">Posts
             <span class="mc-profile-user-stat-span">{{ user.profile.amount_article }}</span>
@@ -86,7 +86,7 @@
 
 <!-- ЕСЛИ БУДЕТ ЗАКРЫТЫЙ АКК -->
 
-{% if not user.profile.private and user.pk != user_profile.pk or is_follower %}
+{% if not user.profile.private and user.pk != user_profile.pk or user.is_follower %}
     <div class="mc-profile-user-content-stat-container">
         <a href="#" class="mc-profile-user-buttons-button">
             <img class="mc-profile-user-buttons-button-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image">
@@ -103,7 +103,7 @@
     </div>
 {% endif %}
 
-{% if user.profile.private and user.pk != user_profile.pk and not is_follower %}
+{% if user.profile.private and user.pk != user_profile.pk and not user.is_follower %}
     <div class="mc-profile-user-content-stat-container">
         <img class="mc-profile-user-lock-img" src="{% static 'main/svg/lock.svg' %}" alt="svg-image">
         <span class="mc-profile-user-lock-span">This profile is private</span>
@@ -112,7 +112,7 @@
 
 
 {% if posts|length > 0 %}
-{% if not user.profile.private or user.pk == user_profile.pk or is_follower %}
+{% if not user.profile.private or user.pk == user_profile.pk or user.is_follower %}
 
     <div class="change-style-articles">
         <div class="cs-articles-mini" onclick="changeStyleArticlesMini()">
@@ -127,34 +127,32 @@
 
     <div class="mc-feed-article-container-mini mc-feed-article-container-show">
         {% for post in posts %}
-            {% with post.postfile_set.all as post_files %}
 
             <a href="{% url 'post' pk=post.pk %}" class="mc-feed-article-mini">
-                {% if post_files|length == 1 %}
+                {% if post.postfile_set.all|length == 1 %}
 
-                    {% if post_files.0.get_extension == 'video' %}
+                    {% if post.postfile_set.all.0.get_extension == 'video' %}
                         <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/play.svg' %}" alt="svg-image">
-                        <video class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}"></video>
-                    {% elif post_files.0.get_extension == 'image' %}
-                        <img class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}" alt="article-photo">
+                        <video class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}"></video>
+                    {% elif post.postfile_set.all.0.get_extension == 'image' %}
+                        <img class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}" alt="article-photo">
                     {% endif %}
 
-                {% elif post_files|length > 1 %}
+                {% elif post.postfile_set.all|length > 1 %}
 
                     <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/photos.svg' %}" alt="svg-image">
-                    {% if post_files.0.get_extension == 'video' %}
-                        <video class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}"></video>
-                    {% elif post_files.0.get_extension == 'image' %}
-                        <img class="mc-feed-article-mini-img" src="{{ post_files.0.file.url }}" alt="article-photo">
+                    {% if post.postfile_set.all.0.get_extension == 'video' %}
+                        <video class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}"></video>
+                    {% elif post.postfile_set.all.0.get_extension == 'image' %}
+                        <img class="mc-feed-article-mini-img" src="{{ post.postfile_set.all.0.file.url }}" alt="article-photo">
                     {% endif %}
 
-                {% elif post_files|length == 0 %}
+                {% elif post.postfile_set.all|length == 0 %}
                     <img class="mc-feed-article-mini-svg" src="{% static 'main/svg/text.svg' %}" alt="svg-image">
                     <div class="mc-feed-article-mini-text">{{ post.content }}</div>
                 {% endif %}
             </a>
 
-            {% endwith %}
         {% endfor %}
 
         <!-- <a href="#" class="mc-feed-article-mini">
@@ -177,7 +175,7 @@
     <div class="mc-feed-article-container">
 
         {% for post in posts %}
-            {% with post.postfile_set.all as post_files %}
+            {% with post.postfile_set.all as post.postfile_set.all %}
             <article data-id="{{ post.pk }}" class="mc-feed-article">
             
                 <div data-id="{{ post.pk }}" class="mc-feed-article-share-container">
@@ -228,24 +226,24 @@
                     </div>
                 </div>
 
-                {% if post_files|length == 0 %}
+                {% if post.postfile_set.all|length == 0 %}
                     <p class="mc-feed-article-description-solo">{{ post.content }}</p>
                 {% else %}
                     <p class="mc-feed-article-description">{{ post.content }}</p>
                 {% endif %}
 
                 <div class="mc-feed-article-hashtags">
-                    {% for tag in post.tags %}
-                        <span>#{{ tag }}</span>
+                    {% for tag in post.tags.all %}
+                        <span>#{{ tag.tag }}</span>
                     {% endfor %}
                 </div>
 
-                {% if post_files|length != 0 %}
-                    {% if post_files|length > 1 %}
+                {% if post.postfile_set.all|length != 0 %}
+                    {% if post.postfile_set.all|length > 1 %}
                         <div class="mc-feed-article-pictures-container">
                             <span class="mc-feed-article-scrollable">Scrollable</span>
                             <div class="mc-feed-article-pictures-content">
-                                {% for file in post_files %}
+                                {% for file in post.postfile_set.all %}
                                     {% if file.get_extension == 'video' %}
                                         <video controls preload="metadata" class="mc-feed-article-article-img">
                                             <source src="{{ file.file.url }}">
@@ -256,8 +254,8 @@
                                 {% endfor %}
                             </div>
                         </div>
-                    {% elif post_files|length == 1 %}
-                        {% for file in post_files %}
+                    {% elif post.postfile_set.all|length == 1 %}
+                        {% for file in post.postfile_set.all %}
                             {% if file.get_extension == 'video' %}
                                 <video controls preload="metadata" class="mc-feed-article-article-img">
                                     <source src="{{ file.file.url }}">
@@ -269,7 +267,7 @@
                     {% endif %}
                 {% endif %}
                 <div class="mc-feed-article-activity">
-                    {% if post.like %}
+                    {% if post.like_exists %}
                         <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-like pointer" onclick="addLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-white.svg' %}"></div>
                         <div data-id="{{ post.pk }}" class="mc-feed-article-liked pointer" onclick="removeLikeArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/like-red.svg' %}"></div>
                     {% else %}
@@ -279,7 +277,7 @@
                     <a href="{% url 'post' pk=post.pk %}" data-id="{{ post.pk }}" class="mc-feed-article-comments pointer"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/comment-dots.svg' %}"></a>
                     <div data-id="{{ post.pk }}" class="mc-feed-article-share pointer" onclick="showShareContainer(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/share.svg' %}"></div>
                     
-                    {% if post.bookmark %}
+                    {% if post.bookmark_exists %}
                         <div data-id="{{ post.pk }}" style='display:none;' class="mc-feed-article-save pointer" onclick="addSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save.svg' %}"></div>
                         <div data-id="{{ post.pk }}" class="mc-feed-article-save-filled pointer" onclick="removerSaveArticle(this)"><img class="mc-feed-article-activity-img" src="{% static 'main/svg/save-filled.svg' %}"></div>
                     {% else %}

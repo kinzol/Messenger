@@ -20,6 +20,7 @@
     </div>
 
     <video class="camera-video" autoplay disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false" muted></video>
+    <video class="camera-video-background" autoplay disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false" muted></video>
     <video class="camera-video-result" onclick="changeMuted()" autoplay muted loop disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false"></video>
 
     <img class="camera-video-result-muted" src="{% static 'main/svg/sound-max.svg' %}" alt="muted-status">
@@ -28,7 +29,7 @@
 
     <div class="camera-record-story" onclick="cameraRecord()"><div class="camera-record-story-stop"></div></div>
 
-    <div class="camera-timeline"><div class="camera-timeline-move"></div></div>
+    <div class="camera-timeline camera-timeline-hide"><div class="camera-timeline-move"></div></div>
 
     <div class="camera-video-result-buttons">
         <div class="camera-video-result-reload" onclick="reloadResult()">Try again</div>

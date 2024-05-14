@@ -1004,9 +1004,11 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
 	margin-left: 30px;
     max-width: 25px;
-    color: #fff;
+    color: #ffffffde;
+    -webkit-text-fill-color: #ffffffde;
     margin-top: 1px;
     z-index: 1;
+    font-weight: 500;
 }
 
 .mc-feed-article-not-interested {

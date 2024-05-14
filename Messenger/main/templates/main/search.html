@@ -3,6 +3,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'main/css/search.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'main/css/users-list.css' %}" type="text/css">
 {% endblock %}
 
 {% block body %}
@@ -29,6 +30,8 @@
 <script>
     var svgRightArrow = "{% static 'main/svg/right-arrow.svg' %}";
     var svgVerify = "{% static 'main/svg/verify.svg' %}";
+
+    var my_id = parseInt('{{ user_profile.pk }}')
 </script>
 <script src="{% static 'main/JS/search.js' %}"></script>
 {% endblock %}

@@ -1,51 +1,89 @@
 from rest_framework import serializers
 
-from .models import *
-
 
 # Post serializers
 class PostSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
-    author = serializers.CharField(max_length=255)
-    author_full_name = serializers.CharField()
-    author_verify = serializers.BooleanField()
-    author_avatar = serializers.FileField()
-    author_background_avatar = serializers.FileField()
-
-    content = serializers.CharField(max_length=255)
+    author = serializers.CharField()
+    content = serializers.CharField()
     time_create = serializers.DateTimeField()
 
-    tags = serializers.CharField(max_length=255)
     amount_likes = serializers.IntegerField()
     amount_comments = serializers.IntegerField()
     like_exists = serializers.BooleanField()
     bookmark_exists = serializers.BooleanField()
 
+    author_full_name = serializers.SerializerMethodField()
+    author_verify = serializers.SerializerMethodField()
+    author_avatar = serializers.SerializerMethodField()
+    author_background_avatar = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
+    files = serializers.SerializerMethodField()
 
-class PostFileSerializer(serializers.Serializer):
-    pk = serializers.IntegerField()
-    file = serializers.FileField()
-    extension = serializers.CharField()
+    def get_author_full_name(self, obj):
+        return obj.author.profile.full_name
+
+    def get_author_verify(self, obj):
+        return obj.author.profile.verify
+
+    def get_author_avatar(self, obj):
+        return obj.author.profile.avatar.url
+
+    def get_author_background_avatar(self, obj):
+        return obj.author.profile.background_avatar.url
+
+    def get_tags(self, obj):
+        return [tag.tag for tag in obj.tags.all()]
+
+    def get_files(self, obj):
+        return [{'file_url': file.file.url, 'extension': file.get_extension()} for file in obj.postfile_set.all()]
 
 
 class PostCommentSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
-    username = serializers.CharField()
-    full_name = serializers.CharField()
-    avatar = serializers.FileField()
-    verify = serializers.BooleanField()
     content = serializers.CharField()
     time_create = serializers.DateTimeField()
+
+    username = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
+    verify = serializers.SerializerMethodField()
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    def get_full_name(self, obj):
+        return obj.user.profile.full_name
+
+    def get_avatar(self, obj):
+        return obj.user.profile.avatar.url
+
+    def get_verify(self, obj):
+        return obj.user.profile.verify
 
 
 # UserList serializers
 class UserListSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
     username = serializers.CharField()
-    full_name = serializers.CharField()
-    verify = serializers.BooleanField()
-    avatar = serializers.FileField()
-    is_follow = serializers.BooleanField()
+
+    full_name = serializers.SerializerMethodField()
+    verify = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
+    is_follow = serializers.SerializerMethodField()
+
+    def get_full_name(self, obj):
+        return obj.profile.full_name
+
+    def get_verify(self, obj):
+        return obj.profile.verify
+
+    def get_avatar(self, obj):
+        return obj.profile.avatar.url
+
+    def get_is_follow(self, obj):
+        return obj.is_follow
+
 
 # Profile serializers
 class ProfileNotificationSerializer(serializers.Serializer):
@@ -60,6 +98,10 @@ class ProfileNotificationSerializer(serializers.Serializer):
 class ActivityPostSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
     content = serializers.CharField()
+    files = serializers.SerializerMethodField()
+
+    def get_files(self, obj):
+        return [{'file_url': file.file.url, 'extension': file.get_extension()} for file in obj.postfile_set.all()]
 
 
 class ActivityCommentSerializer(serializers.Serializer):

@@ -10,6 +10,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true})
     streamSave = stream;
     mediaRecorder = new MediaRecorder(stream);
     var videoCamera = document.querySelector('.camera-video');
+    var cameraVideoBackground = document.querySelector('.camera-video-background');
     var resultVideoCamera = document.querySelector('.camera-video-result');
 
     mediaRecorder.ondataavailable = function(e) {
@@ -31,6 +32,8 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true})
 
     var recordButton = document.querySelector('.camera-record-story');
     videoCamera.srcObject = stream;
+    cameraVideoBackground.srcObject = stream;
+    
     recordButton.classList.add('camera-record-story-show');
 })
 .catch(err => {
@@ -66,6 +69,7 @@ function cameraRecord() {
     var recordTimelineMove = document.querySelector('.camera-timeline-move');
     var recordTimeline = document.querySelector('.camera-timeline');
     var cameraVideoResultButtons = document.querySelector('.camera-video-result-buttons');
+    var cameraTimeline = document.querySelector('.camera-timeline');
 
     recordTimelineMove.backgroundColor = '#ffffffce';
 
@@ -82,6 +86,7 @@ function cameraRecord() {
         recordButton.classList.add('camera-record-story-recording');
         recordButtonStop.classList.add('camera-record-story-stop-show');
         recordTimelineMove.classList.add('camera-timeline-move-start');
+        cameraTimeline.classList.remove('camera-timeline-hide');
         cameraStyle.style.opacity = "0";
         setTimeout(() => cameraStyle.style.display = 'none', 250)
         recordStatus = true;
@@ -118,7 +123,6 @@ function changeStyle() {
         cameraStyleStory = false;
 
         cameraRecordStory.classList.remove('camera-record-story-show');
-        cameraTimeline.style.opacity = '0';
 
         liveStart.style.display = 'flex';
         liveStart.classList.add('live-start-show');
@@ -129,7 +133,6 @@ function changeStyle() {
         cameraStyleStory = true;
 
         cameraRecordStory.classList.add('camera-record-story-show');
-        cameraTimeline.style.opacity = '1';
 
         liveStart.classList.remove('live-start-show');
         setTimeout(() => liveStart.style.display = 'none', 250);
@@ -212,9 +215,11 @@ function closeCreateStory() {
 function publishStory() {
     confirmationDialog("Are you sure you want to publish a story?").then((value) => {
         if (value) {
+            var videoResultDuration = document.querySelector('.camera-video-result').duration;
             var file = new File(recordedChunks, 'video.mp4', { type: 'video/mp4' });
             var formData = new FormData();
             formData.append('video_content', file);
+            formData.append('video_duration', videoResultDuration);
 
             $.ajax({
                 url: '/api/v1/story/create/',

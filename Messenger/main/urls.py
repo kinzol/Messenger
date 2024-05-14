@@ -18,7 +18,8 @@ urlpatterns = [
     path('create/post/', PostCreateView.as_view(), name='create_post'),
 
     # Story
-    path('story/create/', StoryCreateView.as_view(), name='story_create'),
+    path('create/story/', StoryCreateView.as_view(), name='story_create'),
+    path('story/<slug:username>/', StoryView.as_view(), name='story'),
 
     # Activity
     path('activity/', ActivityView.as_view(), name='activity'),
@@ -34,11 +35,13 @@ urlpatterns = [
 
     # API
     re_path(r'^api/v1/post/$', PostAPIView.as_view()),
-    re_path(r'^api/v1/post/file/$', PostFileAPIView.as_view()),
     re_path(r'^api/v1/post/comment/$', PostCommentAPIView.as_view()),
+    path('api/v1/post/recommendation/', PostRecommendationAPIView.as_view()),
+
     re_path(r'^api/v1/user/list/$', UserListAPIView.as_view()),
     re_path(r'^api/v1/search/$', SearchAPIView.as_view()),
     re_path(r'^api/v1/follow/$', ProfileFollowAPIView.as_view()),
+
     re_path(r'^api/v1/notification/$', ProfileNotificationAPIView.as_view()),
     re_path(r'^api/v1/activity/$', ActivityAPIView.as_view()),
     path('api/v1/story/create/', StoryCreateAPIView.as_view()),

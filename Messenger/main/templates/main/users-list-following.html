@@ -8,14 +8,14 @@
 {% block body %}
 
 <div class="userlist">
-    <span class="userlist-title">{{ user.username }}'s following</span>
+    <span class="userlist-title">{{ r_user.username }}'s following</span>
     <div class="userlist-line"></div>
 
     {% if users|length == 0%}
         <span class="nothing">Nothing here</span>
     {% else %}
     
-    <span class="userlist-total">Total Users: {{ user.profile.amount_following }}</span>
+    <span class="userlist-total">Total Users: {{ r_user.profile.amount_following }}</span>
 
     {% for user in users %}
         <div class="userlist-user">
@@ -44,7 +44,7 @@
 </div>
 
 <script>
-    var user_id = '{{ user.pk  }}';
+    var user_id = '{{ r_user.pk  }}';
     var apiType = 'following';
     var svgVerify = "{% static 'main/svg/verify.svg' %}";
     var post_id = '0';

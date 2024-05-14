@@ -9,7 +9,7 @@
 {% block body %}
 
 
-{% with post.postfile_set.all as post_files %}
+
 <article data-id="{{ post.pk }}" class="mc-feed-article">
 
     <div data-id="{{ post.pk }}" class="mc-feed-article-share-container">
@@ -60,24 +60,24 @@
         </div>
     </div>
 
-    {% if post_files|length == 0 %}
+    {% if post.postfile_set.all|length == 0 %}
         <p class="mc-feed-article-description-solo">{{ post.content }}</p>
     {% else %}
         <p class="mc-feed-article-description">{{ post.content }}</p>
     {% endif %}
 
     <div class="mc-feed-article-hashtags">
-        {% for tag in post.tags %}
-            <span>#{{ tag }}</span>
+        {% for tag in post.tags.all %}
+            <span>#{{ tag.tag }}</span>
         {% endfor %}
     </div>
 
-    {% if post_files|length != 0 %}
-        {% if post_files|length > 1 %}
+    {% if post.postfile_set.all|length != 0 %}
+        {% if post.postfile_set.all|length > 1 %}
             <div class="mc-feed-article-pictures-container">
                 <span class="mc-feed-article-scrollable">Scrollable</span>
                 <div class="mc-feed-article-pictures-content">
-                    {% for file in post_files %}
+                    {% for file in post.postfile_set.all %}
                         {% if file.get_extension == 'video' %}
                             <video controls preload="metadata" class="mc-feed-article-article-img">
                                 <source src="{{ file.file.url }}">
@@ -88,8 +88,8 @@
                     {% endfor %}
                 </div>
             </div>
-        {% elif post_files|length == 1 %}
-            {% for file in post_files %}
+        {% elif post.postfile_set.all|length == 1 %}
+            {% for file in post.postfile_set.all %}
                 {% if file.get_extension == 'video' %}
                     <video controls preload="metadata" class="mc-feed-article-article-img">
                         <source src="{{ file.file.url }}">
@@ -126,7 +126,6 @@
         <span class="mc-feed-article-time">{{ post.time_create|date:'Y-m-d\TH:i:s.uO' }}</span>
     </div>
 
-    {% endwith %}
 </article>
 
     <div class="post-comments">

@@ -1,24 +1,25 @@
-function createPost(post, files) {
+function createPost(post) {
     var articleContainer = document.querySelector('.mc-feed-article-container');
     var articleContainerMini = document.querySelector('.mc-feed-article-container-mini');
     var mcFeedArticleStory = document.querySelector('.mc-feed-article-story');
     var result = '';
     var resultMini = '';
+    var files = post.files
 
     resultMini += `<a href="/post/${post.pk}" class="mc-feed-article-mini">`
     if (files.length == 1) {
-        if (files[0].extension == 'video') {
+        if (files[0]['extension'] == 'video') {
             resultMini += `<img class="mc-feed-article-mini-svg" src="${svgPlay}" alt="svg-image">
-                       <video class="mc-feed-article-mini-img" src="${files[0].file}"></video>`;
-        } else if (files[0].extension == 'image') {
-            resultMini += `<img class="mc-feed-article-mini-img" src="${files[0].file}" alt="article-photo">`;
+                       <video class="mc-feed-article-mini-img" preload="metadata" src="${files[0]['file_url']}"></video>`;
+        } else if (files[0]['extension'] == 'image') {
+            resultMini += `<img class="mc-feed-article-mini-img" src="${files[0]['file_url']}" alt="article-photo">`;
         };
     } else if (files.length > 1) {
         resultMini += `<img class="mc-feed-article-mini-svg" src="${svgPhotos}" alt="svg-image">`;
-        if (files[0].extension == 'video') {
-            resultMini += `<video class="mc-feed-article-mini-img" src="${files[0].file}"></video>`;
-        } else if (files[0].extension == 'image') {
-            resultMini += `<img class="mc-feed-article-mini-img" src="${files[0].file}" alt="article-photo">`;
+        if (files[0]['extension'] == 'video') {
+            resultMini += `<video class="mc-feed-article-mini-img" preload="metadata" src="${files[0]['file_url']}"></video>`;
+        } else if (files[0]['extension'] == 'image') {
+            resultMini += `<img class="mc-feed-article-mini-img" src="${files[0]['file_url']}" alt="article-photo">`;
         };
     } else if (files.length == 0) {
         resultMini += `<img class="mc-feed-article-mini-svg" src="${svgText}" alt="svg-image">
@@ -90,7 +91,7 @@ function createPost(post, files) {
 
     result += '<div class="mc-feed-article-hashtags">';
 
-    post.tags.split(' ').forEach((tag) => {
+    post.tags.forEach((tag) => {
         result += `<span>#${tag}</span>`;
     });
 
@@ -103,23 +104,23 @@ function createPost(post, files) {
                 <div class="mc-feed-article-pictures-content">`;
 
             files.forEach((file) => {
-                if (file.extension == 'video') {
+                if (file['extension'] == 'video') {
                     result += `<video controls preload="metadata" class="mc-feed-article-article-img">
-                        <source src="${file.file}">
+                        <source src="${file['file_url']}">
                         </video>`;
-                } else if (file.extension == 'image') {
-                    result += `<img class="mc-feed-article-article-img" src="${file.file}"  onclick="OnFullScreenPhoto(this)" alt="image">`;
+                } else if (file['extension'] == 'image') {
+                    result += `<img class="mc-feed-article-article-img" src="${file['file_url']}"  onclick="OnFullScreenPhoto(this)" alt="image">`;
                 };
             });
             result += '</div></div>';
 
         } else if (files.length == 1) {
-            if (files[0].extension == 'video') {
+            if (files[0]['extension'] == 'video') {
                 result += `<video controls preload="metadata" class="mc-feed-article-article-img">
-                    <source src="${files[0].file}">
+                    <source src="${files[0]['file_url']}">
                     </video>`;
-            } else if (files[0].extension == 'image') {
-                result += `<img class="mc-feed-article-article-img" src="${files[0].file}"  onclick="OnFullScreenPhoto(this)" alt="image">`;
+            } else if (files[0]['extension'] == 'image') {
+                result += `<img class="mc-feed-article-article-img" src="${files[0]['file_url']}"  onclick="OnFullScreenPhoto(this)" alt="image">`;
             };
         };
     };

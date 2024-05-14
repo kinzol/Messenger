@@ -126,36 +126,36 @@ function removeTag(element) {
 };
 
 
-const dropZone = document.body;
-if (dropZone) {
-    var postDrag = document.querySelector('.post-drag');
+// const dropZone = document.body;
+// if (dropZone) {
+//     var postDrag = document.querySelector('.post-drag');
   
-    dropZone.addEventListener("dragenter", function(e) {
-        e.preventDefault();
-    });
+//     dropZone.addEventListener("dragenter", function(e) {
+//         e.preventDefault();
+//     });
   
-    dropZone.addEventListener("dragover", function(e) {
-        e.preventDefault();
-        postDrag.classList.add('post-drag-show');
-    });
+//     dropZone.addEventListener("dragover", function(e) {
+//         e.preventDefault();
+//         postDrag.classList.add('post-drag-show');
+//     });
   
-    dropZone.addEventListener("dragleave", function(e) {
-        e.preventDefault();
-        postDrag.classList.remove('post-drag-show');
-    });
+//     dropZone.addEventListener("dragleave", function(e) {
+//         e.preventDefault();
+//         postDrag.classList.remove('post-drag-show');
+//     });
 
-    dropZone.addEventListener("drop", function(e) {
-        e.preventDefault();
-        postDrag.classList.remove('post-drag-show');
-    });
+//     dropZone.addEventListener("drop", function(e) {
+//         e.preventDefault();
+//         postDrag.classList.remove('post-drag-show');
+//     });
   
-    // Это самое важное событие, событие, которое дает доступ к файлам
-    postDrag.addEventListener("drop", function(e) {
-        e.preventDefault();
-        var fileContent = Array.from(e.dataTransfer.files);
-        addNewFile(fileContent[0]);
-    });
-}
+//     // Это самое важное событие, событие, которое дает доступ к файлам
+//     postDrag.addEventListener("drop", function(e) {
+//         e.preventDefault();
+//         var fileContent = Array.from(e.dataTransfer.files);
+//         addNewFile(fileContent[0]);
+//     });
+// }
 
 var sendData = false;
 function submitForm() {

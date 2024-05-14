@@ -23,6 +23,16 @@
     max-height: 100%;
 }
 
+.camera-video-background,
+.story-video-background {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(200px);
+}
+
 .start-video-svg {
     transition: all 100ms ease-in-out;
     height: 50px;
@@ -55,7 +65,7 @@
     font-size: 20px;
     font-weight: 500;
     padding: 5px;
-    border-radius: 20px;
+    border-radius: 30px;
     z-index: 2;
     text-wrap: nowrap;
     color: #ffffff;
@@ -104,12 +114,12 @@
 }
 
 .story-timeline-underviewed {
-    background-color: #c7c7c7;
+    background-color: #727272;
 }
 
 
 .story-timeline-now {
-    max-width: 0%;
+    width: 0%;
     box-shadow: none;
 }
 
@@ -151,9 +161,11 @@
 }
 
 .story-info-time {
+    transition: all 250ms ease-in-out;
     font-size: 15px;
     color: #ffffffbf;
     -webkit-text-fill-color: #ffffffbf;
+    opacity: 0;
 }
 
 .story-info-container {
@@ -354,6 +366,7 @@
     display: flex;
     flex-direction: row;
     display: none;
+    cursor: pointer;
 }
 
 .control-stories-previous,
@@ -394,4 +407,32 @@
     .story-share-user-userinfo-name {
         font-size: 15px
     }
+}
+
+.count-viewers {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: fit-content;
+    height: fit-content;
+    margin: auto 20px 20px auto;
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 17px;
+    font-weight: 500;
+    background: #0000005c;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.count-viewers-svg {
+    width: 25px;
+    height: 25px;
 }

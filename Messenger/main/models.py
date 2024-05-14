@@ -68,12 +68,16 @@ class ProfileNotification(models.Model):
 
 
 # Post models
+class PostTag(models.Model):
+    tag = models.CharField(max_length=255)
+
+
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=255, blank=True, null=True)
     time_create = models.DateTimeField(auto_now_add=True)
 
-    tags = models.CharField(max_length=255, blank=True, null=True)
+    tags = models.ManyToManyField(PostTag, related_name='post_tags')
     amount_likes = models.IntegerField(default=0)
     amount_comments = models.IntegerField(default=0)
 
@@ -124,6 +128,5 @@ class Story(models.Model):
     view_count = models.IntegerField(default=0)
     video_content = models.FileField(upload_to=story_file_directory_path, validators=[FileExtensionValidator(
                     allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
+    video_content_length = models.CharField(max_length=255, default=0)
     time_create = models.DateTimeField(auto_now_add=True)
-
-

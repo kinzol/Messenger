@@ -1,17 +1,17 @@
-var outset = 12;
+var offset = 12;
 var dataLoading = true;
 
 window.onscroll = function(ev) {
     if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
 
         dataLoading = false;
-        outset += 12;
+        offset += 12;
 
         $.ajax({
             url: '/api/v1/activity/',
             method: 'get',
             dataType: 'json',
-            data: {outset: outset, activity_type: 'comment'},
+            data: {offset: offset, activity_type: 'comment'},
             success: function(data){
                 createComment(data)
             }

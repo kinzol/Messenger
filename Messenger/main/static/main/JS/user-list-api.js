@@ -1,5 +1,5 @@
 var dataLoading = true;
-var outset = 12;
+var offset = 12;
 window.onscroll = function(ev) {
     if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
 
@@ -9,7 +9,7 @@ window.onscroll = function(ev) {
             url: '/api/v1/user/list/',
             method: 'get',
             dataType: 'json',
-            data: {outset: outset, user_id: user_id, type: apiType, post_id: post_id},
+            data: {offset: offset, user_id: user_id, type: apiType, post_id: post_id},
             success: function(data){
                 dataProcessing(data);
             }
@@ -52,7 +52,7 @@ function dataProcessing(users) {
     userlist.innerHTML += result;
     
     dataLoading = true;
-    outset += 12;
+    offset += 12;
 }
 
 

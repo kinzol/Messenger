@@ -17,10 +17,11 @@ class SettingsForm(forms.ModelForm):
 class PostCreateForm(forms.ModelForm):
     files_content = forms.FileField(widget=forms.FileInput(attrs={'multiple': '', 'accept': 'image/*, video/*',
                                                                   'onchange': 'openFile()'}), required=False)
+    tags = forms.CharField()
 
     class Meta:
         model = Post
-        fields = ('content', 'tags')
+        fields = ('content',)
 
 
 class LoginUserForm(AuthenticationForm):
