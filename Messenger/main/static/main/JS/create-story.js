@@ -222,7 +222,7 @@ function publishStory() {
             formData.append('video_duration', videoResultDuration);
 
             $.ajax({
-                url: '/api/v1/story/create/',
+                url: '/api/v1/story/',
                 method: 'post',
                 dataType: 'json',
                 processData: false,

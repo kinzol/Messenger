@@ -20,12 +20,17 @@
 
     <img class="mc-profile-user-background-img" src="{{ user.profile.background_avatar.url }}" alt="{{ user.username }}'s avatar">
     <div class="mc-profile-user-avatar">
-        <div class="mc-profile-user-avatar-story">
-            <a href="#" class="mc-profile-user-avatar-story-a">
-                <img class="mc-profile-user-avatar-story-img" src="{{ user.profile.avatar.url }}"  alt="{{ user.username }}'s avatar">
-            </a>
-        </div>
-        <!-- <img class="mc-profile-user-avatar-img" src="{{ user.profile.avatar.url }}" onclick="OnFullScreenPhoto(this)" alt="{{ user.username }}'s avatar"> -->
+
+        {% if user.viewed_story_exists %}
+            <div class="mc-profile-user-avatar-story">
+                <a href="#" class="mc-profile-user-avatar-story-a">
+                    <img class="mc-profile-user-avatar-story-img" src="{{ user.profile.avatar.url }}"  alt="{{ user.username }}'s avatar">
+                </a>
+            </div>
+        {% else %}
+            <img class="mc-profile-user-avatar-img" src="{{ user.profile.avatar.url }}" onclick="OnFullScreenPhoto(this)" alt="{{ user.username }}'s avatar">
+        {% endif %}
+
         {% if user.profile.online_status %}
             <div class="mc-profile-user-avatar-online" title="online"></div>
         {% else %}
@@ -206,12 +211,16 @@
                 </div>
             
                 <div class="mc-feed-article-userinfo">
-                    <a href="#">
-                        <div class="mc-feed-article-story">
-                            <img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar">
-                        </div>
-                    </a>
-                    <!-- <a href="{% url 'profile' username=post.author.username %}"><img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar"></a> -->
+                    {% if user.viewed_story_exists %}
+                        <a href="{% url 'story' username=user.username%}">
+                            <div class="mc-feed-article-story">
+                                <img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar">
+                            </div>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'profile' username=post.author.username %}"><img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar"></a>
+                    {% endif %}
+
                     <a href="{% url 'profile' username=post.author.username %}"><h2 class="mc-feed-article-username">{{ post.author.profile.full_name }}</h2></a>
 
                     {% if post.author.profile.verify %}

@@ -12,33 +12,19 @@
     <div class="selection-menu-line"></div>
     <div class="selection-menu-container">
 
-        <a href="#" class="ccc-story-container">
+        {% for story in stories %}
+
+        <a href='/story/{{ user_profile.username }}/?story_id={{story.pk}}&activity=True&redirect_to={% url "activity_stories" %}' class="ccc-story-container">
             <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
             <div class="ccc-story-header">
-                <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's image">
-                <span>author</span>
+                <img class="ccc-story-header-img" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s image">
+                <span>{{ user_profile.profile.full_name }}</span>
             </div>
-            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
+            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}" alt="shared-story">
         </a>
 
-        <a href="#" class="ccc-story-container">
-            <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
-            <div class="ccc-story-header">
-                <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's image">
-                <span>author</span>
-            </div>
-            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
-        </a>
+        {% endfor %}
 
-        <a href="#" class="ccc-story-container">
-            <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
-            <div class="ccc-story-header">
-                <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's image">
-                <span>author</span>
-            </div>
-            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
-        </a>
-        
     </div>
 
 </div>

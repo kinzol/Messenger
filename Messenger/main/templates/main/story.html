@@ -53,7 +53,7 @@
         <div class="story-menu-button" onclick="storyCopyLink()">Copy link</div>
         <div class="story-menu-button" onclick="showShare()">Share</div>
         {% if stories_author.username == user_profile.username %}
-            <div class="story-menu-button story-menu-button-red">Delete</div>
+            <div class="story-menu-button story-menu-button-red" onclick="deleteStory()">Delete</div>
         {% endif %}
     </div>
 

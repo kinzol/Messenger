@@ -35,6 +35,7 @@ urlpatterns = [
     path('registration/', RegisterUserView.as_view(), name='register'),
 
     # API
+    re_path(r'^api/v1/profile/$', ProfileAPIView.as_view()),
     re_path(r'^api/v1/post/$', PostAPIView.as_view()),
     re_path(r'^api/v1/post/comment/$', PostCommentAPIView.as_view()),
     path('api/v1/post/recommendation/', PostRecommendationAPIView.as_view()),
@@ -45,6 +46,6 @@ urlpatterns = [
 
     re_path(r'^api/v1/notification/$', ProfileNotificationAPIView.as_view()),
     re_path(r'^api/v1/activity/$', ActivityAPIView.as_view()),
-    path('api/v1/story/create/', StoryCreateAPIView.as_view()),
+    path('api/v1/story/', StoryAPIView.as_view()),
     re_path(r'^api/v1/home/stories/$', HomeStoriesAPIView.as_view()),
 ]

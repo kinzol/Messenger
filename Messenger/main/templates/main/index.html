@@ -75,9 +75,8 @@
                 </div>
             
                 <div class="mc-feed-article-userinfo">
-                    {{post.viewed_story_exists}}
                     {% if post.viewed_story_exists %}
-                        <a href="#">
+                        <a href="{% url 'story' username=post.author.username %}">
                             <div class="mc-feed-article-story">
                                 <img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar">
                             </div>
@@ -94,6 +93,8 @@
                     <div data-id="{{ post.pk }}" class="mc-feed-article-menu">
                         {% if post.author == user_profile %}
                             <div data-id="{{ post.pk }}" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>
+                        {% else %}
+                            <div data-id="{{ post.pk }}" class="mc-feed-article-menu-a" onclick="articleNotInterested(this)">Not Interested</div>
                         {% endif %}
                         <div data-id="{{ post.pk }}" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div>
                     </div>

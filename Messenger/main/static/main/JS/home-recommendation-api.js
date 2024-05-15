@@ -17,7 +17,7 @@ window.onscroll = function(ev) {
                 }
             });
         }
-    }, 500);
+    }, 200);
 };
 
 
@@ -39,7 +39,6 @@ function prepData(data) {
 
 
 function createPostRec(post) {
-    var story = false;
     var result = '';
     var files = post.files
 
@@ -75,7 +74,7 @@ function createPostRec(post) {
             </div>
         </div>`;
 
-    if (story) {
+    if (post.viewed_story_exists) {
         result += `<div class="mc-feed-article-userinfo">
             <a href="/profile/${post.author}">
                 <div class="mc-feed-article-story">
@@ -98,6 +97,8 @@ function createPostRec(post) {
 
     if (post.author == username) {
         result += `<div data-id="${post.pk}" class="mc-feed-article-menu-a mc-feed-article-menu-a-red" onclick="articleDelete(this)">Delete</div>`;
+    } else {
+        result += `<div data-id="${post.pk}" class="mc-feed-article-menu-a" onclick="articleNotInterested(this)">Not Interested</div>`;
     };
 
     result += '<div data-id="${post.pk}" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div></div></div>';

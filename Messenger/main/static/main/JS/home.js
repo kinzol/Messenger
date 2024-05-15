@@ -303,6 +303,16 @@ function articleNotInterested(element) {
     setTimeout(() => {
         getArticle.innerHTML = '<div class="mc-feed-article-not-interested">We will show less of content like this</div>';
     }, 500);
+
+    var mcFeedArticleHashtags = getArticle.querySelector('.mc-feed-article-hashtags');
+
+    $.ajax({
+        url: '/api/v1/profile/',
+        method: 'post',
+        dataType: 'json',
+        data: {tags: mcFeedArticleHashtags.textContent.replace(/\s+/g, '')},
+    });
+
 };
 
 

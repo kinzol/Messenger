@@ -56,7 +56,7 @@ function createPost(post) {
             </div>
         </div>`;
 
-    if (mcFeedArticleStory) {
+    if (post.viewed_story_exists) {
         result += `<div class="mc-feed-article-userinfo">
             <a href="/profile/${post.author}">
                 <div class="mc-feed-article-story">

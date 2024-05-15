@@ -511,7 +511,7 @@
 
 .mc-feed-article:hover .mc-feed-article-menu-img {
     transition: all 550ms ease-in-out;
-    opacity: 0.4;
+    opacity: 0.8;
 }
 
 .mc-feed-article-time {
@@ -519,8 +519,8 @@
     opacity: 0;
     margin-left: auto;
     margin-right: 5px;
-    color: #ffffff5c;
-    -webkit-text-fill-color: #ffffff5c;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
     font-weight: 500;
 }
 

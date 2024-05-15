@@ -31,100 +31,76 @@ from .serializers import *
 
 # Mixins
 class RecommendationMixin:
-
-    def get_follow_recommendations(self):
-        posts = Post.objects.filter(author=OuterRef('profile')).order_by().values('author')
-        user_following = ProfileFollow.objects.filter(user=self.request.user).annotate(
-            num_posts=Subquery(posts.annotate(c=Count('id')).values('c')))
-        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('profile'))
-
-        user_following = user_following.filter(num_posts__gte=2).annotate(
-            is_private=Exists(Profile.objects.filter(user=OuterRef('profile'), private=True)),
-            is_follower=Exists(is_follower),
-        ).filter(
-            Q(is_private=False) | Q(is_follower=True)
-        ).order_by('?')[:2].values_list('profile', flat=True)
-
-        latest_post = Post.objects.filter(author=OuterRef('author')).order_by('?')[:3]
-
-        posts = Post.objects.filter(
-            id__in=Subquery(latest_post.values('id')),
-            author__in=Subquery(user_following),
-        ).annotate(
-            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            # viewed_story_exists=Exists(Story.objects.filter(
-            #     author=OuterRef('author'),
-            #     time_create__gte=timezone.now() - datetime.timedelta(days=1)
-            # ))
-        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')
-
-        return posts
-
-    def get_for_user_recommendations(self):
-        profile_recommendations = self.request.user.profile.recommendations.split(' ')
-        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
-
-        posts = Post.objects.filter(
-            Q(**{f'tags__tag__in': profile_recommendations})
-        ).annotate(
-            is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
-            is_follower=Exists(is_follower),
-            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            # viewed_story_exists=Exists(Story.objects.filter(
-            #     author=OuterRef('author'),
-            #     time_create__gte=timezone.now() - datetime.timedelta(days=1)
-            # ))
-        ).filter(
-            Q(is_private=False) | Q(is_follower=True)
-        ).select_related('author__profile').prefetch_related('tags', 'postfile_set').order_by('?').distinct()[:3]
-
-        # .viewers.through.objects.filter(
-        #     story_id=OuterRef('pk'), user_id=self.request.user.id
-        # ))
-#FIXME: Reporter.objects.update(stories_filed=F("stories_filed") + 1) update some info
-        return posts
-
-    def get_random_recommendations(self):
-        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
-
-        posts = Post.objects.annotate(
-            is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
-            is_follower=Exists(is_follower),
-            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            # viewed_story_exists=Exists(Story.objects.filter(
-            #     author=OuterRef('author'),
-            #     time_create__gte=timezone.now() - datetime.timedelta(days=1)
-            # ))
-        ).filter(
-            Q(is_private=False) | Q(is_follower=True)
-        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')[:5]
-
-
-        # stor_check = Subquery(Story.objects.filter(
-        #     author__in=set(post.author for post in posts)
-        # ).order_by('-pk').first().viewers.through.objects.filter(
-        #     story_id=OuterRef('pk'), user_id=self.request.user.id
-        # ).values('pk'))
-        # print(stor_check)
-
-
-        return posts
-
     def generate_recommendations(self):
         follow_recommendation = self.get_follow_recommendations()
         for_user_recommendations = self.get_for_user_recommendations()
         random_recommendations = self.get_random_recommendations()
 
-        if (len(follow_recommendation) + len(for_user_recommendations)) > 10:
-            recommendations = [item for item in chain(follow_recommendation, for_user_recommendations,
-                                                      random_recommendations)]
-        else:
-            recommendations = [item for item in chain(for_user_recommendations, random_recommendations)]
+        recommendations = list(chain(follow_recommendation, for_user_recommendations, random_recommendations))
         random.shuffle(recommendations)
+
         return recommendations
+
+    def get_follow_recommendations(self):
+        user_following = ProfileFollow.objects.filter(user=self.request.user).values('profile')
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('profile'))
+
+        latest_post = Post.objects.filter(author=OuterRef('author')).order_by('?')[:3]
+
+        follow_recommendations = Post.objects.filter(
+            author__in=Subquery(user_following),
+            id__in=Subquery(latest_post.values('id')),
+            author__profile__private=False,
+        ).annotate(
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            viewed_story_exists=Exists(Story.objects.filter(
+                author=OuterRef('author'),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ))
+        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')[:2]
+
+        return follow_recommendations
+
+    def get_for_user_recommendations(self):
+        profile_recommendations = self.request.user.profile.recommendations.split(' ')
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
+
+        for_user_recommendations = Post.objects.filter(
+            Q(tags__tag__in=profile_recommendations),
+            author__profile__private=False,
+        ).annotate(
+            is_follower=Exists(is_follower),
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            viewed_story_exists=Exists(Story.objects.filter(
+                author=OuterRef('author'),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ))
+        ).filter(
+            Q(is_follower=True) | Q(author__profile__private=False)
+        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')[:3]
+
+        return for_user_recommendations
+
+    def get_random_recommendations(self):
+        is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('author'))
+
+        random_recommendations = Post.objects.filter(
+            author__profile__private=False,
+        ).annotate(
+            is_follower=Exists(is_follower),
+            like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            viewed_story_exists=Exists(Story.objects.filter(
+                author=OuterRef('author'),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ))
+        ).filter(
+            Q(is_follower=True) | Q(author__profile__private=False)
+        ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')[:5]
+
+        return random_recommendations
 
 
 class StoryMixin:
@@ -245,7 +221,11 @@ class ProfileView(DataMixin, LoginRequiredMixin, DetailView):
             username=username
         ).annotate(
             is_follower=Exists(ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('pk'))),
-            is_following=Exists(ProfileFollow.objects.filter(profile=OuterRef('pk'), user=self.request.user))
+            is_following=Exists(ProfileFollow.objects.filter(profile=OuterRef('pk'), user=self.request.user)),
+            viewed_story_exists=Exists(Story.objects.filter(
+                author=OuterRef('pk'),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ))
         ).select_related('profile').first()
 
         return user
@@ -590,12 +570,12 @@ class ActivityStoriesView(DataMixin, LoginRequiredMixin, ListView):
     login_url = 'login'
 
     def get_object(self):
-        comments = PostComment.objects.filter(user=self.request.user).order_by('-pk')[:12]
-        return comments
+        stories = Story.objects.filter(author=self.request.user).order_by('-pk')[:6]
+        return stories
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title=f'Stories history', comments=self.get_object())
+        c_def = self.get_user_context(title=f'Stories history', stories=self.get_object())
         return {**context, **c_def}
 
 
@@ -657,7 +637,11 @@ class PostAPIView(APIView):
             author=author
         ).annotate(
             like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            viewed_story_exists=Exists(Story.objects.filter(
+                author=OuterRef('author'),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ))
         ).order_by('-pk').select_related('author__profile').prefetch_related('tags', 'postfile_set')[offset:offset+12]
 
         return Response({'posts': PostSerializer(posts, many=True).data})
@@ -793,10 +777,24 @@ class SearchAPIView(APIView):
         users = User.objects.filter(
             Q(username__icontains=query) | Q(profile__full_name__icontains=query)
         ).annotate(
-            is_follow = Exists(ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('pk')))
+            is_follow=Exists(ProfileFollow.objects.filter(profile=self.request.user, user=OuterRef('pk')))
         ).select_related('profile')[offset:offset+12]
 
         return Response({'users': UserListSerializer(users, many=True).data})
+
+
+class ProfileAPIView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        profile = self.request.user.profile
+        recommendation = profile.recommendations.lower().split(' ')
+        tags = request.data.get('tags').lower().split('#')[1:]
+
+        recommendation = [item for item in recommendation if item not in tags]
+        profile.recommendations = ' '.join(recommendation)
+
+        profile.save()
+        return Response({'status': True})
 
 
 class ProfileFollowAPIView(APIView):
@@ -846,7 +844,7 @@ class ProfileNotificationAPIView(APIView):
         return Response({'notifications': ProfileNotificationSerializer(notifications, many=True).data})
 
 
-class StoryCreateAPIView(APIView):
+class StoryAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         video_content = request.data.get('video_content')
@@ -854,6 +852,17 @@ class StoryCreateAPIView(APIView):
         Story.objects.create(author=self.request.user, video_content=video_content,
                              video_content_length=video_content_length)
         return Response({'status': True})
+
+    def delete(self, request, *args, **kwargs):
+        story_id = int(request.data.get('story_id'))
+        story = Story.objects.filter(pk=story_id, author=self.request.user)
+
+        if story:
+            story.delete()
+            return Response({'status': True})
+        else:
+            return Response({'status': False})
+
 
 class ActivityAPIView(APIView):
 
@@ -946,7 +955,7 @@ class HomeStoriesAPIView(StoryMixin, APIView):
             'stories': HomeStoriesSerializer(stories, many=True).data,
             'is_viewed_stories': is_viewed_stories
         })
-
+#FIXME: Reporter.objects.update(stories_filed=F("stories_filed") + 1) update some info
 
 class PostRecommendationAPIView(RecommendationMixin, APIView):
 

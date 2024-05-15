@@ -179,3 +179,47 @@ function timeAgoOrFullDate(dateTimeString) {
     }
 }
 
+
+// Перед каждым AJAX-запросом включаем CSRF токен
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function deleteStory() {
+    confirmationDialog("Are you sure you want to delete your story?").then((value) => {
+        if (value) {
+            $.ajax({
+                url: '/api/v1/story/',
+                method: 'delete',
+                dataType: 'json',
+                data: {story_id: story_id},
+                success: function(data){
+                    if (data.status == true) {
+                        notification(1, 'Story successfully deleted!')
+                        setTimeout(() => {window.location.href = window.location.origin;}, 1500)
+                    } else {
+                        notification(3, 'An error occurred while deleting story!')
+                    };
+                }
+            });
+        }
+    });
+};

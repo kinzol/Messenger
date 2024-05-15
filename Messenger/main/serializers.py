@@ -12,6 +12,7 @@ class PostSerializer(serializers.Serializer):
     amount_comments = serializers.IntegerField()
     like_exists = serializers.BooleanField()
     bookmark_exists = serializers.BooleanField()
+    viewed_story_exists = serializers.BooleanField()
 
     author_full_name = serializers.SerializerMethodField()
     author_verify = serializers.SerializerMethodField()
