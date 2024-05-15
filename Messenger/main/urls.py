@@ -20,6 +20,7 @@ urlpatterns = [
     # Story
     path('create/story/', StoryCreateView.as_view(), name='story_create'),
     path('story/<slug:username>/', StoryView.as_view(), name='story'),
+    path('live/<slug:username>/', LiveView.as_view(), name='live'),
 
     # Activity
     path('activity/', ActivityView.as_view(), name='activity'),

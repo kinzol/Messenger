@@ -1,40 +1,53 @@
 var dataLoading = true;
+var debounceTimer;
 
 window.onscroll = function(ev) {
-    if (((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) && dataLoading) {
+    if (debounceTimer) clearTimeout(debounceTimer);
 
-        dataLoading = false;
+    debounceTimer = setTimeout(function() {
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight && dataLoading) {
+            dataLoading = false;
 
-        $.ajax({
-            url: '/api/v1/post/recommendation/',
-            method: 'get',
-            dataType: 'json',
-            success: function(data){
-                prepData(data)
-            }
-        });
-        
-    }
+            $.ajax({
+                url: '/api/v1/post/recommendation/',
+                method: 'get',
+                dataType: 'json',
+                success: function(data){
+                    prepData(data);
+                }
+            });
+        }
+    }, 500);
 };
 
 
 function prepData(data) {
-    if (data.posts.length == 0) {return};
+    if (data.posts.length == 0) {
+        return;
+    }
 
-    data.posts.forEach((post) => {
-        createPostRec(post);
+    var fragment = document.createDocumentFragment();
+    data.posts.slice(0, 12).forEach((post) => {
+        var article = createPostRec(post);
+        fragment.appendChild(article);
     });
+
+    document.querySelector('.mc-feed-article-container').appendChild(fragment);
+
     dataLoading = true;
-};
+}
 
 
 function createPostRec(post) {
-    var articleContainer = document.querySelector('.mc-feed-article-container');
     var story = false;
     var result = '';
     var files = post.files
 
-    result += `<article data-id="${post.pk}" class="mc-feed-article"> 
+    var article = document.createElement('article');
+    article.className = 'mc-feed-article';
+    article.dataset.id = post.pk;
+
+    result += `
         <div data-id="${post.pk}" class="mc-feed-article-share-container">
             <header class="mc-feed-article-share-header">
                 Share
@@ -44,7 +57,7 @@ function createPostRec(post) {
 
             <div class="mc-feed-article-share-userlist custom-scrollbar">
                 <div class="mc-feed-article-share-user">
-                    <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                    <img class="mc-feed-article-share-user-img" src="" alt="user's avatar">
                     <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
                         <div class="mc-feed-article-share-user-second-name">blg</div>
                     </div></a>
@@ -52,7 +65,7 @@ function createPostRec(post) {
                 </div>
 
                 <div class="mc-feed-article-share-user">
-                    <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+                    <img class="mc-feed-article-share-user-img" src="" alt="user's avatar">
                     <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
                         <div class="mc-feed-article-share-user-second-name">egor</div>
                     </div></a>
@@ -159,7 +172,9 @@ function createPostRec(post) {
         <span class="mc-feed-article-time">${formatDate(post.time_create).format2}</span>
         </div>`;
 
-    articleContainer.innerHTML += result;
+    // articleContainer.innerHTML += result;
+    article.innerHTML = result;
+    return article;
 };
 
 function formatDate(dateTimeString) {

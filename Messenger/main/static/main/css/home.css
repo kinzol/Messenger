@@ -1104,6 +1104,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+.stories-story-live-avatar,
 .stories-story-avatar {
     background: linear-gradient(150deg, #aed5ff, #176cf5);
     background-size: 400% 400%;
@@ -1118,6 +1119,10 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 0;
     margin: auto;
     margin-top: 5px;
+}
+
+.stories-story-live-avatar {
+    background: linear-gradient(150deg, #ffafaf, #ff2a2a);
 }
 
 .stories-story-avatar-img {

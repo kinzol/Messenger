@@ -116,7 +116,7 @@ function storyNext() {
     var baseURL = window.location.href.split('?')[0];
 
     if ((indexStory + 2) > storiesLength) {
-        window.location.href = window.location.origin;
+        setTimeout(() => {window.location.href = window.location.origin;}, 1500)
     } else {
         window.location.href = `${baseURL}?story_id=${stories_id[indexStory + 1]}`;
     }; 
@@ -124,7 +124,6 @@ function storyNext() {
 
 function storyPrevious() {
     var indexStory = stories_id.indexOf(story_id)
-    var storiesLength = stories_id.length
     var baseURL = window.location.href.split('?')[0];
 
     if ((indexStory - 1) < 0) {

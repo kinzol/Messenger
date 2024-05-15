@@ -52,7 +52,11 @@ class RecommendationMixin:
             author__in=Subquery(user_following),
         ).annotate(
             like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            # viewed_story_exists=Exists(Story.objects.filter(
+            #     author=OuterRef('author'),
+            #     time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            # ))
         ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')
 
         return posts
@@ -67,11 +71,19 @@ class RecommendationMixin:
             is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
             is_follower=Exists(is_follower),
             like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            # viewed_story_exists=Exists(Story.objects.filter(
+            #     author=OuterRef('author'),
+            #     time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            # ))
         ).filter(
             Q(is_private=False) | Q(is_follower=True)
         ).select_related('author__profile').prefetch_related('tags', 'postfile_set').order_by('?').distinct()[:3]
 
+        # .viewers.through.objects.filter(
+        #     story_id=OuterRef('pk'), user_id=self.request.user.id
+        # ))
+#FIXME: Reporter.objects.update(stories_filed=F("stories_filed") + 1) update some info
         return posts
 
     def get_random_recommendations(self):
@@ -81,10 +93,23 @@ class RecommendationMixin:
             is_private=Exists(Profile.objects.filter(user=OuterRef('author'), private=True)),
             is_follower=Exists(is_follower),
             like_exists=Exists(PostLike.objects.filter(user=self.request.user, post=OuterRef('pk'))),
-            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk')))
+            bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post=OuterRef('pk'))),
+            # viewed_story_exists=Exists(Story.objects.filter(
+            #     author=OuterRef('author'),
+            #     time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            # ))
         ).filter(
             Q(is_private=False) | Q(is_follower=True)
         ).order_by('?').select_related('author__profile').prefetch_related('tags', 'postfile_set')[:5]
+
+
+        # stor_check = Subquery(Story.objects.filter(
+        #     author__in=set(post.author for post in posts)
+        # ).order_by('-pk').first().viewers.through.objects.filter(
+        #     story_id=OuterRef('pk'), user_id=self.request.user.id
+        # ).values('pk'))
+        # print(stor_check)
+
 
         return posts
 
@@ -484,6 +509,17 @@ class StoryView(DataMixin, LoginRequiredMixin, TemplateView):
         stories = self.get_stories()
         c_def = self.get_user_context(title=f'Story')
         return {**context, **c_def, **stories}
+
+
+class LiveView(DataMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'main/live.html'
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.filter(username=self.kwargs.get('username')).select_related('profile').first()
+        c_def = self.get_user_context(title=f'Live', user=user)
+        return {**context, **c_def}
 
 
 # Activities

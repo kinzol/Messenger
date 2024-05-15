@@ -75,12 +75,16 @@
                 </div>
             
                 <div class="mc-feed-article-userinfo">
-                    <a href="#">
-                        <div class="mc-feed-article-story">
-                            <img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar">
-                        </div>
-                    </a>
-                    <!-- <a href="{% url 'profile' username=post.author.username %}"><img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar"></a> -->
+                    {{post.viewed_story_exists}}
+                    {% if post.viewed_story_exists %}
+                        <a href="#">
+                            <div class="mc-feed-article-story">
+                                <img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar">
+                            </div>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'profile' username=post.author.username %}"><img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar"></a>
+                    {% endif %}
                     <a href="{% url 'profile' username=post.author.username %}"><h2 class="mc-feed-article-username">{{ post.author.profile.full_name }}</h2></a>
 
                     {% if post.author.profile.verify %}
