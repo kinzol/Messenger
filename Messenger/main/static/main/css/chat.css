@@ -262,7 +262,7 @@ a {
     justify-content: center;
 }
 
-.chat-contacts-footer-button-notify {
+.mc-sb-c-links-notify {
     background-color: #f43f38;
     width: 20px;
     height: 20px;
@@ -274,11 +274,13 @@ a {
     justify-content: center;
     top: 0;
     left: 0;
-    z-index: 7;
 	margin-left: 30px;
     max-width: 25px;
-    color: #fff;
+    color: #ffffffde;
+    -webkit-text-fill-color: #ffffffde;
     margin-top: 1px;
+    z-index: 1;
+    font-weight: 500;
 }
 
 .chat-contacts-footer-button {
@@ -1179,7 +1181,7 @@ input[type=file]::-webkit-file-upload-button {
 }
 
 .ccc-story-header {
-    background-color: #00000036;
+    background-color: #00000063;
     display: flex;
     align-items: center;
     position: absolute;

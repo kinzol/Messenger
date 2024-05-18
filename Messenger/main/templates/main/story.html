@@ -18,7 +18,7 @@
 
     <div class="story-top-buttons">
         <img class="story-top-button-img" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-image" onclick="showMenu()">
-        <img class="story-top-button-img" src="{% static 'main/svg/close.svg' %}" onclick="window.location.href = window.location.origin" alt="svg-image">
+        <img class="story-top-button-img" src="{% static 'main/svg/close.svg' %}" onclick="redirectTo()" alt="svg-image">
     </div>
 
     <a class="story-info" href="{% url 'profile' username=stories_author.username %}">
@@ -104,6 +104,7 @@
 
 <script>
     var story_id = '{{ story_id }}';
+    var redirect_to = '{{ redirect_to }}';
 </script>
 
 {% endblock %}

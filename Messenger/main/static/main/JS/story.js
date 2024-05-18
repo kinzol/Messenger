@@ -116,9 +116,9 @@ function storyNext() {
     var baseURL = window.location.href.split('?')[0];
 
     if ((indexStory + 2) > storiesLength) {
-        setTimeout(() => {window.location.href = window.location.origin;}, 1500)
+        setTimeout(() => {redirectTo()}, 1500)
     } else {
-        window.location.href = `${baseURL}?story_id=${stories_id[indexStory + 1]}`;
+        window.location.href = `${baseURL}?story_id=${stories_id[indexStory + 1]}&redirect_to=${redirect_to}`;
     }; 
 };
 
@@ -129,7 +129,7 @@ function storyPrevious() {
     if ((indexStory - 1) < 0) {
         window.location.href = window.location.href;
     } else {
-        window.location.href = `${baseURL}?story_id=${stories_id[indexStory - 1]}`;
+        window.location.href = `${baseURL}?story_id=${stories_id[indexStory - 1]}&redirect_to=${redirect_to}`;
     }; 
 };
 
@@ -214,7 +214,7 @@ function deleteStory() {
                 success: function(data){
                     if (data.status == true) {
                         notification(1, 'Story successfully deleted!')
-                        setTimeout(() => {window.location.href = window.location.origin;}, 1500)
+                        setTimeout(() => {redirectTo()}, 1500)
                     } else {
                         notification(3, 'An error occurred while deleting story!')
                     };
@@ -223,3 +223,8 @@ function deleteStory() {
         }
     });
 };
+
+
+function redirectTo() {
+    window.location.href = `${window.location.origin}${redirect_to}`;
+}

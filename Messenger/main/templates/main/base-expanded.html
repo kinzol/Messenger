@@ -59,7 +59,7 @@
         <a class="m-buttons-link" href="{% url 'home' %}">
             <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
         </a>
-        <a class="m-buttons-link" href="#">
+        <a class="m-buttons-link" href="{% url 'chat' %}">
             <div class="mc-sb-c-links-message">12</div>
             <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
         </a>
@@ -111,7 +111,7 @@
                         <img class="mc-sb-c-links-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
                         Home
                     </a>
-                    <a style="position: relative;" href="#">
+                    <a style="position: relative;" href="{% url 'chat' %}">
                         <div class="mc-sb-c-links-message">12</div>
                         <div class="mc-sb-c-links-a">
                             <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">

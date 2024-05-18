@@ -110,8 +110,21 @@ class ActivityCommentSerializer(serializers.Serializer):
     content = serializers.CharField()
 
 
-class ActivityStorySerializer(serializers.Serializer):
-    pass
+class StorySerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+    author = serializers.CharField()
+    author_full_name = serializers.SerializerMethodField()
+    author_avatar = serializers.SerializerMethodField()
+    video_content_url = serializers.SerializerMethodField()
+
+    def get_author_full_name(self, obj):
+        return obj.author.profile.full_name
+
+    def get_author_avatar(self, obj):
+        return obj.author.profile.avatar.url
+
+    def get_video_content_url(self, obj):
+        return obj.video_content.url
 
 
 class HomeStoriesSerializer(serializers.Serializer):

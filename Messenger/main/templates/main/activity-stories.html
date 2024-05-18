@@ -12,6 +12,10 @@
     <div class="selection-menu-line"></div>
     <div class="selection-menu-container">
 
+        {% if stories|length == 0%}
+            <span class="nothing">Nothing here</span>
+        {% else %}
+
         {% for story in stories %}
 
         <a href='/story/{{ user_profile.username }}/?story_id={{story.pk}}&activity=True&redirect_to={% url "activity_stories" %}' class="ccc-story-container">
@@ -20,13 +24,19 @@
                 <img class="ccc-story-header-img" src="{{ user_profile.profile.avatar.url }}" alt="{{ user_profile.username }}'s image">
                 <span>{{ user_profile.profile.full_name }}</span>
             </div>
-            <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}" alt="shared-story">
+            <video class="ccc-story-img" src="{{ story.video_content.url }}" alt="shared-story" preload="auto"></video>
         </a>
 
         {% endfor %}
+        {% endif %}
 
     </div>
 
 </div>
+
+<script src="{% static 'main/JS/api-activity-story.js' %}"></script>
+<script>
+    var svgStory = "{% static 'main/svg/story.svg' %}";
+</script>
 
 {% endblock %}

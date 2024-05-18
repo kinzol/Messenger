@@ -1,21 +1,343 @@
-.mc-sb-c-links-a {
-    font-size: 20px;
-    color: #fff;
-    align-items: center;
-    display: flex;
-    text-decoration: none;
-    padding: 2px 15px;
-    border-radius: 10px;
-    opacity: 80%;
-    position: relative;
-    transition: all 250ms ease-in-out;
-}
+<!-- <section chat-id="23" class="chat-content-chat">
 
-.m-buttons-link {
-    display: flex;
-    position: relative;
-    min-width: 45px;
-    min-height: 45px;
-    align-items: center;
-    justify-content: center;
-}
+            <div class="ccc-container">
+                <div class="ccc-date">29 September 2023</div>
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-message-text">
+                    <div message-id="4" class="ccc-reactions" onclick="messageReactions(this)">❤️</div>
+                    <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                    <span class="ccc-message-time">23:40</span>
+                    <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-message-text ccc-contrary">
+                    <div class="ccc-reactions">❤️</div>
+                    <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                    <span class="ccc-message-time">23:40</span>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-message-text-reply">
+                    <a href="#" class="ccc-message-reply">
+                        <span class="ccc-message-reply-span">Egor: dfgsdfsdfsdf sdf sdf sdfsdffdg</span>
+                    </a>
+                    <div class="ccc-message-container">
+                        <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-message-text-reply ccc-contrary">
+                    <a href="#" class="ccc-message-reply">
+                        <span class="ccc-message-reply-span">Egor: dfgsdfsdfsdf sdf sdf sdfsdffdg</span>
+                    </a>
+                    <div class="ccc-message-container">
+                        <span class="ccc-message-text-span">Всё привет!!! у кого как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-media">
+                    <div class="ccc-media-info">
+                        23:50
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <img class="ccc-media-content" src="{% static 'main/images/p1.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-media ccc-contrary-media">
+                    <div class="ccc-media-info">
+                        23:50
+                    </div>
+                    <img class="ccc-media-content" src="{% static 'main/images/p1.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-media">
+                    <div class="ccc-media-info">
+                        23:50
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-media ccc-contrary-media">
+                    <div class="ccc-media-info">
+                        23:50
+                    </div>
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-media-text">
+                    <img class="ccc-media-content" src="{% static 'main/images/p2.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-media-text ccc-contrary-media">
+                    <img class="ccc-media-content" src="{% static 'main/images/ilon.jpg' %}" onclick="OnFullScreenPhoto(this)" alt="user's img">
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-media-text">
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-media-text ccc-contrary-media">
+                    <video controls class="ccc-media-content" alt="user's video">
+                        <source src="{% static 'main/images/v1.mp4' %}">
+                    </video>
+                    <div class="ccc-message-container-media">
+                        <span class="ccc-message-text-span">Всё привет!!! у когоdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd как дела! вы делаете?</span>
+                        <span class="ccc-message-time">23:40</span>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-audio-container">
+                    <audio controls src="{% static 'main/sounds/d.mp3' %}"></audio>
+                    <span class="ccc-message-time">23:40</span>
+                    <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    <div class="ccc-reactions">❤️ 👍 😃 😂 💩</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-audio-container ccc-contrary-audio">
+                    <audio controls src="{% static 'main/sounds/d.mp3' %}"></audio>
+                    <span class="ccc-message-time">23:40</span>
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <a class="ccc-file-container" href="{% static 'main/sounds/d.mp3' %}" download>
+                    <img class="ccc-file-img" src="{% static 'main/svg/file.svg'%}" alt="svg-image">
+                    <div class="ccc-file-info">
+                        <span class="ccc-file-info-name">tochno_ne_virus_otvechau.exe</span>
+                        <div class="ccc-file-info-info">
+                            <span class="ccc-file-size">123.4kb</span>
+                            <span class="ccc-message-time">23:40</span>
+                            <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                        </div>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </a>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <a class="ccc-file-container ccc-contrary" href="{% static 'main/sounds/d.mp3' %}" download>
+                    <img class="ccc-file-img" src="{% static 'main/svg/file.svg'%}" alt="svg-image">
+                    <div class="ccc-file-info">
+                        <span class="ccc-file-info-name">tochno_ne_virus_otvechau.exe</span>
+                        <div class="ccc-file-info-info">
+                            <span class="ccc-file-size">123.4kb</span>
+                            <span class="ccc-message-time">23:40</span>
+                        </div>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </a>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-call-container">
+                    <div class="ccc-call-info-container">
+                        <span class="ccc-call-name">Outgoing call</span>
+                        <span class="ccc-call-time">23:50, 2m 34s</span>
+                    </div>
+                    <img class="ccc-call-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image">
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-call-container ccc-contrary">
+                    <div class="ccc-call-info-container">
+                        <span class="ccc-call-name">Incoming call</span>
+                        <span class="ccc-call-time">23:50, 2m 34s</span>
+                    </div>
+                    <img class="ccc-call-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image">
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <div class="ccc-call-container">
+                    <div class="ccc-call-info-container">
+                        <span class="ccc-call-name">Outgoing video call</span>
+                        <span class="ccc-call-time">23:50, 2m 34s</span>
+                    </div>
+                    <img class="ccc-call-img" src="{% static 'main/svg/video-call.svg' %}" alt="svg-image">
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <div class="ccc-call-container ccc-contrary">
+                    <div class="ccc-call-info-container">
+                        <span class="ccc-call-name">Incoming video call</span>
+                        <span class="ccc-call-time">23:50, 2m 34s</span>
+                    </div>
+                    <img class="ccc-call-img" src="{% static 'main/svg/video-call.svg' %}" alt="svg-image">
+                    <div class="ccc-reactions">❤️</div>
+                </div>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <a href="#" class="ccc-post-container">
+                    <img class="ccc-call-img" src="{% static 'main/svg/post.svg' %}" alt="svg-image">
+                    <div class="ccc-file-info">
+                        <span class="ccc-file-info-name">View post</span>
+                        <div class="ccc-file-info-info">
+                            <span class="ccc-message-time">23:40</span>
+                            <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                        </div>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </a>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <a href="#" class="ccc-post-container ccc-contrary">
+                    <img class="ccc-call-img" src="{% static 'main/svg/post.svg' %}" alt="svg-image">
+                    <div class="ccc-file-info">
+                        <span class="ccc-file-info-name">View post</span>
+                        <div class="ccc-file-info-info">
+                            <span class="ccc-message-time">23:40</span>
+                        </div>
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </a>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <img message-id="1" class="ccc-container-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+                <a href="#" class="ccc-story-container">
+                    <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
+                    <div class="ccc-story-header">
+                        <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="story's image">
+                        <span>Emmanuel Shamsulin</span>
+                    </div>
+                    <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
+                    <div class="ccc-media-info">
+                        23:50
+                        <img class="ccc-message-view" src="{% static 'main/svg/tick-blue.svg' %}" alt="svg-view">
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </a>
+            </div>
+
+            <div class="ccc-container" onclick="doubleClickMessage(this)">
+                <a href="#" class="ccc-story-container ccc-contrary">
+                    <img class="ccc-story-icon-img" src="{% static 'main/svg/story.svg' %}" alt="story-svg">
+                    <div class="ccc-story-header">
+                        <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="story's image">
+                        <span>Emmanuel Shamsulin</span>
+                    </div>
+                    <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}" alt="shared-story">
+                    <div class="ccc-media-info">
+                        23:50
+                    </div>
+                    <div class="ccc-reactions">❤️</div>
+                </a>
+                <img message-id="1" class="ccc-container-additional ccc-contrary-additional" src="{% static 'main/svg/dots-vertical.svg' %}" alt="svg-additional" onclick="showMessageActions(this)">
+            </div>
+
+        </section> -->

@@ -2,7 +2,9 @@ import datetime
 import mimetypes
 
 import os
+import uuid
 
+from cassandra.cqlengine import columns
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import User
@@ -43,14 +45,23 @@ class Profile(models.Model):
     username_change_time = models.DateTimeField(blank=True)
 
     def save(self, *args, **kwargs):
+        old_avatar_path = None
+        old_background_avatar_path = None
+
         if self.pk:
             profile = Profile.objects.get(pk=self.pk)
-            if profile.avatar != self.avatar and profile.avatar != 'default_avatar.jpg':
-                profile.avatar.delete(save=False)
-            elif (profile.background_avatar != self.background_avatar and
-                  profile.background_avatar != 'default_background_avatar.jpg'):
-                profile.background_avatar.delete(save=False)
+            if profile.avatar and profile.avatar != self.avatar and profile.avatar.name != 'default_avatar.jpg':
+                old_avatar_path = profile.avatar.path
+            if (profile.background_avatar and profile.background_avatar != self.background_avatar and
+                    profile.background_avatar.name != 'default_background_avatar.jpg'):
+                old_background_avatar_path = profile.background_avatar.path
+
         super(Profile, self).save(*args, **kwargs)
+
+        if old_avatar_path and os.path.isfile(old_avatar_path):
+            os.remove(old_avatar_path)
+        if old_background_avatar_path and os.path.isfile(old_background_avatar_path):
+            os.remove(old_background_avatar_path)
 
 
 class ProfileFollow(models.Model):
@@ -65,6 +76,26 @@ class ProfileNotification(models.Model):
     type_id = models.IntegerField(default=0)
     time_create = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     read = models.BooleanField(default=False)
+
+
+# Chat models
+class Chat(models.Model):
+    users = models.ManyToManyField(User, related_name='chat_participants')
+
+
+class ChatMessage(models.Model):
+    type = models.CharField(max_length=255)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_from_user')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_to_user')
+    time_create = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    message = models.BinaryField(blank=True, null=True)
+    reply_id = models.IntegerField(blank=True, null=True)
+    reply_message = models.BinaryField(blank=True, null=True)
+    file = models.FileField(blank=True, null=True)
+    call_time = models.IntegerField(blank=True, null=True, default=0)
+    forwarded_content = models.CharField(blank=True, null=True, max_length=255)
 
 
 # Post models

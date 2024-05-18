@@ -284,19 +284,24 @@ function logout(){
 $(document).ready(function(){
     $('#settingsForm').submit(function(event){
         event.preventDefault();
-        
+
+        // Создаем объект FormData
+        var formData = new FormData(this);
+
         $.ajax({
             type: 'POST',
             url: $(this).attr('action'),
-            data: $(this).serialize(),
+            data: formData,
+            processData: false, // Не обрабатываем данные (например, не преобразуем в строку)
+            contentType: false, // Не устанавливаем заголовок типа контента
             success: function(response){
                 console.log(response);
-                if (response.status == true) {
-                    location.reload()
-                } else if ((response.status == false) && (response.error == 'username')) {
+                if (response.status === true) {
+                    location.reload();
+                } else if (response.status === false && response.error === 'username') {
                     document.querySelector('.mc-profile-user-second-username').innerHTML = username;
                     document.querySelector('#id_username').value = username;
-                    notification(3, response.message)
+                    notification(3, response.message);
                     checkChanges();
                 }
             },

@@ -131,7 +131,6 @@ class StoryMixin:
         return stories
 
 
-
 class HomeView(DataMixin, RecommendationMixin, StoryMixin, LoginRequiredMixin, TemplateView):
     template_name = 'main/index.html'
     login_url = 'login'
@@ -155,6 +154,16 @@ class HomeView(DataMixin, RecommendationMixin, StoryMixin, LoginRequiredMixin, T
         return {**context, **c_def}
 
 
+class ChatView(DataMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'main/chat.html'
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title=f'Chat')
+        return {**context, **c_def}
+
+
 class SettingsView(DataMixin, LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = SettingsForm
@@ -172,31 +181,30 @@ class SettingsView(DataMixin, LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
         check_profile = User.objects.filter(username=username).first()
+        user = self.request.user
 
-        if not check_profile:
-            user = self.request.user
-
-            delta = timezone.now() - user.profile.username_change_time
-            if delta >= datetime.timedelta(days=14):
-                user.profile.username_change_time = timezone.now()
-                user.username = username
-                user.save()
-            else:
-                days_left = datetime.timedelta(days=14) - delta
-                if days_left.days >= 1:
-                    day_type = 'days' if days_left.days > 1 else 'day'
-                    return JsonResponse({'status': False, 'error': 'username',
-                                         'message': f'Next username change in {days_left.days} {day_type}.'})
+        if not check_profile or check_profile == user:
+            if check_profile != user:
+                delta = timezone.now() - user.profile.username_change_time
+                if delta >= datetime.timedelta(days=14):
+                    user.profile.username_change_time = timezone.now()
+                    user.username = username
+                    user.save()
                 else:
-                    return JsonResponse({'status': False, 'error': 'username',
-                                         'message': 'The next user name change will be available within 24 hours.'})
-        else:
-            if check_profile != self.request.user:
-                return JsonResponse({'status': False, 'error': 'username',
-                                     'message': 'This Username is already taken!'})
+                    days_left = datetime.timedelta(days=14) - delta
+                    if days_left.days >= 1:
+                        day_type = 'days' if days_left.days > 1 else 'day'
+                        return JsonResponse({'status': False, 'error': 'username',
+                                             'message': f'Next username change in {days_left.days} {day_type}.'})
+                    else:
+                        return JsonResponse({'status': False, 'error': 'username',
+                                             'message': 'The next username change will be available within 24 hours.'})
 
-        form.save()
-        return JsonResponse({'status': True})
+            form.save()
+            return JsonResponse({'status': True})
+        else:
+            return JsonResponse({'status': False, 'error': 'username',
+                                 'message': 'This Username is already taken!'})
 
 
 class SearchView(DataMixin, LoginRequiredMixin, TemplateView):
@@ -443,6 +451,23 @@ class StoryView(DataMixin, LoginRequiredMixin, TemplateView):
     def get_stories(self):
         author = self.request.user
         request_story = self.request.GET.get('story_id')
+        activity = self.request.GET.get('activity')
+        redirect_to = self.request.GET.get('redirect_to')
+
+        if redirect_to is None:
+            redirect_to = ''
+
+        if activity == 'True':
+            request_story = int(request_story)
+
+            stories = Story.objects.filter(author=author, pk=request_story)
+
+            if len(stories) == 0:
+                raise Http404
+
+            return {'stories_author': author, 'stories': stories,
+                    'story_id': request_story, 'last_story': stories[0], 'redirect_to': redirect_to}
+
         if request_story:
             request_story = int(request_story)
 
@@ -482,7 +507,7 @@ class StoryView(DataMixin, LoginRequiredMixin, TemplateView):
             story_id = stories[0].pk
 
         return {'stories_author': author, 'stories': stories,
-                'story_id': story_id, 'last_story': stories[len(stories)-1]}
+                'story_id': story_id, 'last_story': stories[len(stories)-1], 'redirect_to': redirect_to}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -570,7 +595,7 @@ class ActivityStoriesView(DataMixin, LoginRequiredMixin, ListView):
     login_url = 'login'
 
     def get_object(self):
-        stories = Story.objects.filter(author=self.request.user).order_by('-pk')[:6]
+        stories = Story.objects.filter(author=self.request.user).order_by('-pk')[:9]
         return stories
 
     def get_context_data(self, **kwargs):
@@ -845,6 +870,17 @@ class ProfileNotificationAPIView(APIView):
 
 
 class StoryAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        get_type = request.GET.get('get_type')
+
+        if get_type == 'activity':
+            offset = int(request.GET.get('offset'))
+            stories = Story.objects.filter(
+                author=self.request.user
+            ).order_by('-pk').select_related('author__profile')[offset:offset + 9]
+
+            return Response({'stories': StorySerializer(stories, many=True).data})
 
     def post(self, request, *args, **kwargs):
         video_content = request.data.get('video_content')

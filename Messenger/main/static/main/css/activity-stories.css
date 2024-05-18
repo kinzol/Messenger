@@ -26,7 +26,7 @@
 }
 
 .ccc-story-header {
-    background-color: #00000036;
+    background-color: #00000063;
     display: flex;
     align-items: center;
     position: absolute;
@@ -97,4 +97,11 @@
     font-weight: 500;
     color: #ffffffb8;
     text-align: center;
+}
+
+
+@media (max-width: 550px) {
+    .ccc-story-header {
+        font-size: 12px;
+    }
 }

@@ -23,7 +23,7 @@
 
         {% if user.viewed_story_exists %}
             <div class="mc-profile-user-avatar-story">
-                <a href="#" class="mc-profile-user-avatar-story-a">
+                <a href="{% url 'story' username=user.username %}?redirect_to={% url 'profile' username=user.username %}" class="mc-profile-user-avatar-story-a">
                     <img class="mc-profile-user-avatar-story-img" src="{{ user.profile.avatar.url }}"  alt="{{ user.username }}'s avatar">
                 </a>
             </div>

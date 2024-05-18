@@ -101,7 +101,7 @@ function createPostRec(post) {
         result += `<div data-id="${post.pk}" class="mc-feed-article-menu-a" onclick="articleNotInterested(this)">Not Interested</div>`;
     };
 
-    result += '<div data-id="${post.pk}" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div></div></div>';
+    result += `<div data-id="${post.pk}" class="mc-feed-article-menu-a" onclick="articleCopyLink(this)">Copy Link</div></div></div>`;
 
     if (files.length == 0) {
         result += `<p class="mc-feed-article-description-solo">${post.content}</p>`;
