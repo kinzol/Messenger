@@ -3,6 +3,8 @@ var storiesContainer = document.querySelector('.mc-feed-stories-story-container'
 var statusBlockMenu = false;
 var statusBlockShare = false;
 
+var sharePostId = 0;
+
 if (storiesContainer != null) {
     if ((storiesContainer.scrollWidth > storiesContainer.clientWidth) && (window.innerWidth >= 510)) {
         var storiesRightButton = document.querySelector('.mc-feed-stories-scroll-right');
@@ -162,12 +164,12 @@ function removerSaveArticle(thisElement) {
 
 function shareFilter(inputFields) {
             var searchText = inputFields.value.toLowerCase();
-            var userContainer = document.querySelector(`[data-id="${inputFields.getAttribute('data-id')}"].mc-feed-article-share-container`);
-            var userList = userContainer.querySelector('.mc-feed-article-share-userlist').querySelectorAll('.mc-feed-article-share-user');
+            var userContainer = document.querySelector(`.share-container`);
+            var userList = userContainer.querySelector('.share-userlist').querySelectorAll('.share-user');
 
             userList.forEach(function(user) {
-                var userName = user.querySelector('.mc-feed-article-share-user-second-name').textContent.toLowerCase();
-                var secondUserName = user.querySelector('.mc-feed-article-share-user-name').textContent.toLowerCase();
+                var userName = user.querySelector('.share-user-second-name').textContent.toLowerCase();
+                var secondUserName = user.querySelector('.share-user-name').textContent.toLowerCase();
                 
                 if (userName.includes(searchText) || secondUserName.includes(searchText)) {
                     user.style.display = 'flex';
@@ -178,24 +180,21 @@ function shareFilter(inputFields) {
 };
 
 
-function showShareContainer(thisArticle) {
-    var shareContainer = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article-share-container`);
-    var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
+function showShareContainer(element) {
+    var shareContainer = document.querySelector(`.share-container-background`);
+    sharePostId = element.getAttribute('data-id')
 
-    shareArticle.classList.add('share-background')
-    shareContainer.classList.remove('block-hide-share');
-    shareContainer.classList.add('block-show-share');
+    shareContainer.style.display = 'block';
+    setTimeout(() => {shareContainer.style.opacity = '1';}, 20)
     statusBlockShare = true;
 };
 
 
-function hideShareContainer(thisArticle) {
-    var shareContainer = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article-share-container`);
-    var shareArticle = document.querySelector(`[data-id="${thisArticle.getAttribute('data-id')}"].mc-feed-article`);
+function hideShareContainer() {
+    var shareContainer = document.querySelector(`.share-container-background`);
 
-    shareArticle.classList.remove('share-background');
-    shareContainer.classList.remove('block-show-share');
-    shareContainer.classList.add('block-hide-share');
+    shareContainer.style.opacity = '0';
+    setTimeout(() => {shareContainer.style.display = 'none';}, 250)
     statusBlockShare = false;
 };
 

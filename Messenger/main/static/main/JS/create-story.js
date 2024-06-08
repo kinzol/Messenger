@@ -39,6 +39,8 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true})
 .catch(err => {
     var cameraError = document.querySelector('.camera-error');
     cameraError.classList.add('camera-error-show');
+    notification(3, 'An error occurred while accessing the camera!');
+    setTimeout(() => {window.location.href = window.location.origin}, 2000)
 });
 
 

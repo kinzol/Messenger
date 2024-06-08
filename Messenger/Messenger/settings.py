@@ -28,11 +28,14 @@ SECRET_KEY = 'django-insecure-iik@cs&vh=0w5nol*(+gwo1mxjo*&m9omjlmf!yd$la6e&)@0l
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app',]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+
     'main.apps.MainConfig',
 
     'django.contrib.admin',
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'debug_toolbar',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +143,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

@@ -327,6 +327,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 50%;
     object-fit: cover;
     margin: auto;
+    border: 3px solid #ffffff61;
 }
 
 .mc-feed-article-userinfo {
@@ -887,7 +888,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 50px;
 }
 
-@media (max-width: 1115px) {
+@media (max-width: 1200px) {
     .mobile-buttons {
         display: flex;
     }

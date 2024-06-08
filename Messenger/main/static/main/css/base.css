@@ -88,3 +88,8 @@ video:fullscreen {
     object-fit: contain;
     border-radius: 0px;
 }
+
+input, textarea {
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+}

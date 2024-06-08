@@ -26,6 +26,7 @@ class Profile(models.Model):
     uuid = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
     bio = models.TextField(max_length=255, blank=True, null=True, default='')
+    chats = models.ManyToManyField(User, related_name='user_chats')
 
     avatar = models.ImageField(upload_to=avatar_directory_path, default='default_avatar.jpg')
     background_avatar = models.ImageField(upload_to=bg_avatar_directory_path, default='default_background_avatar.jpg')
@@ -79,8 +80,9 @@ class ProfileNotification(models.Model):
 
 
 # Chat models
-class Chat(models.Model):
-    users = models.ManyToManyField(User, related_name='chat_participants')
+def chat_message_file_path(instance, filename):
+    user_id = instance.from_user.id
+    return os.path.join('uploads', f'user_{user_id}', 'message_file', filename)
 
 
 class ChatMessage(models.Model):
@@ -93,7 +95,7 @@ class ChatMessage(models.Model):
     message = models.BinaryField(blank=True, null=True)
     reply_id = models.IntegerField(blank=True, null=True)
     reply_message = models.BinaryField(blank=True, null=True)
-    file = models.FileField(blank=True, null=True)
+    file = models.FileField(upload_to=chat_message_file_path, blank=True, null=True)
     call_time = models.IntegerField(blank=True, null=True, default=0)
     forwarded_content = models.CharField(blank=True, null=True, max_length=255)
 

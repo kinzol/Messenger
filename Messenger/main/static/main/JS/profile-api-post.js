@@ -28,33 +28,7 @@ function createPost(post) {
     articleContainerMini.innerHTML += resultMini + '</a>';
 
 
-    result += `<article data-id="${post.pk}" class="mc-feed-article"> 
-        <div data-id="${post.pk}" class="mc-feed-article-share-container">
-            <header class="mc-feed-article-share-header">
-                Share
-                <img data-id="${post.pk}" class="mc-feed-article-share-close-img" src="${svgClose}" onclick="hideShareContainer(this)" alt="svg-image">
-            </header>
-            <input data-id="${post.pk}" type="text" class="mc-feed-article-share-input" oninput="shareFilter(this)">
-
-            <div class="mc-feed-article-share-userlist custom-scrollbar">
-                <div class="mc-feed-article-share-user">
-                    <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                    <a href="#"><div class="mc-feed-article-share-user-name">Elon Musk
-                        <div class="mc-feed-article-share-user-second-name">blg</div>
-                    </div></a>
-                    <div class="mc-feed-article-share-user-share">Share</div>
-                </div>
-
-                <div class="mc-feed-article-share-user">
-                    <img class="mc-feed-article-share-user-img" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-                    <a href="#"><div class="mc-feed-article-share-user-name">Radmir Musk
-                        <div class="mc-feed-article-share-user-second-name">egor</div>
-                    </div></a>
-                    <div class="mc-feed-article-share-user-share">Share</div>
-                </div>
-
-            </div>
-        </div>`;
+    result += `<article data-id="${post.pk}" class="mc-feed-article">`;
 
     if (post.viewed_story_exists) {
         result += `<div class="mc-feed-article-userinfo">

@@ -76,24 +76,16 @@
     <div class="story-share">
         <input type="text" class="story-share-search" oninput="shareFilter(this)">
         
+        {% for chat in chats %}
         <div class="story-share-user">
-            <img class="story-share-user-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
+            <img class="story-share-user-avatar" src="{{ chat.profile.avatar.url }}" alt="{{ chat.username }}'s avatar">
             <div class="story-share-user-userinfo">
-                <span class="story-share-user-userinfo-name">Emmanuel Shamsulin</span>
-                <span class="story-share-user-userinfo-login">shamsulin</span>
+                <span class="story-share-user-userinfo-name">{{ chat.profile.full_name }}</span>
+                <span class="story-share-user-userinfo-login">{{ chat.username }}</span>
             </div>
             <div class="story-share-button">Share</div>
         </div>
-
-
-        <div class="story-share-user">
-            <img class="story-share-user-avatar" src="{% static 'main/images/ilon.jpg' %}" alt="user's avatar">
-            <div class="story-share-user-userinfo">
-                <span class="story-share-user-userinfo-name">Emmanuel Shamsulin</span>
-                <span class="story-share-user-userinfo-login">shamsulin</span>
-            </div>
-            <div class="story-share-button">Share</div>
-        </div>
+        {% endfor %}
 
     </div>
 </main>

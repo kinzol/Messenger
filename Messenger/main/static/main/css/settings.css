@@ -365,3 +365,9 @@
     border-radius: 10px;
     cursor: default;
 }
+
+@media (max-width: 595px) {
+    .settings-edit-avatar {
+        margin: -45px 40px auto;
+    }
+}

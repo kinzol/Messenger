@@ -57,86 +57,6 @@
 
             <!-- <span class="chat-contacts-section-null">You have no active chat now</span> -->
 
-            <div chat-id="23" class="chat-contacts-section-container" onclick="openChat(this)">
-                <a href="#" class="ccs-container-story">
-                    <div chat-id="23" class="ccs-container-last-activity">online</div>
-                    <div chat-id="23" class="ccs-container-online" title="Online"></div>
-                    <img chat-id="23" class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}"  alt="user's avatar">
-                </a>
-            <!-- <div class="ccs-container-avatar-container">
-                    <div chat-id="23" class="ccs-container-online"></div>
-                    <img chat-id="23" class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
-                </div> -->
-
-                <div class="ccs-container-info">
-                    <div class="ccs-container-info-message-container">
-                        <div chat-id="23" class="ccs-container-info-name">
-                            Emmanuel Shamsulin
-                            <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
-                        </div>
-                        <div chat-id="23" class="ccs-container-info-message-time">20:40</div>
-                    </div>
-                    <div chat-id="23" class="ccs-container-info-message-container-second">
-                        <div chat-id="23" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
-                        <div chat-id="23" class="ccs-container-info-message-count">2</div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <div chat-id="24" class="chat-contacts-section-container" onclick="openChat(this)">
-                <!-- <a href="#" class="ccs-container-story">
-                    <div chat-id="24" class="ccs-container-online" title="Online"></div>
-                    <img chat-id="24" class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
-                </a> -->
-            <div class="ccs-container-avatar-container">
-                    <div chat-id="24" class="ccs-container-last-activity">online</div>
-                    <div chat-id="24" class="ccs-container-online"></div>
-                    <img chat-id="24" class="ccs-container-avatar" src="{% static 'main/images/p2.jpg' %}" alt="user's avatar">
-                </div>
-
-                <div class="ccs-container-info">
-                    <div class="ccs-container-info-message-container">
-                        <div chat-id="24" class="ccs-container-info-name">
-                            Ryan Libre
-                            <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
-                        </div>
-                        <div chat-id="24" class="ccs-container-info-message-time">20:40</div>
-                    </div>
-                    <div chat-id="24" class="ccs-container-info-message-container-second">
-                        <div chat-id="24" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
-                        <div chat-id="24" class="ccs-container-info-message-count">4</div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div chat-id="25" class="chat-contacts-section-container" onclick="openChat(this)">
-                <a href="#" class="ccs-container-story">
-                    <div chat-id="25" class="ccs-container-last-activity">onlisadne</div>
-                    <div chat-id="25" class="ccs-container-online" title="Online"></div>
-                    <img chat-id="25" class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
-                </a>
-            <!-- <div class="ccs-container-avatar-container">
-                    <div chat-id="25" class="ccs-container-online"></div>
-                    <img chat-id="25" class="ccs-container-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
-                </div> -->
-
-                <div class="ccs-container-info">
-                    <div class="ccs-container-info-message-container">
-                        <div chat-id="25" class="ccs-container-info-name">
-                            Emmanuel Shamsulin
-                            <img class="user-verify user-verify-small" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
-                        </div>
-                        <div chat-id="25" class="ccs-container-info-message-time">20:40</div>
-                    </div>
-                    <div chat-id="25" class="ccs-container-info-message-container-second">
-                        <div chat-id="25" class="ccs-container-info-message">Я вчера очень приочень вкусно поел кащи</div>
-                        <div chat-id="25" class="ccs-container-info-message-count">2</div>
-                    </div>
-                </div>
-            </div>
         </section>
         <footer class="chat-contacts-footer">
             <a class="chat-contacts-footer-button" href="{% url 'home' %}">
@@ -184,6 +104,7 @@
                         <img class="user-verify" title="Verified" src="{% static 'main/svg/verify.svg' %}" alt="verified">
                     </span>
                     <span class="chat-content-header-userinfo-activity">online</span>
+                    <span class="chat-content-header-userinfo-activity-typing" style="display:none;">Typing...</span>
                 </div>
             </a>
             <img class="chat-content-header-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
@@ -292,6 +213,9 @@
 
     var newMessagePlate = [];
     var chatId = null;
+    var userId = parseInt('{{ user_profile.pk}}')
+    var tempUserInfo = {};
+    var userTyping = true;
 </script>
 <script src="{% static 'main/JS/chat.js' %}"></script>
 <script src="{% static 'main/JS/chat-ws.js' %}"></script>

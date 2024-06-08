@@ -33,10 +33,11 @@ window.addEventListener('mousemove', resetTimer);
 window.addEventListener('keypress', resetTimer);
 window.addEventListener('click', resetTimer);
 
+
 function chatChangeSendInputButton() {
     var messageInput = document.querySelector(`[chat-id='${chatId}'].chat-content-input-message`);
     
-    if (messageInput.value.length == 1 || fileStatus) {
+    if (messageInput.value.length >= 1 || fileStatus) {
         var inputAudio = document.querySelector('.chat-content-input-audio');
         var inputMessageImg = document.querySelector('.chat-content-input-message-img');
 
@@ -46,7 +47,8 @@ function chatChangeSendInputButton() {
                 inputMessageImg.src = inputSendImg;
                 inputAudio.classList.remove('chat-content-input-audio');
                 inputAudio.classList.add('chat-content-input-send');
-                inputAudio.removeAttribute('onclick');
+                // inputAudio.removeAttribute('onclick');
+                inputAudio.setAttribute('onclick', 'onContentSend()');
             }, 100);
             setTimeout(() => {
                 inputMessageImg.classList.remove('chat-content-input-button-change');
@@ -203,13 +205,13 @@ function messageReply() {
 
     moveChatField.classList.add('chat-content-chat-move');
 
-    replyMessageContent = inputReplyMessage.innerHTML;
-    replyMessageId = messageActionsId;
-    replyStatus = true;
-
     inputReplyMessage.innerHTML = getMessageText.innerHTML;
     inputFile.classList.add('chat-content-input-file-hide');
     hideMessageActions();
+
+    replyMessageContent = inputReplyMessage.innerHTML;
+    replyMessageId = messageActionsId;
+    replyStatus = true;
 
     replyContainer.classList.add('chat-content-input-reply-show');
     setTimeout(() => {
@@ -294,6 +296,8 @@ function hideMessageReactions() {
 
 
 function openChat(element) {
+    var chatContentHeaderUserinfoActivity = document.querySelector('.chat-content-header-userinfo-activity');
+    var chatContentHeaderUserinfoActivityTyping = document.querySelector('.chat-content-header-userinfo-activity-typing');
     var newChatId = element.getAttribute('chat-id');
     if (newChatId == chatId) {return;};
 
@@ -318,6 +322,8 @@ function openChat(element) {
     var headerUserAvatar = document.querySelector('.chat-content-header-avatar');
     var headerUserLink = document.querySelector('.chat-content-header-a');
     var headerActivity = document.querySelector('.chat-content-header-userinfo-activity');
+
+    var ccsContainerUsername = document.querySelector(`[chat-id='${newChatId}'].ccs-container-username`).innerHTML;
 
     var inputMessageContainer = document.querySelector('.chat-content-input-message-container');
 
@@ -345,6 +351,7 @@ function openChat(element) {
 
     isChatOpen = true;
     chatId = newChatId;
+    userTyping = true;
 
     if (!chatField) {
         var createNewChatField = document.createElement('section')
@@ -359,6 +366,9 @@ function openChat(element) {
         createNewInputField.setAttribute('chat-id', newChatId);
         createNewInputField.setAttribute('oninput', 'chatChangeSendInputButton()');
         createNewInputField.setAttribute('class', 'chat-content-input-message');
+
+        createNewInputField.setAttribute('onkeypress', 'onkeypressSendMessage(event)');
+
         inputMessageContainer.appendChild(createNewInputField);
         inputMessageField = createNewInputField;
 
@@ -366,12 +376,17 @@ function openChat(element) {
             previousChatField.style.display = 'none';
             previousInputMessageField.style.display = 'none';
         };
+
+        loadMessages(true);
     };
 
     if (window.innerWidth <= 1000) {
         headerUserName.innerHTML = userName;
+        headerUserLink.href = `${window.location.origin}/profile/${ccsContainerUsername}`;
         headerUserAvatar.src = userAvatar;
         headerActivity.innerHTML = userActivity.innerHTML;
+        chatContentHeaderUserinfoActivity.style.display = 'block';
+        chatContentHeaderUserinfoActivityTyping.style.display = 'none';
 
         chatContent.classList.add('mobile-element-show');
         chatContent.classList.remove('mobile-element-hide');
@@ -394,7 +409,10 @@ function openChat(element) {
             chatContent.classList.add('update-chat-field');
             setTimeout(() => {
                 headerUserName.innerHTML = userName;
+                headerUserLink.href = `${window.location.origin}/profile/${ccsContainerUsername}`;
                 headerActivity.innerHTML = userActivity.innerHTML;
+                chatContentHeaderUserinfoActivity.style.display = 'block';
+                chatContentHeaderUserinfoActivityTyping.style.display = 'none';
                 var changeVerify = headerUserName.querySelector('.user-verify-small');
                 if (changeVerify) {changeVerify.classList.remove('user-verify-small');};
 
@@ -411,7 +429,10 @@ function openChat(element) {
         } else {
             chatContent.classList.add('show-chat-field');
             headerUserName.innerHTML = userName;
+            headerUserLink.href = `${window.location.origin}/profile/${ccsContainerUsername}`;
             headerActivity.innerHTML = userActivity.innerHTML;
+            chatContentHeaderUserinfoActivity.style.display = 'block';
+            chatContentHeaderUserinfoActivityTyping.style.display = 'none';
             var changeVerify = headerUserName.querySelector('.user-verify-small');
             if (changeVerify) {changeVerify.classList.remove('user-verify-small');};
         }
@@ -538,6 +559,7 @@ function openFileInput() {
     }
 
     fileStatus = true;
+    inputFileSend.setAttribute('onclick', 'onContentSend()')
             
     if (fileType == 'image') {
         inputFileTypeImg.src = svgImage;
@@ -758,12 +780,18 @@ document.addEventListener('click', event => {
 function writeEmojiInput(element) {
     var inputMessageField = document.querySelector(`[chat-id='${chatId}'].chat-content-input-message`);
     inputMessageField.value = inputMessageField.value + element.innerHTML;
+    chatChangeSendInputButton()
 }
 
 var showButtonScrollDown = false;
 function chatFieldScrolled(field) {
     fieldHeight = field.scrollHeight - field.offsetHeight;
     fieldPosition = field.scrollTop;
+    var fieldId = field.getAttribute('chat-id');
+
+    if ((field.scrollTop == 0) && chatMessagesDataload[fieldId]) {
+        loadMessages(false)
+    };
 
     if (((fieldHeight-fieldPosition) > 1000) && !showButtonScrollDown) {
         scrollDown = document.querySelector('.chat-content-input-scrollDown');
@@ -779,6 +807,8 @@ function chatFieldScrolled(field) {
 function deleteMessage(element, chatFieldId) {
     var messageContainer = document.querySelector(`[message-id='${parseInt(element)}'].ccc-container`);
     var chatField = document.querySelector(`[chat-id='${chatFieldId}'].chat-content-chat`);
+    var ccsContainerInfoMessage = document.querySelector(`[chat-id='${chatFieldId}'].ccs-container-info-message`);
+    ccsContainerInfoMessage.innerHTML = '';
     hideMessageActions();
 
     messageContainer.style.height = `${messageContainer.offsetHeight}px`;
@@ -813,3 +843,138 @@ function closesetReactionEmoji() {
     actionContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.233)';
 }
 
+function onkeypressSendMessage(event) {
+    if (event.key === 'Enter') {
+        onContentSend();
+    }
+
+    if (userTyping) {
+        userTyping = false;
+        webSocketChat.send(JSON.stringify({
+            'send_type': 'chat_typing',
+            'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+            'from_user': userId,
+        }));
+        setTimeout(() => {userTyping = true}, 5000);
+    }
+};
+
+function onContentSend() {
+    var chatContentInputMessage = document.querySelector(`[chat-id='${chatId}'].chat-content-input-message`);
+    var messageType = '';
+    var tempMessage = null;
+    
+    if (chatContentInputMessage.value.replace(/ /g, '') != '') {
+        if (!replyStatus && !fileStatus) {
+            messageType = 'text';
+
+        } else if (replyStatus) {
+            messageType = 'reply';
+
+        } else if (fileStatus) {
+            if (['image', 'video'].includes(fileType)) {
+                messageType = `text-${fileType}`;
+            } else {
+                messageType = 'file';
+            };
+        };
+    } else if (fileStatus) {
+        if (['image', 'video'].includes(fileType)) {
+            messageType = fileType;
+            tempMessage = fileName;
+        } else {
+            messageType = 'file';
+            tempMessage = fileName;
+        };
+    };
+
+    if ((chatContentInputMessage.value.replace(/ /g, '') == '') && !fileStatus) {
+        return
+    }
+
+    if (fileStatus) {
+        var fileContentReader
+        const fileReader = new FileReader();
+        fileReader.onload = function(event) {
+            fileContentReader = event.target.result.split(',')[1];
+            
+            webSocketChat.send(JSON.stringify({
+                'send_type': 'chat_message',
+                'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+                'type': messageType,
+                'message': tempMessage ? tempMessage : chatContentInputMessage.value,
+                'reply_id': replyStatus ? replyMessageId : null,
+                'reply_message': replyStatus ? replyMessageContent : null,
+                'file': fileContentReader,
+                'file_type': fileContent[0].type.split('/')[1].split('+')[0],
+                'from_user': userId,
+                'to_user': chatId,
+            }));
+
+            chatContentInputMessage.value = '';
+        };
+        fileReader.readAsDataURL(new Blob(fileContent, {type: fileContent.type}));
+
+    } else {
+        webSocketChat.send(JSON.stringify({
+            'send_type': 'chat_message',
+            'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+            'type': messageType,
+            'message': tempMessage ? tempMessage : chatContentInputMessage.value,
+            'reply_id': replyStatus ? replyMessageId : null,
+            'reply_message': replyStatus ? replyMessageContent : null,
+            'file': null,
+            'file_type': null,
+            'from_user': userId,
+            'to_user': chatId,
+        }));
+
+        chatContentInputMessage.value = '';
+    };
+    
+    if (fileStatus) {
+        closeFileInput()
+    };
+
+    if (replyStatus) {
+        hideReplyContainer()
+    };
+
+    chatChangeSendInputButton()
+};
+
+
+function loadMessages(preload) {
+    if (chatMessagesDataload[chatId]) {
+        chatMessagesDataload[chatId] = false;
+
+        $.ajax({
+            url: '/api/v1/chat/message/',
+            method: 'get',
+            dataType: 'json',
+            data: {offset: chatMessagesOffset[chatId], interlocutor: chatId},
+            success: function(data){
+                data.messages.reverse()
+
+                if (preload) {
+                    data.messages.forEach((message) => {
+                        newMessage(message, true, false);
+                    });
+                } else {
+                    data.messages.reverse().forEach((message) => {
+                        newMessage(message, false, true);
+                    });
+                };
+
+                setTimeout(() => {
+                    if (data.messages.length == 15) {
+                        chatMessagesDataload[chatId] = true;
+                    };
+                }, 100);
+            }
+        });
+
+        chatMessagesOffset[chatId] += 15;
+
+    };
+};

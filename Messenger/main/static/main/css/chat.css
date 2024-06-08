@@ -157,6 +157,8 @@ a {
     bottom: 0;
 }
 
+.ccs-container-username,
+.ccs-container-uuid,
 .ccs-container-last-activity {
     display: none;
 }
@@ -683,6 +685,13 @@ a {
     font-size: 15px;
     color: #ffffffa4;
     -webkit-text-fill-color: #ffffffa4;
+}
+
+.chat-content-header-userinfo-activity-typing {
+    font-size: 15px;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    font-weight: 500;
 }
 
 .chat-content-header-buttons-img {
@@ -1370,6 +1379,7 @@ input[type=file]::-webkit-file-upload-button {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    padding: 20px;
 }
 
 .message-actions-button-reply,
@@ -1431,6 +1441,7 @@ input[type=file]::-webkit-file-upload-button {
     margin: -45px auto auto auto;
     padding: 0px 10px;
     opacity: 1;
+    overflow: hidden;
 }
 
 
@@ -1793,6 +1804,7 @@ input[type=file]::-webkit-file-upload-button {
         margin: 0;
     }
     
+    .chat-content-header-userinfo-activity-typing,
     .chat-content-header-userinfo-activity {
         width: fit-content;
     }

@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         };
     });
 
-    console.log(stories_id);
 });
 
 

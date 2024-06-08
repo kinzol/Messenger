@@ -1,4 +1,3 @@
-.ccc-date,
 .ccc-message-text,
 .ccc-message-text-reply,
 .ccc-media-text,
@@ -9,6 +8,14 @@
 .ccc-reactions,
 .post-drag{
     background-color: #a7c6e8 !important;
+}
+
+.ccc-date {
+	background-color: #a7c6e8 !important;
+}
+
+.ccc-contrary {
+	background-color: #a7c6e8 !important;
 }
 
 .error-home  {
@@ -35,6 +42,10 @@ body {
 	background: linear-gradient(150deg, #c1d6ed, #99bde4);
     background-size: 400% 400% !important;
     animation: gradient-story 10s ease-in-out infinite !important;
+}
+
+.chat-content-file-drag {
+	background-color: #a7c6e8d0 !important;
 }
 
 @keyframes gradient-story {

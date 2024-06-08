@@ -56,8 +56,12 @@
     const notificationImgs = ["{% static 'main/svg/tick.svg' %}",
                               "{% static 'main/svg/exclamation.svg' %}",
                               "{% static 'main/svg/cross.svg' %}"];
+
+    var uuid = '{{ user_profile.profile.uuid}}';
+    var websocketChat = null
 </script>
 
+<script src="{% static 'main/JS/websocket.js' %}"></script>
 <script src="{% static 'main/JS/base.js' %}"></script>
 <script src="{% static 'main/JS/emoji.js' %}"></script>
 <script src="{% static 'main/JS/notification.js' %}"></script>
@@ -81,4 +85,5 @@
 
     var newMessageSound = '{% static "main/sounds/new_message.mp3" %}';
 </script>
+
 </html>

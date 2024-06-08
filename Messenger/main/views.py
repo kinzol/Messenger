@@ -350,6 +350,10 @@ class PostView(DataMixin, LoginRequiredMixin, DetailView):
         post = Post.objects.filter(pk=post_id).annotate(
             like_exists=Exists(PostLike.objects.filter(user=self.request.user, post_id=OuterRef('pk'))),
             bookmark_exists=Exists(PostBookmark.objects.filter(user=self.request.user, post_id=OuterRef('pk'))),
+            viewed_story_exists=Exists(Story.objects.filter(
+                author=OuterRef('author'),
+                time_create__gte=timezone.now() - datetime.timedelta(days=1)
+            ))
         ).select_related('author__profile').prefetch_related('tags', 'postfile_set').first()
 
         is_follower = ProfileFollow.objects.filter(profile=self.request.user, user=post.author).exists()
@@ -646,7 +650,7 @@ def logout_user(request):
 
 
 # API
-class PostAPIView(APIView):
+class PostAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         offset = int(request.GET.get('offset'))
@@ -686,7 +690,7 @@ class PostAPIView(APIView):
         return Response({'status': False})
 
 
-class PostCommentAPIView(APIView):
+class PostCommentAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         post_author = request.GET.get('post_author')
@@ -742,7 +746,7 @@ class PostCommentAPIView(APIView):
             return Response({'status': False})
 
 
-class UserListAPIView(APIView):
+class UserListAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         request_type = request.GET.get('type')
@@ -793,7 +797,7 @@ class UserListAPIView(APIView):
         return Response({'users': UserListSerializer(users, many=True).data})
 
 
-class SearchAPIView(APIView):
+class SearchAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         query = request.GET.get('query')
@@ -808,7 +812,7 @@ class SearchAPIView(APIView):
         return Response({'users': UserListSerializer(users, many=True).data})
 
 
-class ProfileAPIView(APIView):
+class ProfileAPIView(LoginRequiredMixin, APIView):
 
     def post(self, request, *args, **kwargs):
         profile = self.request.user.profile
@@ -822,7 +826,7 @@ class ProfileAPIView(APIView):
         return Response({'status': True})
 
 
-class ProfileFollowAPIView(APIView):
+class ProfileFollowAPIView(LoginRequiredMixin, APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -858,7 +862,7 @@ class ProfileFollowAPIView(APIView):
         return Response({'status': True})
 
 
-class ProfileNotificationAPIView(APIView):
+class ProfileNotificationAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         offset = int(request.GET.get('offset'))
@@ -869,7 +873,7 @@ class ProfileNotificationAPIView(APIView):
         return Response({'notifications': ProfileNotificationSerializer(notifications, many=True).data})
 
 
-class StoryAPIView(APIView):
+class StoryAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         get_type = request.GET.get('get_type')
@@ -900,7 +904,7 @@ class StoryAPIView(APIView):
             return Response({'status': False})
 
 
-class ActivityAPIView(APIView):
+class ActivityAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         offset = int(request.GET.get('offset'))
@@ -980,7 +984,7 @@ class ActivityAPIView(APIView):
         profile.save()
 
 
-class HomeStoriesAPIView(StoryMixin, APIView):
+class HomeStoriesAPIView(LoginRequiredMixin, StoryMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         is_viewed_stories = request.GET.get('is_viewed_stories') == 'true'
@@ -993,9 +997,66 @@ class HomeStoriesAPIView(StoryMixin, APIView):
         })
 #FIXME: Reporter.objects.update(stories_filed=F("stories_filed") + 1) update some info
 
-class PostRecommendationAPIView(RecommendationMixin, APIView):
+
+class PostRecommendationAPIView(LoginRequiredMixin, RecommendationMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         posts = self.generate_recommendations()
 
         return Response({'posts': PostSerializer(posts, many=True).data})
+
+
+class ChatAPIView(LoginRequiredMixin, APIView):
+
+    def get(self, request, *args, **kwargs):
+        offset = int(request.GET.get('offset'))
+        get_type = request.GET.get('get_type')
+
+        if get_type == 'chats':
+            user = self.request.user
+
+            last_message = ChatMessage.objects.filter(
+                (Q(from_user=OuterRef('pk')) | Q(to_user=OuterRef('pk'))) & (Q(from_user=user) | Q(to_user=user))
+            ).order_by('-pk')[:1]
+
+            unread_messages_count = ChatMessage.objects.filter(
+                Q(from_user=OuterRef('pk')) & Q(to_user=user) & Q(read=False)
+            ).values('from_user').annotate(count=Count('pk')).values('count')
+
+            chats = user.profile.chats.all().annotate(
+                last_message_text=Subquery(last_message.values('message')),
+                last_message_type=Subquery(last_message.values('type')),
+                last_message_time=Subquery(last_message.values('time_create')),
+                viewed_story_exists=Exists(Story.objects.filter(
+                    author=OuterRef('pk'),
+                    time_create__gte=timezone.now() - datetime.timedelta(days=1)
+                )),
+                count_unread=Subquery(unread_messages_count)
+            ).order_by('-last_message_time')[offset:offset + 10].select_related('profile')
+
+            for chat in chats:
+                if chat.last_message_text:
+                    chat.last_message_text = decrypt_message(chat.last_message_text).decode()
+
+            return Response({'chats': ChatSerializer(chats, many=True).data})
+
+
+class ChatMessageAPIView(LoginRequiredMixin, APIView):
+
+    def get(self, request, *args, **kwargs):
+        offset = int(request.GET.get('offset'))
+        interlocutor_id = int(request.GET.get('interlocutor'))
+        user = self.request.user
+
+        messages = ChatMessage.objects.filter(
+            (Q(from_user=interlocutor_id) | Q(to_user=interlocutor_id)) & (Q(from_user=user) | Q(to_user=user))
+        ).order_by('-pk')[offset:offset + 15]
+
+        for message in messages:
+            if message.message:
+                message.message = decrypt_message(message.message).decode()
+
+            if message.reply_message:
+                message.reply_message = decrypt_message(message.reply_message).decode()
+
+        return Response({'messages': ChatMessageSerializer(messages, many=True).data})

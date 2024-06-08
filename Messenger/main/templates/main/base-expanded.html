@@ -53,6 +53,28 @@
             </div>
         </div>
     </div>
+
+    <div class="share-container-background" onclick="hideShareContainer()">
+    <div class="share-container">
+        <header class="share-header">
+            Share
+            <img class="share-close-img" src="{% static 'main/svg/close.svg' %}" onclick="hideShareContainer()" alt="svg-image">
+        </header>
+        <input type="text" class="share-input" oninput="shareFilter(this)">
+
+        <div class="share-userlist custom-scrollbar">
+            {% for chat in chats %}
+            <div class="share-user">
+                <img class="share-user-img" src="{{ chat.profile.avatar.url }}" alt="{{ chat.username }}'s avatar">
+                <a href="{% url 'profile' username=chat.username %}"><div class="share-user-name">{{ chat.profile.full_name }}
+                    <div class="share-user-second-name">{{ chat.username }}</div>
+                </div></a>
+                <div class="share-user-share">Share</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
     
 
     <div class="mobile-buttons">
@@ -193,8 +215,12 @@
     const notificationImgs = ["{% static 'main/svg/tick.svg' %}",
                               "{% static 'main/svg/exclamation.svg' %}",
                               "{% static 'main/svg/cross.svg' %}"];
+
+    var uuid = '{{ user_profile.profile.uuid}}';
+    var websocketChat = null
 </script>
 
+<script src="{% static 'main/JS/websocket.js' %}"></script>
 <script src="{% static 'main/JS/base.js' %}"></script>
 <script src="{% static 'main/JS/home.js' %}"></script>
 <script src="{% static 'main/JS/emoji.js' %}"></script>
@@ -205,7 +231,7 @@
     // var emoji = emoji;
     // var emojiPopular = emojiPopular;
     // var emoji_names = emoji_names;
-
+    
     var notification = notification;
     var confirmationDialog = confirmationDialog;
     var hideMessageNotification = hideMessageNotification;
@@ -219,4 +245,7 @@
 
     var newMessageSound = '{% static "main/sounds/new_message.mp3" %}';
 </script>
+
+{% for chat in chats %}
+{% endfor %}
 </html>

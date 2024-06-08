@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from .models import *
+
 
 # Post serializers
 class PostSerializer(serializers.Serializer):
@@ -138,4 +140,49 @@ class HomeStoriesSerializer(serializers.Serializer):
 
     def get_author_avatar(self, obj):
         return obj.author.profile.avatar.url
+
+
+class ChatSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+    username = serializers.CharField()
+
+    profile_full_name = serializers.SerializerMethodField()
+    profile_verify = serializers.SerializerMethodField()
+    profile_avatar = serializers.SerializerMethodField()
+    profile_online_status = serializers.SerializerMethodField()
+    profile_online_time = serializers.SerializerMethodField()
+    profile_uuid = serializers.SerializerMethodField()
+
+    last_message_text = serializers.CharField()
+    last_message_type = serializers.CharField()
+    last_message_time = serializers.DateTimeField()
+    viewed_story_exists = serializers.BooleanField()
+    count_unread = serializers.IntegerField()
+
+    def get_profile_full_name(self, obj):
+        return obj.profile.full_name
+
+    def get_profile_verify(self, obj):
+        return obj.profile.verify
+
+    def get_profile_avatar(self, obj):
+        return obj.profile.avatar.url
+
+    def get_profile_online_status(self, obj):
+        return obj.profile.online_status
+
+    def get_profile_online_time(self, obj):
+        return obj.profile.last_online
+
+    def get_profile_uuid(self, obj):
+        return obj.profile.uuid
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    message = serializers.CharField(required=False, allow_null=True)
+    reply_message = serializers.CharField(required=False, allow_null=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = '__all__'
 

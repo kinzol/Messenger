@@ -37,16 +37,20 @@ urlpatterns = [
 
     # API
     re_path(r'^api/v1/profile/$', ProfileAPIView.as_view()),
+    re_path(r'^api/v1/notification/$', ProfileNotificationAPIView.as_view()),
+    re_path(r'^api/v1/search/$', SearchAPIView.as_view()),
+
+    re_path(r'^api/v1/chat/chats/$', ChatAPIView.as_view()),
+    re_path(r'^api/v1/chat/message/$', ChatMessageAPIView.as_view()),
+
     re_path(r'^api/v1/post/$', PostAPIView.as_view()),
     re_path(r'^api/v1/post/comment/$', PostCommentAPIView.as_view()),
     path('api/v1/post/recommendation/', PostRecommendationAPIView.as_view()),
 
     re_path(r'^api/v1/user/list/$', UserListAPIView.as_view()),
-    re_path(r'^api/v1/search/$', SearchAPIView.as_view()),
     re_path(r'^api/v1/follow/$', ProfileFollowAPIView.as_view()),
-
-    re_path(r'^api/v1/notification/$', ProfileNotificationAPIView.as_view()),
     re_path(r'^api/v1/activity/$', ActivityAPIView.as_view()),
+
     re_path(r'^api/v1/story/$', StoryAPIView.as_view()),
     re_path(r'^api/v1/home/stories/$', HomeStoriesAPIView.as_view()),
 ]
