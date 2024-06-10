@@ -1,3 +1,9 @@
+var messageSound
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    messageSound = new Audio(newMessageSound) 
+});
+
 function notification(type, message) {
     var notifications = document.querySelector('.notifications');
 
@@ -69,30 +75,54 @@ function showMessageNotification(notifyUserId, text) {
 
         if (!userNamesNotification[notifyUserId]) {
             // ОБРАЩЕНИЕ К АПИ И ЗАПРОС АВЫ И НИКА И ЗАПИСАТЬ ИХ В СЛОВАРЬ
+
+            $.ajax({
+                url: '/api/v1/chat/chats/',
+                method: 'get',
+                dataType: 'json',
+                data: {user_id: notifyUserId, get_type: 'user_info'},
+                success: function(data){
+                    userNamesNotification[notifyUserId] = data.full_name;
+                    userAvatarsNotification[notifyUserId] = data.avatar;
+
+                    showMessageNotificationData(messageNotification, notifyUserId, text);
+                }
+            });
+
+        } else {
+            showMessageNotificationData(messageNotification, notifyUserId, text);
         };
-
-        var newMessageNotification = document.createElement('div');
-        newMessageNotification.classList.add('message-notification-content');
-        newMessageNotification.setAttribute('onclick', 'hideMessageNotification(this)');
-        setTimeout(() => {
-            newMessageNotification.classList.add('message-notification-content-show');
-        }, 10);
-
-        newMessageNotification.innerHTML = `
-            <img class="message-notification-content-image" src="${userAvatarsNotification[notifyUserId]}"  alt="${notifyUserId}'s avatar">
-            <div class="message-notification-content-info">
-                <span class="message-notification-content-info-username">${userNamesNotification[notifyUserId]}</span>
-                <span class="message-notification-content-info-message">${text}</span>
-                <span class="message-notification-content-info-data">${notifyUserId}</span>
-            </div>`;
-        
-        messageNotification.appendChild(newMessageNotification);
-
-        setTimeout(() => {
-            newMessageNotification.classList.remove('message-notification-content-show');
-            setTimeout(() => {
-            newMessageNotification.parentNode.removeChild(newMessageNotification);
-            }, 150);
-        }, 4000);
+    } else {
+        var messageNotificationContentInfoMessage = document.querySelector(`[data-id='${notifyUserId}'].message-notification-content-info-message`);
+        messageNotificationContentInfoMessage.innerHTML = text;
     };
 };
+
+function showMessageNotificationData(messageNotification, notifyUserId, text) {
+    var newMessageNotification = document.createElement('div');
+    newMessageNotification.classList.add('message-notification-content');
+    newMessageNotification.setAttribute('onclick', 'hideMessageNotification(this)');
+    setTimeout(() => {
+        newMessageNotification.classList.add('message-notification-content-show');
+    }, 10);
+
+    messageSound.play();
+
+    newMessageNotification.innerHTML = `
+        <img class="message-notification-content-image" src="${userAvatarsNotification[notifyUserId]}"  alt="${notifyUserId}'s avatar">
+        <div class="message-notification-content-info">
+            <span class="message-notification-content-info-username">${userNamesNotification[notifyUserId]}</span>
+            <span class="message-notification-content-info-message" data-id='${notifyUserId}'>${text}</span>
+            <span class="message-notification-content-info-data">${notifyUserId}</span>
+        </div>`;
+    
+    messageNotification.appendChild(newMessageNotification);
+
+    setTimeout(() => {
+        newMessageNotification.classList.remove('message-notification-content-show');
+        setTimeout(() => {
+        newMessageNotification.parentNode.removeChild(newMessageNotification);
+        }, 150);
+    }, 4000);
+};
+

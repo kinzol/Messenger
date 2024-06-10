@@ -69,7 +69,7 @@
                 <a href="{% url 'profile' username=chat.username %}"><div class="share-user-name">{{ chat.profile.full_name }}
                     <div class="share-user-second-name">{{ chat.username }}</div>
                 </div></a>
-                <div class="share-user-share">Share</div>
+                <div class="share-user-share" onclick="sharePost('{{chat.pk}}', '{{chat.profile.uuid}}')">Share</div>
             </div>
             {% endfor %}
         </div>
@@ -82,17 +82,15 @@
             <img class="m-buttons-link-img" src="{% static 'main/svg/home-sidebar.svg' %}" alt="svg-image">
         </a>
         <a class="m-buttons-link" href="{% url 'chat' %}">
-            <div class="mc-sb-c-links-message">12</div>
+            {% if unread_messages_count.count != 0 %}
+                <div class="mc-sb-c-links-message">{{unread_messages_count.count}}</div>
+            {% endif %}
             <img class="m-buttons-link-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
         </a>
         <a class="m-buttons-link" href="{% url 'profile_notification' %}">
 
-            {% if notification_count == 21 %}
-                <div class="mc-sb-c-links-notify">20+</div>
-            {% elif notification_count > 0 %}
+            {% if notification_count != 0 %}
                 <div class="mc-sb-c-links-notify">{{ notification_count }}</div>
-            {% elif notification_count == 0 %}
-                <div class="mc-sb-c-links-notify" style="display: none;">0</div>
             {% endif %}
 
             <img class="m-buttons-link-img" src="{% static 'main/svg/notification-sidebar.svg' %}" alt="svg-image">
@@ -134,7 +132,9 @@
                         Home
                     </a>
                     <a style="position: relative;" href="{% url 'chat' %}">
-                        <div class="mc-sb-c-links-message">12</div>
+                        {% if unread_messages_count.count != 0 %}
+                            <div class="mc-sb-c-links-message">{{unread_messages_count.count}}</div>
+                        {% endif %}
                         <div class="mc-sb-c-links-a">
                             <img class="mc-sb-c-links-img" src="{% static 'main/svg/messages-sidebar.svg' %}" alt="svg-image">
                             Messages
@@ -145,13 +145,8 @@
                         Search
                     </a>
                     <a style="position: relative;" href="{% url 'profile_notification' %}">
-
-                        {% if notification_count == 21 %}
-                            <div class="mc-sb-c-links-notify">20+</div>
-                        {% elif notification_count > 0 %}
+                        {% if notification_count != 0 %}
                             <div class="mc-sb-c-links-notify">{{ notification_count }}</div>
-                        {% elif notification_count == 0 %}
-                            <div class="mc-sb-c-links-notify" style="display: none;">0</div>
                         {% endif %}
                         
                         <div class="mc-sb-c-links-a">
@@ -218,6 +213,8 @@
 
     var uuid = '{{ user_profile.profile.uuid}}';
     var websocketChat = null
+    var chatId = null;
+    var userId = parseInt('{{ user_profile.pk}}')
 </script>
 
 <script src="{% static 'main/JS/websocket.js' %}"></script>

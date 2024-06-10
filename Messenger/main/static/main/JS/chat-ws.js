@@ -1,13 +1,7 @@
-
-var messageSound
 var chatMessegeDates = {};
 var chatMessegeDatesTop = {};
 var chatMessagesOffset = {};
 var chatMessagesDataload = {};
-
-document.addEventListener("DOMContentLoaded", (event) => {
-    messageSound = new Audio(newMessageSound) 
-});
 
 function newMessage(message, preload, topload) {
 
@@ -31,6 +25,7 @@ function newMessage(message, preload, topload) {
         if (chatCounterContainer){
             if (chatCounter) {
                 chatCounter.innerHTML = parseInt(chatCounter.innerHTML) + 1;
+                chatCounter.style = '';
             } else {
                 chatCounterContainer.innerHTML = chatCounterContainer.innerHTML + `<div chat-id="${message.from_user}" class="ccs-container-info-message-count">1</div>`
             };
@@ -44,9 +39,9 @@ function newMessage(message, preload, topload) {
     }
 
     if ((chatId != message.from_user) && (userId != message.from_user)) {
-        messageSound.play();
+        ''
     } else {
-        if ((message.from_user != userId) && !message.read) {
+        if ((message.from_user != userId) && (!message.read || preload)) {
             webSocketChat.send(JSON.stringify({
                 'send_type': 'chat_read',
                 'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
@@ -60,7 +55,11 @@ function newMessage(message, preload, topload) {
     if (userId != message.from_user) {
         var chatInfoMessage = document.querySelector(`[chat-id='${message.from_user}'].ccs-container-info-message`);
         var chatInfoTime = document.querySelector(`[chat-id='${message.from_user}'].ccs-container-info-message-time`);
-        
+        var chatContentHeaderUserinfoActivityTyping = document.querySelector('.chat-content-header-userinfo-activity-typing');
+        var chatContentHeaderUserinfoActivity = document.querySelector('.chat-content-header-userinfo-activity');
+
+        chatContentHeaderUserinfoActivityTyping.style.display = 'none';
+        chatContentHeaderUserinfoActivity.style.display = 'block';
         tempUserInfo[message.from_user] = message.message;
         chatInfoMessage.style = '';
         chatInfoMessage.innerHTML = message.message;
@@ -68,7 +67,11 @@ function newMessage(message, preload, topload) {
     } else {
         var chatInfoMessage = document.querySelector(`[chat-id='${message.to_user}'].ccs-container-info-message`);
         var chatInfoTime = document.querySelector(`[chat-id='${message.to_user}'].ccs-container-info-message-time`);
+        var chatContentHeaderUserinfoActivityTyping = document.querySelector('.chat-content-header-userinfo-activity-typing');
+        var chatContentHeaderUserinfoActivity = document.querySelector('.chat-content-header-userinfo-activity');
 
+        chatContentHeaderUserinfoActivityTyping.style.display = 'none';
+        chatContentHeaderUserinfoActivity.style.display = 'block';
         tempUserInfo[message.to_user] = message.message;
         chatInfoMessage.style = '';
         chatInfoMessage.innerHTML = message.message;
@@ -105,7 +108,6 @@ function newMessage(message, preload, topload) {
     var newMessage = document.createElement('div');
     newMessage.classList.add('ccc-container');
     newMessage.setAttribute('message-id', message.id);
-    newMessage.setAttribute('onclick', 'doubleClickMessage(this)');
 
     if (message.read == true) {
         var tick = `<img message-id="${message.id}" class="ccc-message-view" src="${svgTickBlue}" alt="svg-view"></img>`
@@ -114,6 +116,18 @@ function newMessage(message, preload, topload) {
     };
     var additional = `<img message-id="${message.id}" class="ccc-container-additional ${message.from_user != userId ? 'ccc-contrary-additional' : ''}"
                       src="${svgAdditional}" alt="svg-additional" onclick="showMessageActions(this, ${message.from_user == userId ? 'true' : 'false'})">`
+
+    var reaction = '';
+
+    if (message.reactions.length > 0) {
+        messageReactionsInfo[message.id] = message.reactions;
+
+        reaction = `<div message-id="${message.id}" onclick="messageReactions(this)" class="ccc-reactions">`
+        message.reactions.forEach((react) => {
+            reaction += react.reaction;
+        });
+        reaction += '</div>';
+    };
 
     if (message.message) {
         var parts = message.message.split(" ");
@@ -129,10 +143,11 @@ function newMessage(message, preload, topload) {
     if (message.type == 'text') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-message-text reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-message-text reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
                     <span message-id="${message.id}" class="ccc-message-text-span">${message.message}</span>
                     <span class="ccc-message-time">${time_message}</span>
                     ${message.from_user == userId ? tick : ''}
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}`;
 
@@ -140,7 +155,7 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'reply') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-message-text-reply reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-message-text-reply reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
                     <div reply-id="${message.reply_id}" class="ccc-message-reply" onclick='replyScrollMessage(this)'>
                         <span class="ccc-message-reply-span">${message.reply_message}</span>
                     </div>
@@ -149,6 +164,7 @@ function newMessage(message, preload, topload) {
                         <span class="ccc-message-time">${time_message}</span>
                         ${message.from_user == userId ? tick : ''}
                     </div>
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}`;
 
@@ -156,12 +172,13 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'image') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-media reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-media reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
                     <div class="ccc-media-info">
                         ${time_message}
                         ${message.from_user == userId ? tick : ''}
                     </div>
                     <img class="ccc-media-content" src="${message.file}" onclick="OnFullScreenPhoto(this)" alt="${message.from_user}'s img">
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Image</span>`;
@@ -173,7 +190,7 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'video') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-media reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-media reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
                     <div class="ccc-media-info">
                     ${time_message}
                     ${message.from_user == userId ? tick : ''}
@@ -181,6 +198,7 @@ function newMessage(message, preload, topload) {
                     <video controls class="ccc-media-content" alt="${message.from_user}'s video">
                         <source src="${message.file}">
                     </video>
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Video</span>`;
@@ -190,13 +208,14 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'text-image') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-media-text reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-media-text reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
                     <img class="ccc-media-content ccc-media-content-text" src="${message.file}" onclick="OnFullScreenPhoto(this)" alt="${message.from_user}'s img">
                     <div class="ccc-message-container-media">
                         <span message-id="${message.id}" class="ccc-message-text-span">${message.message}</span>
                         <span class="ccc-message-time">${time_message}</span>
                         ${message.from_user == userId ? tick : ''}
                     </div>
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}`;
 
@@ -204,7 +223,7 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'text-video') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-media-text reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-media-text reaction-area ${message.from_user != userId ? 'ccc-contrary-media' : ''}">
                     <video controls class="ccc-media-content ccc-media-content-text" alt="${message.from_user}'s video">
                         <source src="${message.file}">
                     </video>
@@ -213,6 +232,7 @@ function newMessage(message, preload, topload) {
                         <span class="ccc-message-time">${time_message}</span>
                         ${message.from_user == userId ? tick : ''}
                     </div>
+                    ${reaction}
                 </div>
             </div>
             ${message.from_user != userId ? additional : ''}`;
@@ -221,10 +241,11 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'audio') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-audio-container reaction-area ${message.from_user != userId ? 'ccc-contrary-audio' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-audio-container reaction-area ${message.from_user != userId ? 'ccc-contrary-audio' : ''}">
                     <audio controls src="${message.file}"></audio>
                     <span class="ccc-message-time">${time_message}</span>
                     ${message.from_user == userId ? tick : ''}
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Audio</span>`;
@@ -241,7 +262,7 @@ function newMessage(message, preload, topload) {
 
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <a message-id="${message.id}" class="ccc-file-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}" href="${message.file}" download>
+                <a message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-file-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}" href="${message.file}" download>
                     <img class="ccc-file-img" src="${svgFile}" alt="svg-image">
                     <div class="ccc-file-info">
                         <span class="ccc-file-info-name">${message.file.split('/').pop()}</span>
@@ -251,6 +272,7 @@ function newMessage(message, preload, topload) {
                             ${message.from_user == userId ? tick : ''}
                         </div>
                     </div>
+                    ${reaction}
                 </a>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>File</span>`;
@@ -261,12 +283,13 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'call') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-call-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-call-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
                     <div class="ccc-call-info-container">
                         <span class="ccc-call-name">${message.from_user != userId ? 'Incoming call' : 'Outgoing call'}</span>
                         <span class="ccc-call-time">${time_message}, ${message.call_time}</span>
                     </div>
                     <img class="ccc-call-img" src="${svgCall}" alt="svg-image">
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>${message.from_user != userId ? 'Incoming call' : 'Outgoing call'}</span>`;
@@ -276,12 +299,13 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'video-call') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <div message-id="${message.id}" class="ccc-call-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
+                <div message-id="${message.id}" onclick='doubleClickMessage(this)' class="ccc-call-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
                     <div class="ccc-call-info-container">
                         <span class="ccc-call-name">${message.from_user != userId ? 'Incoming video call' : 'Outgoing video call'}</span>
                         <span class="ccc-call-time">${time_message}, ${message.call_time}</span>
                     </div>
                     <img class="ccc-call-img" src="${svgVideoCall}" alt="svg-image">
+                    ${reaction}
                 </div>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>${message.from_user != userId ? 'Incoming video call' : 'Outgoing video call'}</span>`;
@@ -291,7 +315,7 @@ function newMessage(message, preload, topload) {
     } else if (message.type == 'post') {
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <a href="${message.post_id}" message-id="${message.id}" class="ccc-post-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
+                <a href="${message.forwarded_content}" onclick='doubleClickMessage(this)' message-id="${message.id}" class="ccc-post-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
                     <img class="ccc-call-img" src="${svgPost}" alt="svg-image">
                     <div class="ccc-file-info">
                         <span class="ccc-file-info-name">View post</span>
@@ -300,6 +324,7 @@ function newMessage(message, preload, topload) {
                             ${message.from_user == userId ? tick : ''}
                         </div>
                     </div>
+                    ${reaction}
                 </a>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Post</span>`;
@@ -307,22 +332,28 @@ function newMessage(message, preload, topload) {
 
 
     } else if (message.type == 'story') {
+        var storyData = message.reply_message.split('|@|');
 
-        // ДОБАВЬ ТУТ ОБРАЩЕНИЕ К АПИШКЕ ДЛЯ ПОЛУЧЕНИЯ АВЫ И НИКА АВТОРА!!!!!
-        // ДОБАВЬ ТУТ ОБРАЩЕНИЕ К АПИШКЕ ДЛЯ ПОЛУЧЕНИЯ ПРЕВЬЮ СТОРИСА!!!!!
         var result = `
                 ${message.from_user == userId ? additional : ''}
-                <a href="${message.story_id}" message-id="${message.id}" class="ccc-story-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
+                <a href="${message.forwarded_content}" onclick='doubleClickMessage(this)' message-id="${message.id}" class="ccc-story-container reaction-area ${message.from_user != userId ? 'ccc-contrary' : ''}">
                     <img class="ccc-story-icon-img" src="${svgStory}" alt="story-svg">
                     <div class="ccc-story-header">
-                        <img class="ccc-story-header-img" src="{% static 'main/images/ilon.jpg' %}" alt="${message.author}'s image">
-                        <span>author</span>
+                        <img class="ccc-story-header-img" src="${storyData[1]}" alt="${message.id}'s image">
+                        <span>${storyData[2]}</span>
                     </div>
-                    <img class="ccc-story-img" src="{% static 'main/images/p1.jpg' %}"alt="shared-story">
+                    
+
+                    <video class="ccc-story-img" disablepictureinpicture="" webkit-playsinline="" muted playsinline="" pip="false">
+                        <source src="${storyData[0]}">
+                    </video>
+
+
                     <div class="ccc-media-info">
                         ${time_message}
                         ${message.from_user == userId ? tick : ''}
                     </div>
+                    ${reaction}
                 </a>
                 ${message.from_user != userId ? additional : ''}
                 <span message-id="${message.id}" class="ccc-message-text-span" style='display: none;'>Story</span>`;
@@ -388,7 +419,6 @@ function deleteDatePlate(field, fieldId, time_plate) {
     containers.forEach(container => {
         const dateDiv = container.querySelector('.ccc-date');
         if (dateDiv && dateDiv.textContent.trim() == dateSearch) {
-            console.log(container)
             field.removeChild(container);
         }
     });
@@ -428,7 +458,7 @@ function createMessagePlate(message, toBottom, newMessage, toChatId) {
     var chatSection = document.querySelector(`[chat-id="${toChatId}"].chat-content-chat`);
     if (chatSection) {
         if (toBottom) {
-            var plate = `<div class="ccc-container ${newMessage ? 'ccc-date-new-message' : ''}">
+            var plate = `<div class="ccc-container ${newMessage ? 'ccc-date-new-message' : ''}" ${newMessage ? '' : 'style="position: sticky; top: 0px;"'}>
                             <div class="ccc-date">${message}</div>
                         </div>`;
 
@@ -441,6 +471,7 @@ function createMessagePlate(message, toBottom, newMessage, toChatId) {
                 plate.setAttribute('class', 'ccc-container ccc-date-new-message');
             } else {
                 plate.setAttribute('class', 'ccc-container');
+                plate.setAttribute('style', 'position: sticky; top: 0px;')
             };
 
             plate.innerHTML = `<div class="ccc-date">${message}</div>`;
@@ -553,12 +584,11 @@ function appendChat(chatInfo, prependChat) {
 
     if (!chatById) {
         if (chatInfo.viewed_story_exists) {
-            var userAvatar = `<a chat-id="${chatInfo.pk}" href="${window.location.origin}/story/${chatInfo.username}" class="ccs-container-story">
+            var userAvatar = `<a chat-id="${chatInfo.pk}" href="${window.location.origin}/story/${chatInfo.username}?redirect_to=/chat" class="ccs-container-story">
                     <div chat-id="${chatInfo.pk}" class="ccs-container-uuid">${chatInfo.profile_uuid}</div>
                     <div chat-id="${chatInfo.pk}" class="ccs-container-last-activity">${chatInfo.profile_online_time}</div>
                     <div chat-id="${chatInfo.pk}" class="ccs-container-username">${chatInfo.username}</div>
-                    <div chat-id="${chatInfo.pk}" class="ccs-container-online" title="Online"></div>
-                    ${chatInfo.online ? `<div chat-id="${chatInfo.pk}" class="ccs-container-online" title="Online"></div>` : `<div chat-id="${chatInfo.pk}" class="ccs-container-online" style="display: none;" title="Online"></div>`}
+                    ${chatInfo.profile_online_status ? `<div chat-id="${chatInfo.pk}" class="ccs-container-online" title="Online"></div>` : `<div chat-id="${chatInfo.pk}" class="ccs-container-online" style="display: none;" title="Online"></div>`}
                     <img chat-id="${chatInfo.pk}" class="ccs-container-avatar" src="${chatInfo.profile_avatar}"  alt="${chatInfo.username}'s avatar">
                     </a>`;
         } else {
@@ -566,7 +596,7 @@ function appendChat(chatInfo, prependChat) {
                     <div chat-id="${chatInfo.pk}" class="ccs-container-uuid">${chatInfo.profile_uuid}</div>
                     <div chat-id="${chatInfo.pk}" class="ccs-container-last-activity">${chatInfo.profile_online_time}</div>
                     <div chat-id="${chatInfo.pk}" class="ccs-container-username">${chatInfo.username}</div>
-                    ${chatInfo.online ? `<div chat-id="${chatInfo.pk}" class="ccs-container-online" title="Online"></div>` : `<div chat-id="${chatInfo.pk}" class="ccs-container-online" style="display: none;" title="Online"></div>`}
+                    ${chatInfo.profile_online_status ? `<div chat-id="${chatInfo.pk}" class="ccs-container-online" title="Online"></div>` : `<div chat-id="${chatInfo.pk}" class="ccs-container-online" style="display: none;" title="Online"></div>`}
                     <img chat-id="${chatInfo.pk}" class="ccs-container-avatar" src="${chatInfo.profile_avatar}" alt="${chatInfo.username}'s avatar">
                     </div>`;
         };

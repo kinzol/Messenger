@@ -178,11 +178,18 @@ class ChatSerializer(serializers.Serializer):
         return obj.profile.uuid
 
 
+class ChatMessageReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessageReaction
+        fields = ['pk', 'reaction', 'user']
+
+
 class ChatMessageSerializer(serializers.ModelSerializer):
     message = serializers.CharField(required=False, allow_null=True)
     reply_message = serializers.CharField(required=False, allow_null=True)
+    reactions = ChatMessageReactionSerializer(many=True, read_only=True, source='reaction')
 
     class Meta:
         model = ChatMessage
-        fields = '__all__'
+        exclude = ['reaction']
 

@@ -76,15 +76,21 @@
     <div class="story-share">
         <input type="text" class="story-share-search" oninput="shareFilter(this)">
         
-        {% for chat in chats %}
-        <div class="story-share-user">
-            <img class="story-share-user-avatar" src="{{ chat.profile.avatar.url }}" alt="{{ chat.username }}'s avatar">
-            <div class="story-share-user-userinfo">
-                <span class="story-share-user-userinfo-name">{{ chat.profile.full_name }}</span>
-                <span class="story-share-user-userinfo-login">{{ chat.username }}</span>
-            </div>
-            <div class="story-share-button">Share</div>
-        </div>
+        {% for story in stories %}
+            {% if story.pk == story_id %}
+
+                {% for chat in chats %}
+                <div class="story-share-user">
+                    <img class="story-share-user-avatar" src="{{ chat.profile.avatar.url }}" alt="{{ chat.username }}'s avatar">
+                    <div class="story-share-user-userinfo">
+                        <span class="story-share-user-userinfo-name">{{ chat.profile.full_name }}</span>
+                        <span class="story-share-user-userinfo-login">{{ chat.username }}</span>
+                    </div>
+                    <div class="story-share-button" onclick="shareStory('{{chat.pk}}', '{{chat.profile.uuid}}', '{{ story.video_content.url }}', '{{ stories_author.profile.full_name }}', '{{ stories_author.profile.avatar.url }}')">Share</div>
+                </div>
+                {% endfor %}
+
+            {% endif %}
         {% endfor %}
 
     </div>

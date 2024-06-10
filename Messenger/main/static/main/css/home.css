@@ -991,23 +991,26 @@ h1, h2, h3, h4, h5, h6 {
 .mc-sb-c-links-message,
 .mc-sb-c-links-notify {
     background-color: #f43f38;
-    width: 20px;
-    height: 20px;
+    width: fit-content;
+    height: fit-content;
     position: absolute;
-    border-radius: 50%;
+    border-radius: 60px;
+    padding: 0px 2px;
     font-size: 12px;
     align-items: center;
     display: flex;
     justify-content: center;
     top: 0;
     left: 0;
-	margin-left: 30px;
-    max-width: 25px;
+    margin-left: 30px;
+    max-width: 35px;
+    min-width: 13px;
     color: #ffffffde;
     -webkit-text-fill-color: #ffffffde;
     margin-top: 1px;
     z-index: 1;
     font-weight: 500;
+    overflow: hidden;
 }
 
 .mc-feed-article-not-interested {

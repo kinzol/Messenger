@@ -1009,10 +1009,10 @@ class PostRecommendationAPIView(LoginRequiredMixin, RecommendationMixin, APIView
 class ChatAPIView(LoginRequiredMixin, APIView):
 
     def get(self, request, *args, **kwargs):
-        offset = int(request.GET.get('offset'))
         get_type = request.GET.get('get_type')
 
         if get_type == 'chats':
+            offset = int(request.GET.get('offset'))
             user = self.request.user
 
             last_message = ChatMessage.objects.filter(
@@ -1040,6 +1040,14 @@ class ChatAPIView(LoginRequiredMixin, APIView):
 
             return Response({'chats': ChatSerializer(chats, many=True).data})
 
+        elif get_type == 'user_info':
+            user_id = int(request.GET.get('user_id'))
+
+            user = User.objects.filter(
+                pk=user_id
+            ).select_related('profile').first()
+            return Response({'full_name': user.profile.full_name, 'avatar': user.profile.avatar.url})
+
 
 class ChatMessageAPIView(LoginRequiredMixin, APIView):
 
@@ -1050,7 +1058,13 @@ class ChatMessageAPIView(LoginRequiredMixin, APIView):
 
         messages = ChatMessage.objects.filter(
             (Q(from_user=interlocutor_id) | Q(to_user=interlocutor_id)) & (Q(from_user=user) | Q(to_user=user))
-        ).order_by('-pk')[offset:offset + 15]
+        ).prefetch_related('reaction').order_by('-pk')[offset:offset + 15]
+
+        unread_messages = ChatMessage.objects.filter(
+            Q(from_user=interlocutor_id) & Q(to_user=user)
+        ).filter(read=False).order_by('-pk')
+
+        unread_messages.update(read=True)
 
         for message in messages:
             if message.message:

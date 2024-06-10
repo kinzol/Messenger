@@ -1,4 +1,4 @@
-from django.db.models import Subquery, OuterRef, Q, IntegerField, Max
+from django.db.models import Subquery, OuterRef, Q, IntegerField, Max, Count
 
 from .models import *
 
@@ -32,11 +32,16 @@ class DataMixin:
             last_message_time=Subquery(last_message.values('time_create'))
         ).order_by('-last_message_time')[:10].select_related('profile')
 
+        unread_messages_count = ChatMessage.objects.filter(
+            to_user=profile, read=False
+        ).values('from_user').annotate(count=Count('pk')).values('count')
+
         context['user_profile'] = profile
         context['background_style'] = background_styles[profile.profile.background_style]
         context['notification_count'] = notification_count
         context['chats'] = chats
         context['user_uuid'] = profile.profile.uuid
+        context['unread_messages_count'] = unread_messages_count
 
         return context
 

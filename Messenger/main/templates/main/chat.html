@@ -214,8 +214,10 @@
     var newMessagePlate = [];
     var chatId = null;
     var userId = parseInt('{{ user_profile.pk}}')
+    var userIdName = '{{ user_profile.profile.full_name}}';
     var tempUserInfo = {};
     var userTyping = true;
+    var messageReactionsInfo = {};
 </script>
 <script src="{% static 'main/JS/chat.js' %}"></script>
 <script src="{% static 'main/JS/chat-ws.js' %}"></script>

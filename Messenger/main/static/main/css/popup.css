@@ -251,7 +251,7 @@
 
 
 .message-notification {
-    position: absolute;
+    position: fixed;
     width: 100%;
     margin: auto;
     left: 0;

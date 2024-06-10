@@ -266,23 +266,26 @@ a {
 
 .mc-sb-c-links-notify {
     background-color: #f43f38;
-    width: 20px;
-    height: 20px;
+    width: fit-content;
+    height: fit-content;
     position: absolute;
-    border-radius: 50%;
+    border-radius: 60px;
+    padding: 0px 2px;
     font-size: 12px;
     align-items: center;
     display: flex;
     justify-content: center;
     top: 0;
     left: 0;
-	margin-left: 30px;
-    max-width: 25px;
+    margin-left: 30px;
+    max-width: 35px;
+    min-width: 13px;
     color: #ffffffde;
     -webkit-text-fill-color: #ffffffde;
     margin-top: 1px;
     z-index: 1;
     font-weight: 500;
+    overflow: hidden;
 }
 
 .chat-contacts-footer-button {
@@ -1187,6 +1190,7 @@ input[type=file]::-webkit-file-upload-button {
     height: 100%;
     object-fit: cover;
     border-radius: 20px;
+    transform: scaleX(-1);
 }
 
 .ccc-story-header {
@@ -1212,6 +1216,7 @@ input[type=file]::-webkit-file-upload-button {
     max-width: calc(100% - 30px);
     text-overflow: ellipsis;
     gap: 5px;
+    z-index: 1;
 }
 
 .ccc-story-header-img {
@@ -1276,10 +1281,12 @@ input[type=file]::-webkit-file-upload-button {
     opacity: 1;
     user-select: none;
     height: 17px;
-    max-width: 30%;
+    max-width: 40%;
+    min-width: 18px;
     text-wrap: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    justify-content: center;
 }
 
 .message-actions-reactions-container {
@@ -1354,7 +1361,7 @@ input[type=file]::-webkit-file-upload-button {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.22);
-    z-index: 10;
+    z-index: 6;
     backdrop-filter: blur( 15px );
     -webkit-backdrop-filter: blur( 15px );
     display: none;
@@ -1716,6 +1723,7 @@ input[type=file]::-webkit-file-upload-button {
     font-weight: 500;
     border-radius: 10px;
     opacity: 0.8;
+    cursor: pointer;
 }
 
 .message-reactions-content-reaction:hover {

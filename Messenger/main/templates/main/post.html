@@ -15,7 +15,7 @@
     <div class="mc-feed-article-userinfo">
 
         {% if post.viewed_story_exists %}
-            <a href="{% url 'story' username=post.author %}">
+            <a href="{% url 'story' username=post.author %}?redirect_to=/post/{{post.pk}}">
                 <div class="mc-feed-article-story">
                     <img class="mc-feed-article-avatar" src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}'s avatar">
                 </div>

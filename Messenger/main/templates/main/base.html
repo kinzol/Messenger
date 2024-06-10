@@ -59,6 +59,8 @@
 
     var uuid = '{{ user_profile.profile.uuid}}';
     var websocketChat = null
+    var chatId = null;
+    var userId = parseInt('{{ user_profile.pk}}')
 </script>
 
 <script src="{% static 'main/JS/websocket.js' %}"></script>

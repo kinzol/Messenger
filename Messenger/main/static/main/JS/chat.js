@@ -95,21 +95,56 @@ function chatChangeSendInputButton() {
 
 let mediaRecorder;
 let stream;
-let voice = [];
+var voice = [];
 
 function startRecordingAudio() {
-    navigator.mediaDevices.getUserMedia({ audio: true})
+    navigator.mediaDevices.getUserMedia({ audio: true })
     .then(audioStream => {
         stream = audioStream;
         mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) {
+                voice.push(e.data);
+            }
+        };
+
+        mediaRecorder.onstop = function() {
+
+            if (voice.length > 0) {
+                const blob = new Blob(voice, { type: 'audio/wav' });
+
+                const fileReader = new FileReader();
+                fileReader.onload = function(event) {
+                    const fileContentReader = event.target.result.split(',')[1];
+
+                    webSocketChat.send(JSON.stringify({
+                        'send_type': 'chat_message',
+                        'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+                        'type': 'audio',
+                        'message': 'Voice message',
+                        'reply_id': null,
+                        'reply_message': null,
+                        'forwarded_content': null,
+                        'file': fileContentReader,
+                        'file_name': 'voice.wav',
+                        'from_user': userId,
+                        'to_user': chatId,
+                    }));
+
+                };
+                fileReader.readAsDataURL(blob);
+            }
+        };
+
         mediaRecorder.start();
     })
     .catch(error => {
         console.error('Error accessing microphone:', error);
     });
-};
+}
 
-document.querySelector('.chat-content-audio-record-send-img').addEventListener('click', function(){
+document.querySelector('.chat-content-audio-record-send-img').addEventListener('click', function() {
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
         offContentAudio();
@@ -119,7 +154,7 @@ document.querySelector('.chat-content-audio-record-send-img').addEventListener('
     }
 });
 
-document.querySelector('.chat-content-audio-record-trash-img').addEventListener('click', function(){
+document.querySelector('.chat-content-audio-record-trash-img').addEventListener('click', function() {
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
         offContentAudio();
@@ -129,12 +164,6 @@ document.querySelector('.chat-content-audio-record-trash-img').addEventListener(
         stream.getTracks().forEach(track => track.stop());
     }
 });
-
-if (mediaRecorder) {
-    mediaRecorder.ondataavailable = function(e) {
-        voice.push(e.data);
-    };
-}
 
 
 function onContentAudio() {
@@ -242,7 +271,7 @@ function doubleClickMessage(element) {
     if (doubleClickMessageStatus) {
         doubleClickMessageStatus = false;
         console.log('doubleClick');
-        setReactionMessage('❤️', element.getAttribute('message-id'));
+        setReactionMessage({'textContent': '❤️'}, element.getAttribute('message-id'));
     } else {
         doubleClickMessageStatus = true;
         setTimeout(() => {
@@ -253,33 +282,62 @@ function doubleClickMessage(element) {
 
 function setReactionMessage(element, messageId) {
 
+    if (messageReactionsInfo[messageId]) {
+        messageReactionsInfo[messageId].forEach((rct) => {
+            if (rct.user == userId) {
+                messageReactionRemoveProcess(rct.pk, messageId, userIdName)
+            };
+        });
+    }
+
+    webSocketChat.send(JSON.stringify({
+        'send_type': 'chat_reaction_add',
+        'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+        'reaction': element.textContent,
+        'message_id': parseInt(messageId),
+        'from_user': userId,
+    }));
+
+    hideReplyContainer();
+};
+
+
+function setReactionMessageData(reaction, messageId, from_user, reaction_id) {
     var reactionField = document.querySelector(`[message-id='${messageId}'].ccc-reactions`);
     
-    if (reactionField) {
-
-    } else {
+    if (!reactionField) {
         var messageForReaction = document.querySelector(`[message-id='${messageId}'].reaction-area`);
+        if (!messageForReaction) {return};
         messageForReaction.innerHTML = messageForReaction.innerHTML + `<div message-id='${messageId}' onclick="messageReactions(this)" class="ccc-reactions"></div>`;
         reactionField = document.querySelector(`[message-id='${messageId}'].ccc-reactions`);
     };
     
-    if (element.textContent) {
-        if (!reactionField.innerHTML.includes(element.textContent)) {
-            reactionField.innerHTML = reactionField.innerHTML + element.textContent;
-        };
-        hideReplyContainer();
+    if (!messageReactionsInfo[messageId]) {
+        messageReactionsInfo[messageId] = [{'pk': reaction_id, 'reaction': reaction, 'user': from_user}]
     } else {
-        if (!reactionField.innerHTML.includes(element)) {
-            reactionField.innerHTML = reactionField.innerHTML + element;
-        };
+        messageReactionsInfo[messageId].push({'pk': reaction_id, 'reaction': reaction, 'user': from_user})
     };
+
+    reactionField.innerHTML += reaction;
 };
 
 
 function messageReactions(element) {
     var messageActions = document.querySelector('.message-reaction');
-
+    var messageReactionsContent = document.querySelector('.message-reactions-content');
+    var contentReaction = '';
     messageActionsId = element.getAttribute('message-id');
+    var msgReaction = messageReactionsInfo[parseInt(messageActionsId)];
+
+    msgReaction.forEach((rct) => {
+        if (rct.user == userId) {
+            contentReaction += `<div id="${rct.pk}" msg-id="${messageActionsId}" author="${userIdName}" onclick="messageReactionRemove(this)" class="message-reactions-content-reaction">${userIdName}<div>${rct.reaction}</div></div>`;
+        } else {
+            var ccsContainerInfoName = document.querySelector(`[chat-id='${rct.user}'].ccs-container-info-name`);
+            contentReaction += `<div id="${rct.pk}" msg-id="${messageActionsId}" author="${ccsContainerInfoName.textContent}" onclick="messageReactionRemove(this)" class="message-reactions-content-reaction">${ccsContainerInfoName.innerHTML}<div>${rct.reaction}</div></div>`;
+        };
+    });
+    messageReactionsContent.innerHTML = contentReaction;
     messageActions.style.display = 'flex';
     setTimeout(() => {
         messageActions.classList.add('message-actions-show');
@@ -292,6 +350,61 @@ function hideMessageReactions() {
     setTimeout(() => {
         messageActions.style.display = 'none';
     }, 250);
+};
+
+
+function messageReactionRemove(element) {
+    var reacrId = parseInt(element.getAttribute('id'));
+    var msgId = parseInt(element.getAttribute('msg-id'));
+    var authorId = element.getAttribute('author');
+
+    messageReactionRemoveProcess(reacrId, msgId, authorId)
+
+};
+
+
+function messageReactionRemoveProcess(reacrId, msgId, authorId) {
+
+    if (userIdName != authorId) {
+        return notification(3, 'You can’t remove someone else’s reaction!')
+    };
+
+    messageReactionRemoveData(msgId, reacrId)
+    hideMessageReactions()
+
+    webSocketChat.send(JSON.stringify({
+        'send_type': 'chat_reaction_remove',
+        'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+        'reaction_id': reacrId,
+        'message_id': msgId,
+    }));
+
+};
+
+
+function messageReactionRemoveData(msgId, reacrId) {
+    var contentRct = '';
+    var cccReactions = document.querySelector(`[message-id='${msgId}'].ccc-reactions`);
+    var reactionArea = document.querySelector(`[message-id='${msgId}'].reaction-area`);
+
+    if (cccReactions) {
+        messageReactionsInfo[msgId].forEach((rct) => {
+            if (rct.pk == reacrId) {
+                contentRct = rct.reaction;
+                const index = messageReactionsInfo[msgId].indexOf(rct);
+                if (index > -1) {
+                    messageReactionsInfo[msgId].splice(index, 1);
+                }
+            };
+        });
+
+        cccReactions.innerHTML = cccReactions.innerHTML.replace(contentRct, '');
+
+        if (messageReactionsInfo[msgId].length == 0) {
+            reactionArea.removeChild(cccReactions)
+        };
+    }
+
 };
 
 
@@ -905,13 +1018,15 @@ function onContentSend() {
                 'message': tempMessage ? tempMessage : chatContentInputMessage.value,
                 'reply_id': replyStatus ? replyMessageId : null,
                 'reply_message': replyStatus ? replyMessageContent : null,
+                'forwarded_content': null,
                 'file': fileContentReader,
-                'file_type': fileContent[0].type.split('/')[1].split('+')[0],
+                'file_name': fileName,
                 'from_user': userId,
                 'to_user': chatId,
             }));
 
             chatContentInputMessage.value = '';
+            setTimeout(() => {userTyping = true}, 250)
         };
         fileReader.readAsDataURL(new Blob(fileContent, {type: fileContent.type}));
 
@@ -923,13 +1038,15 @@ function onContentSend() {
             'message': tempMessage ? tempMessage : chatContentInputMessage.value,
             'reply_id': replyStatus ? replyMessageId : null,
             'reply_message': replyStatus ? replyMessageContent : null,
+            'forwarded_content': null,
             'file': null,
-            'file_type': null,
+            'file_name': null,
             'from_user': userId,
             'to_user': chatId,
         }));
 
         chatContentInputMessage.value = '';
+        setTimeout(() => {userTyping = true}, 250)
     };
     
     if (fileStatus) {
@@ -941,6 +1058,7 @@ function onContentSend() {
     };
 
     chatChangeSendInputButton()
+
 };
 
 

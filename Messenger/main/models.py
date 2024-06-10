@@ -80,6 +80,11 @@ class ProfileNotification(models.Model):
 
 
 # Chat models
+class ChatMessageReaction(models.Model):
+    reaction = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reaction_user')
+
+
 def chat_message_file_path(instance, filename):
     user_id = instance.from_user.id
     return os.path.join('uploads', f'user_{user_id}', 'message_file', filename)
@@ -91,6 +96,7 @@ class ChatMessage(models.Model):
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_to_user')
     time_create = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
+    reaction = models.ManyToManyField(ChatMessageReaction, related_name='message_reaction')
 
     message = models.BinaryField(blank=True, null=True)
     reply_id = models.IntegerField(blank=True, null=True)
