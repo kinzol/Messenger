@@ -23,11 +23,6 @@
     -webkit-text-fill-color: #fff;
 }
 
-.search-input:hover {
-    transition: all 250ms ease-in-out;
-    border: 2px solid rgba(255, 255, 255, 0.411);
-}
-
 .search-input:focus {
     transition: all 250ms ease-in-out;
     border: 2px solid rgba(255, 255, 255, 0.63);
@@ -57,11 +52,6 @@
     gap: 5px;
     border-radius: 20px;
     position: relative;
-}
-
-.search-users-container:hover {
-    transition: all 250ms ease-in-out;
-    background-color: #ffffff1a;
 }
 
 .search-users-container-avatar {
@@ -108,4 +98,30 @@
     font-weight: 500;
     color: #ffffffb8;
     text-align: center;
+}
+
+
+@media (hover: hover) {
+    .search-input:hover {
+        transition: all 250ms ease-in-out;
+        border: 2px solid rgba(255, 255, 255, 0.411);
+    }
+
+    .search-users-container:hover {
+        transition: all 250ms ease-in-out;
+        background-color: #ffffff1a;
+    }
+}
+
+
+@media (hover: none) {
+    .search-input:active {
+        transition: all 250ms ease-in-out;
+        border: 2px solid rgba(255, 255, 255, 0.411);
+    }
+
+    .search-users-container:active {
+        transition: all 250ms ease-in-out;
+        background-color: #ffffff1a;
+    }
 }

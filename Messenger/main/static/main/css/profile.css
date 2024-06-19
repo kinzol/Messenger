@@ -174,11 +174,7 @@
     border-radius: 15px;
     opacity: 0.8;
     transition: all 250ms ease-in-out;
-}
-
-.mc-profile-user-buttons-button:hover {
-    opacity: 1;
-    transition: all 250ms ease-in-out;
+    cursor: pointer;
 }
 
 .mc-profile-user-buttons-button-img {
@@ -248,13 +244,6 @@
 .cs-articles-mini {
     opacity: 1;
     transition: all 250ms ease-in-out;
-}
-
-
-.cs-articles-full:hover, .cs-articles-mini:hover {
-    transition: all 200ms ease-in-out;
-    background-color: #ffffff38;
-    opacity: 0.9;
 }
 
 .mc-feed-article-container {
@@ -514,11 +503,6 @@
     opacity: 0;
 }
 
-.mc-feed-article:hover .mc-feed-article-menu-img {
-    transition: all 550ms ease-in-out;
-    opacity: 0.8;
-}
-
 .mc-feed-article-time {
     transition: all 250ms ease-in-out;
     opacity: 0;
@@ -529,7 +513,50 @@
     font-weight: 500;
 }
 
-.mc-feed-article:hover .mc-feed-article-time {
-    transition: all 550ms ease-in-out;
-    opacity: 0.8;
+@media (hover: hover) {
+    .mc-profile-user-buttons-button:hover {
+        opacity: 1;
+        transition: all 250ms ease-in-out;
+    }
+
+    .cs-articles-full:hover, .cs-articles-mini:hover {
+        transition: all 200ms ease-in-out;
+        background-color: #ffffff38;
+        opacity: 0.9;
+    }
+
+    .mc-feed-article:hover .mc-feed-article-menu-img {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .mc-feed-article:hover .mc-feed-article-time {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
 }
+
+
+@media (hover: none) {
+    .mc-profile-user-buttons-button:active {
+        opacity: 1;
+        transition: all 250ms ease-in-out;
+    }
+
+    .cs-articles-full:active, .cs-articles-mini:active {
+        transition: all 200ms ease-in-out;
+        background-color: #ffffff38;
+        opacity: 0.9;
+    }
+
+    .mc-feed-article:active .mc-feed-article-menu-img {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .mc-feed-article:active .mc-feed-article-time {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
+}
+

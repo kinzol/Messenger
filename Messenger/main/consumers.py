@@ -2,9 +2,10 @@ import asyncio
 import base64
 import json
 
-from asgiref.sync import sync_to_async
-from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async, async_to_sync
+from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.utils import timezone
 
 from .models import *
@@ -27,7 +28,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                        (self.user.profile.chats.all().select_related('profile').values('profile__uuid')))
 
         self.user.profile.online_status = True
-        await sync_to_async(self.user.profile.save)()
+        try:
+            async with transaction.atomic():
+                await sync_to_async(self.user.profile.save)()
+                print("Profile saved:", self.user.profile.online_status)
+        except Exception as e:
+            print("Error saving profile:", e)
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -44,7 +50,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         self.user.profile.last_online = timezone.now()
         self.user.profile.online_status = False
-        await sync_to_async(self.user.profile.save)()
+        try:
+            async with transaction.atomic():
+                await sync_to_async(self.user.profile.save)()
+                print("Profile saved:", self.user.profile.online_status, self.user.profile.last_online)
+        except Exception as e:
+            print("Error saving profile:", e)
 
         await asyncio.sleep(5)
         user = await sync_to_async(
@@ -71,11 +82,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message, reply_message = None, None
             target_user_uuid = data.get('target_user_uuid')
 
+            if data['new_chat']:
+                from_user = await sync_to_async(User.objects.select_related('profile').get)(pk=int(data['from_user']))
+                to_user = await sync_to_async(User.objects.select_related('profile').get)(pk=int(data['to_user']))
+
+                from_user_chats = await sync_to_async(list)(from_user.profile.chats.all())
+
+                if to_user not in from_user_chats:
+                    await sync_to_async(from_user.profile.chats.add)(to_user)
+                    await sync_to_async(to_user.profile.chats.add)(from_user)
+
+            else:
+                from_user = await sync_to_async(User.objects.get)(pk=int(data['from_user']))
+                to_user = await sync_to_async(User.objects.get)(pk=int(data['to_user']))
+
             file_data = data['file']
             file_name = data['file_name']
-
-            from_user = await sync_to_async(User.objects.get)(pk=int(data['from_user']))
-            to_user = await sync_to_async(User.objects.get)(pk=int(data['to_user']))
 
             if data['message']:
                 message = encrypt_message(str.encode(data['message']))
@@ -121,6 +143,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'forwarded_content': data['forwarded_content'],
                     'from_user': data['from_user'],
                     'to_user': data['to_user'],
+                    'new_chat': data['new_chat'],
                 }
 
                 await self.channel_layer.group_send(self.room_group_name, data_dict)
@@ -187,6 +210,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message_id': data['message_id'],
             })
 
+        elif data['send_type'] == 'chat_message_delete':
+            target_user_uuid = data['target_user_uuid']
+            target_group_name = f'chat_{target_user_uuid}'
+
+            chat_message = await (sync_to_async(ChatMessage.objects.select_related("from_user").get)
+                                  (pk=data['message_id']))
+
+            if self.user == chat_message.from_user:
+                await sync_to_async(chat_message.delete)()
+
+            message_dict = {
+                'send_type': data['send_type'],
+                'type': 'chat.message_delete',
+                'message_id': data['message_id'],
+                'chat_id': data['chat_id'],
+            }
+
+            await self.channel_layer.group_send(target_group_name, message_dict)
+            await self.channel_layer.group_send(self.room_group_name, message_dict)
+
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
             'send_type': event['send_type'],
@@ -203,6 +246,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'forwarded_content': event['forwarded_content'],
             'from_user': event['from_user'],
             'to_user': event['to_user'],
+            'new_chat': event['new_chat'],
         }))
 
     async def chat_read(self, event):
@@ -239,4 +283,128 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'send_type': event['send_type'],
             'reaction_id': event['reaction_id'],
             'message_id': event['message_id'],
+        }))
+
+    async def chat_message_delete(self, event):
+        await self.send(text_data=json.dumps({
+            'send_type': event['send_type'],
+            'message_id': event['message_id'],
+            'chat_id': event['chat_id'],
+        }))
+
+
+class CallConsumer(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+
+        # response to client, that we are connected.
+        self.send(text_data=json.dumps({
+            'type': 'connection',
+            'data': {
+                'message': "Connected"
+            }
+        }))
+
+    def disconnect(self, close_code):
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.my_name,
+            self.channel_name
+        )
+
+    # Receive message from client WebSocket
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        eventType = text_data_json['type']
+
+        if eventType == 'login':
+            name = text_data_json['data']['name']
+            self.my_name = name
+
+            async_to_sync(self.channel_layer.group_add)(
+                self.my_name,
+                self.channel_name
+            )
+
+        if eventType == 'call':
+            name = text_data_json['data']['name']
+
+            async_to_sync(self.channel_layer.group_send)(
+                name,
+                {
+                    'type': 'call_received',
+                    'callFormat': text_data_json['data']['callFormat'],
+                    'sourceFullName': text_data_json['data']['sourceFullName'],
+                    'sourceAvatar': text_data_json['data']['sourceAvatar'],
+                    'data': {
+                        'caller': self.my_name,
+                        'rtcMessage': text_data_json['data']['rtcMessage']
+                    }
+                }
+            )
+
+        if eventType == 'answer_call':
+            # has received call from someone now notify the calling user
+            # we can notify to the group with the caller name
+
+            caller = text_data_json['data']['caller']
+            # print(self.my_name, "is answering", caller, "calls.")
+
+            async_to_sync(self.channel_layer.group_send)(
+                caller,
+                {
+                    'type': 'call_answered',
+                    'data': {
+                        'rtcMessage': text_data_json['data']['rtcMessage']
+                    }
+                }
+            )
+
+        if eventType == 'call_stop':
+            name = text_data_json['data']['name']
+
+            async_to_sync(self.channel_layer.group_send)(
+                name,
+                {
+                    'type': 'call_stop',
+                }
+            )
+
+        if eventType == 'ICEcandidate':
+            user = text_data_json['data']['user']
+
+            async_to_sync(self.channel_layer.group_send)(
+                user,
+                {
+                    'type': 'ICEcandidate',
+                    'data': {
+                        'rtcMessage': text_data_json['data']['rtcMessage']
+                    }
+                }
+            )
+
+    def call_received(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'call_received',
+            'callFormat': event['callFormat'],
+            'sourceFullName': event['sourceFullName'],
+            'sourceAvatar': event['sourceAvatar'],
+            'data': event['data']
+        }))
+
+    def call_answered(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'call_answered',
+            'data': event['data']
+        }))
+
+    def call_stop(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'call_stop',
+        }))
+
+    def ICEcandidate(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'ICEcandidate',
+            'data': event['data']
         }))

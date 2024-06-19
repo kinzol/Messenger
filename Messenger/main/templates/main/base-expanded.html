@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'main/css/popup.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'main/css/home.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'main/css/call.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/' %}{{ background_style }}" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'main/images/logo-180x180.png' %}">
@@ -34,6 +35,7 @@
     {% block body-non-main%}
     {% endblock %}
 
+    {% include 'main/call.html' %}
 
     <div class="notifications"></div>
 
@@ -212,9 +214,18 @@
                               "{% static 'main/svg/cross.svg' %}"];
 
     var uuid = '{{ user_profile.profile.uuid}}';
-    var websocketChat = null
+    var websocketChat = null;
     var chatId = null;
-    var userId = parseInt('{{ user_profile.pk}}')
+    var myName = '{{ user_profile.username }}';
+    var userId = parseInt('{{ user_profile.pk}}');
+    var callToUser;
+
+
+    var callSourceFullName 
+    var callSourceAvatar
+
+    var myFullName = '{{ user_profile.profile.full_name }}';
+    var myAvatarUrl = '{{ user_profile.profile.avatar.url }}';
 </script>
 
 <script src="{% static 'main/JS/websocket.js' %}"></script>
@@ -223,6 +234,10 @@
 <script src="{% static 'main/JS/emoji.js' %}"></script>
 <script src="{% static 'main/JS/notification.js' %}"></script>
 <script src="{% static 'main/JS/dialog.js' %}"></script>
+
+<script src="{% static 'main/JS/call.js' %}"></script>
+
+<script src="{% static 'main/JS/presentation.js' %}"></script>
 
 <script>
     // var emoji = emoji;

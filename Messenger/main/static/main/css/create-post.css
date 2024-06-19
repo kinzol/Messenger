@@ -72,11 +72,6 @@
     width: 100px;
 }
 
-.post-tags-input:hover {
-    transition: all 250ms ease-in-out;
-    border: 2px solid #ffffff5d;
-}
-
 .post-tags-input:focus {
     transition: all 250ms ease-in-out;
     border: 2px solid #ffffffcc;
@@ -94,11 +89,6 @@
     background-color: #ffffff2a;
     border-radius: 5px;
     cursor: pointer;
-}
-
-.post-tags-tag:hover {
-    transition: all 250ms ease-in-out;
-    background-color: #f43f38;
 }
 
 .post-block-title {
@@ -134,12 +124,6 @@
     cursor: default;
 }
 
-
-.post-tags-textarea:hover {
-    transition: all 250ms ease-in-out;
-    border: 2px solid #ffffff5b;
-}
-
 .post-tags-textarea:focus {
     transition: all 250ms ease-in-out;
     border: 2px solid #ffffffb7;
@@ -167,12 +151,6 @@
     cursor: pointer;
 }
 
-.post-buttons-button:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-    background-color: #ffffff0c;
-}
-
 
 .post-file-append {
     transition: all 250ms ease-in-out;
@@ -180,11 +158,6 @@
     height: 40px;
     opacity: 0.8;
     cursor: pointer;
-}
-
-.post-file-append:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
 }
 
 .post-file-title {
@@ -198,11 +171,6 @@
     height: 100%;
 }
 
-.post-file-title:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-}
-
 
 .post-file-file {
     transition: all 250ms ease-in-out;
@@ -212,11 +180,6 @@
     border-radius: 15px;
     border: 2px solid #ffffff25;
     cursor: pointer;
-}
-
-.post-file-file:hover {
-    transition: all 250ms ease-in-out; 
-    border: 2px solid #ffffffe3;
 }
 
 .post-file-input {
@@ -239,11 +202,6 @@
     font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
-.post-create:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-}
-
 .post-file-add {
     transition: all 250ms ease-in-out;
     display: flex;
@@ -257,11 +215,6 @@
     padding: 5px 0px;
     opacity: 0.8;
     display: none;
-}
-
-.post-file-add:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
 }
 
 .post-drag {
@@ -299,4 +252,98 @@
 }
 
 
+@media (hover: hover) {
+    .post-tags-input:hover {
+        transition: all 250ms ease-in-out;
+        border: 2px solid #ffffff5d;
+    }
 
+    .post-tags-tag:hover {
+        transition: all 250ms ease-in-out;
+        background-color: #f43f38;
+    }
+
+    .post-tags-textarea:hover {
+        transition: all 250ms ease-in-out;
+        border: 2px solid #ffffff5b;
+    }
+
+    .post-buttons-button:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        background-color: #ffffff0c;
+    }
+
+    .post-file-append:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .post-file-title:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .post-file-file:hover {
+        transition: all 250ms ease-in-out; 
+        border: 2px solid #ffffffe3;
+    }
+
+    .post-create:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .post-file-add:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+}
+
+@media (hover: none) {
+    .post-tags-input:active {
+        transition: all 250ms ease-in-out;
+        border: 2px solid #ffffff5d;
+    }
+
+    .post-tags-tag:active {
+        transition: all 250ms ease-in-out;
+        background-color: #f43f38;
+    }
+
+    .post-tags-textarea:active {
+        transition: all 250ms ease-in-out;
+        border: 2px solid #ffffff5b;
+    }
+
+    .post-buttons-button:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        background-color: #ffffff0c;
+    }
+
+    .post-file-append:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .post-file-title:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .post-file-file:active {
+        transition: all 250ms ease-in-out; 
+        border: 2px solid #ffffffe3;
+    }
+
+    .post-create:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .post-file-add:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+}

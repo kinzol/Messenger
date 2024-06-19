@@ -17,6 +17,7 @@ var fileSizeLimit = 150*1000;
 var timeout;
 var userSleep = false;
 
+
 function resetTimer() {
     clearTimeout(timeout);
     if (userSleep) {
@@ -130,6 +131,7 @@ function startRecordingAudio() {
                         'file_name': 'voice.wav',
                         'from_user': userId,
                         'to_user': chatId,
+                        'new_chat': parseInt(chatId) == parseInt(sdfValue) ? true : false
                     }));
 
                 };
@@ -918,10 +920,24 @@ function chatFieldScrolled(field) {
 };
 
 function deleteMessage(element, chatFieldId) {
+
+    webSocketChat.send(JSON.stringify({
+        'send_type': 'chat_message_delete',
+        'target_user_uuid': document.querySelector(`[chat-id='${chatId}'].ccs-container-uuid`).innerHTML,
+        'message_id': parseInt(element),
+        'chat_id': chatFieldId,
+    }));
+
+}
+
+function deleteMessageData(element, chatFieldId) {
     var messageContainer = document.querySelector(`[message-id='${parseInt(element)}'].ccc-container`);
     var chatField = document.querySelector(`[chat-id='${chatFieldId}'].chat-content-chat`);
     var ccsContainerInfoMessage = document.querySelector(`[chat-id='${chatFieldId}'].ccs-container-info-message`);
-    ccsContainerInfoMessage.innerHTML = '';
+
+    if (ccsContainerInfoMessage) {
+        ccsContainerInfoMessage.innerHTML = '';
+    };
     hideMessageActions();
 
     messageContainer.style.height = `${messageContainer.offsetHeight}px`;
@@ -1023,6 +1039,7 @@ function onContentSend() {
                 'file_name': fileName,
                 'from_user': userId,
                 'to_user': chatId,
+                'new_chat': parseInt(chatId) == parseInt(sdfValue) ? true : false
             }));
 
             chatContentInputMessage.value = '';
@@ -1043,6 +1060,7 @@ function onContentSend() {
             'file_name': null,
             'from_user': userId,
             'to_user': chatId,
+            'new_chat': parseInt(chatId) == parseInt(sdfValue) ? true : false
         }));
 
         chatContentInputMessage.value = '';
@@ -1072,6 +1090,8 @@ function loadMessages(preload) {
             dataType: 'json',
             data: {offset: chatMessagesOffset[chatId], interlocutor: chatId},
             success: function(data){
+                var fieldChat = document.querySelector(`[chat-id="${chatId}"].chat-content-chat`);
+                var fieldChatHeight = fieldChat.scrollHeight;
                 data.messages.reverse()
 
                 if (preload) {
@@ -1089,6 +1109,8 @@ function loadMessages(preload) {
                         chatMessagesDataload[chatId] = true;
                     };
                 }, 100);
+                fieldChat = document.querySelector(`[chat-id="${chatId}"].chat-content-chat`);
+                fieldChat.scroll({ top: (fieldChat.scrollHeight-fieldChatHeight)});
             }
         });
 

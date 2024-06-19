@@ -37,6 +37,7 @@ function sharePost(shareUser, shareUserUuid) {
         'file_name': null,
         'from_user': userId,
         'to_user': shareUser,
+        'new_chat': false,
     }));
 };
 
@@ -58,5 +59,6 @@ function shareStory(shareUser, shareUserUuid, urlContent, shareUserName, urlUser
         'file_name': null,
         'from_user': userId,
         'to_user': shareUser,
+        'new_chat': false,
     }));
 };

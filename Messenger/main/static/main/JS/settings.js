@@ -284,7 +284,6 @@ function logout(){
 $(document).ready(function(){
     $('#settingsForm').submit(function(event){
         event.preventDefault();
-
         // Создаем объект FormData
         var formData = new FormData(this);
 

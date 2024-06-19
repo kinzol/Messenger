@@ -10,9 +10,13 @@
 
 <main class="camera">
 
-    <div class="camera-style" onclick="changeStyle()">
+    <!-- <div class="camera-style" onclick="changeStyle()">
         <div class="camera-style-button camera-style-button-story">Story</div>
         <div class="camera-style-button camera-style-button-live camera-style-button-hide">Live</div>
+    </div> -->
+
+    <div class="camera-style">
+        <div class="camera-style-button camera-style-button-story">Story</div>
     </div>
 
     <div class="camera-top-buttons">
@@ -78,9 +82,14 @@
 <script src="{% static 'main/JS/create-story-timer.js' %}"></script>
 <script src="{% static 'main/JS/create-story.js' %}"></script>
 <script src="{% static 'main/JS/story.js' %}"></script>
+<!-- <script src="{% static 'main/JS/live-websocket.js' %}"></script> -->
 
 <script>
     var timerStart = timerStart;
     var timerStop = timerStop;
+
+    var myUsername = '{{ user_profile.username }}';
+
+    var liveStream
 </script>
 {% endblock %}

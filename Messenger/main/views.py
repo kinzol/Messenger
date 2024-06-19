@@ -164,6 +164,16 @@ class ChatView(DataMixin, LoginRequiredMixin, TemplateView):
         return {**context, **c_def}
 
 
+class CallView(DataMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'main/call.html'
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title=f'Call')
+        return {**context, **c_def}
+
+
 class SettingsView(DataMixin, LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = SettingsForm
@@ -190,6 +200,7 @@ class SettingsView(DataMixin, LoginRequiredMixin, UpdateView):
                     user.profile.username_change_time = timezone.now()
                     user.username = username
                     user.save()
+                    user.profile.save()
                 else:
                     days_left = datetime.timedelta(days=14) - delta
                     if days_left.days >= 1:
@@ -1013,6 +1024,7 @@ class ChatAPIView(LoginRequiredMixin, APIView):
 
         if get_type == 'chats':
             offset = int(request.GET.get('offset'))
+            new_chat = request.GET.get('new_chat') == 'true'
             user = self.request.user
 
             last_message = ChatMessage.objects.filter(
@@ -1023,16 +1035,32 @@ class ChatAPIView(LoginRequiredMixin, APIView):
                 Q(from_user=OuterRef('pk')) & Q(to_user=user) & Q(read=False)
             ).values('from_user').annotate(count=Count('pk')).values('count')
 
-            chats = user.profile.chats.all().annotate(
-                last_message_text=Subquery(last_message.values('message')),
-                last_message_type=Subquery(last_message.values('type')),
-                last_message_time=Subquery(last_message.values('time_create')),
-                viewed_story_exists=Exists(Story.objects.filter(
-                    author=OuterRef('pk'),
-                    time_create__gte=timezone.now() - datetime.timedelta(days=1)
-                )),
-                count_unread=Subquery(unread_messages_count)
-            ).order_by('-last_message_time')[offset:offset + 10].select_related('profile')
+            if new_chat:
+                chat_user_id = int(request.GET.get('chat_user_id'))
+                if user.pk == chat_user_id:
+                    return Response({'status': False})
+
+                chats = User.objects.filter(pk=chat_user_id).annotate(
+                    last_message_text=Subquery(last_message.values('message')),
+                    last_message_type=Subquery(last_message.values('type')),
+                    last_message_time=Subquery(last_message.values('time_create')),
+                    viewed_story_exists=Exists(Story.objects.filter(
+                        author=OuterRef('pk'),
+                        time_create__gte=timezone.now() - datetime.timedelta(days=1)
+                    )),
+                    count_unread=Subquery(unread_messages_count)
+                ).select_related('profile')
+            else:
+                chats = user.profile.chats.all().annotate(
+                    last_message_text=Subquery(last_message.values('message')),
+                    last_message_type=Subquery(last_message.values('type')),
+                    last_message_time=Subquery(last_message.values('time_create')),
+                    viewed_story_exists=Exists(Story.objects.filter(
+                        author=OuterRef('pk'),
+                        time_create__gte=timezone.now() - datetime.timedelta(days=1)
+                    )),
+                    count_unread=Subquery(unread_messages_count)
+                ).order_by('-last_message_time')[offset:offset + 10].select_related('profile')
 
             for chat in chats:
                 if chat.last_message_text:

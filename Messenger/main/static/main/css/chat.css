@@ -93,11 +93,6 @@ a {
     100% {background: none;}
 }
 
-.chat-contacts-section-container:hover {
-    transition: all 250ms ease-in-out;
-    background: rgba(255, 255, 255, 0.144);
-}
-
 .ccs-container-story {
     height: 58px;
     width: 58px;
@@ -302,17 +297,6 @@ a {
     transition: all 150ms ease-in-out;
 }
 
-.chat-contacts-footer-button-img:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
-.chat-contacts-footer-button:hover {
-    transition: all 150ms ease-in-out;
-    transform: scale(1.1);
-    opacity: 1;
-}
-
 .chat-contacts-footer {
     display: flex;
     display: flex;
@@ -374,11 +358,6 @@ a {
     -webkit-backdrop-filter: blur(15px);
     cursor: pointer;
     border: none;
-}
-
-.chat-content-input-scrollDown:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
 }
 
 .chat-content-input-scrollDown-show {
@@ -501,11 +480,6 @@ a {
     margin-left: 5px;
 }
 
-.chat-content-audio-record-trash-img:hover {
-    transition: all 150ms ease-in-out;
-    background-color: #ff74749d;
-}
-
 .chat-content-audio-record-send-img {
     height: 40px;
     width: 40px;
@@ -513,11 +487,6 @@ a {
     padding: 5px;
     transition: all 150ms ease-in-out;
     margin-right: 5px;
-}
-
-.chat-content-audio-record-send-img:hover {
-    transition: all 150ms ease-in-out;
-    background-color: #ffffff3a;
 }
 
 .chat-content-chat {
@@ -586,18 +555,6 @@ a {
     width: 10px;
 }
 
-.chat-content-input-emoji:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
-.chat-content-input-send:hover,
-.chat-content-input-audio:hover,
-.chat-content-input-file:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
 .chat-content-input-file-hide {
     transition: all 150ms ease-in-out;
     width: 0px;
@@ -632,11 +589,6 @@ a {
     transition: all 150ms ease-in-out;
     opacity: 0;
     height: 0px;
-}
-
-.chat-content-input-message:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 0.8;
 }
 
 .chat-content-input-message:focus {
@@ -705,11 +657,6 @@ a {
     margin-top: 7px;
 }
 
-.chat-content-header-buttons-img:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
 .chat-content-header-buttons {
     margin-left: auto;
     margin-right: 30px;
@@ -754,11 +701,6 @@ a {
     cursor: default;
 }
 
-.chat-content-input-container-emoji-title:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
 .chat-content-input-container-emoji-container {
     width: 100%;
     height: fit-content;
@@ -781,11 +723,6 @@ a {
     justify-content: center;
     align-items: center;
     user-select: none;
-}
-
-.chat-content-input-container-emoji-emoji:hover {
-    transition: all 150ms ease-in-out;
-    background: #ffffff27;
 }
 
 .chat-content-input-hide {
@@ -1260,10 +1197,6 @@ input[type=file]::-webkit-file-upload-button {
     user-select: none;
 }
 
-.ccc-container:hover .ccc-container-additional {
-    opacity: 0.5;
- }
-
 .ccc-reactions {
     transition: all 150ms ease-in-out;
     background-color: red;
@@ -1309,11 +1242,6 @@ input[type=file]::-webkit-file-upload-button {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.message-actions-reaction:hover {
-    transition: all 150ms ease-in-out;
-    background-color: #ffffff36;
 }
 
 .message-actions-container-span {
@@ -1401,18 +1329,6 @@ input[type=file]::-webkit-file-upload-button {
     opacity: 0.6;
     width: 100%;
     text-align: center;
-}
-
-.message-actions-button:hover {
-    transition: all 150ms ease-in-out;
-    background-color: #ffffff31;
-    opacity: 1;
-}
-
-.red-button:hover {
-    transition: all 150ms ease-in-out;
-    background-color: #ff5353;
-    color: #fff;
 }
 
 .chat-content-input-reply {
@@ -1535,11 +1451,6 @@ input[type=file]::-webkit-file-upload-button {
     margin: 5px;
 }
 
-.cci-file-filename:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
 .cci-file-cancel {
     transition: all 150ms ease-in-out;
     font-size: 20px;
@@ -1547,12 +1458,6 @@ input[type=file]::-webkit-file-upload-button {
     opacity: 0.8;
     padding: 5px 15px;
     cursor: pointer;
-}
-
-.cci-file-cancel:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-    background-color: #ffffff21;
 }
 
 .cci-file-send {
@@ -1567,12 +1472,6 @@ input[type=file]::-webkit-file-upload-button {
 .cci-file-send-img {
     height: 40px;
     width: 40px;
-}
-
-.cci-file-send:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-    background-color: #ffffff21;
 }
 
 .cci-file-buttons {
@@ -1724,12 +1623,6 @@ input[type=file]::-webkit-file-upload-button {
     border-radius: 10px;
     opacity: 0.8;
     cursor: pointer;
-}
-
-.message-reactions-content-reaction:hover {
-    transition: all 150ms ease-in-out;
-    background-color: #ffffff2a;
-    opacity: 1;
 }
 
 .chat-content-header-back {
@@ -1918,4 +1811,227 @@ input[type=file]::-webkit-file-upload-button {
     0% {opacity: 1;}
     50% {opacity: 0;}
     100% {opacity: 1;}
+}
+
+
+
+@media (hover: hover) {
+
+    .ccc-container:hover .ccc-container-additional {
+        opacity: 0.5;
+     }
+
+    .chat-contacts-section-container:hover {
+        transition: all 250ms ease-in-out;
+        background: rgba(255, 255, 255, 0.144);
+    }
+
+    .chat-contacts-footer-button-img:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .chat-contacts-footer-button:hover {
+        transition: all 150ms ease-in-out;
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    .chat-content-input-scrollDown:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-audio-record-trash-img:hover {
+        transition: all 150ms ease-in-out;
+        background-color: #ff74749d;
+    }
+
+    .chat-content-audio-record-send-img:hover {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff3a;
+    }
+
+    .chat-content-input-emoji:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-input-send:hover,
+    .chat-content-input-audio:hover,
+    .chat-content-input-file:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-input-message:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .chat-content-header-buttons-img:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-input-container-emoji-title:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .chat-content-input-container-emoji-emoji:hover {
+        transition: all 150ms ease-in-out;
+        background: #ffffff27;
+    }
+
+    .message-actions-reaction:hover {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff36;
+    }
+
+    .message-actions-button:hover {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff31;
+        opacity: 1;
+    }
+    
+    .red-button:hover {
+        transition: all 150ms ease-in-out;
+        background-color: #ff5353;
+        color: #fff;
+    }
+
+    .cci-file-filename:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .cci-file-cancel:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+        background-color: #ffffff21;
+    }
+
+    .cci-file-send:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+        background-color: #ffffff21;
+    }
+
+    .message-reactions-content-reaction:hover {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff2a;
+        opacity: 1;
+    }
+}
+
+
+@media (hover: none) {
+
+    .ccc-container:active .ccc-container-additional {
+        opacity: 0.5;
+     }
+
+    .chat-contacts-section-container:active {
+        transition: all 250ms ease-in-out;
+        background: rgba(255, 255, 255, 0.144);
+    }
+
+    .chat-contacts-footer-button-img:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .chat-contacts-footer-button:active {
+        transition: all 150ms ease-in-out;
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    .chat-content-input-scrollDown:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-audio-record-trash-img:active {
+        transition: all 150ms ease-in-out;
+        background-color: #ff74749d;
+    }
+
+    .chat-content-audio-record-send-img:active {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff3a;
+    }
+
+    .chat-content-input-emoji:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-input-send:active,
+    .chat-content-input-audio:active,
+    .chat-content-input-file:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-input-message:active {
+        transition: all 150ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .chat-content-header-buttons-img:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .chat-content-input-container-emoji-title:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .chat-content-input-container-emoji-emoji:active {
+        transition: all 150ms ease-in-out;
+        background: #ffffff27;
+    }
+
+    .message-actions-reaction:active {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff36;
+    }
+
+    .message-actions-button:active {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff31;
+        opacity: 1;
+    }
+    
+    .red-button:active {
+        transition: all 150ms ease-in-out;
+        background-color: #ff5353;
+        color: #fff;
+    }
+
+    .cci-file-filename:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .cci-file-cancel:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+        background-color: #ffffff21;
+    }
+
+    .cci-file-send:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+        background-color: #ffffff21;
+    }
+    
+    .message-reactions-content-reaction:active {
+        transition: all 150ms ease-in-out;
+        background-color: #ffffff2a;
+        opacity: 1;
+    }
 }

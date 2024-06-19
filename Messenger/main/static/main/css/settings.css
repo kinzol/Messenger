@@ -19,11 +19,7 @@
     cursor: pointer;
 }
 
-.settings-edit-background:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-    transform: scale(1.4);
-}
+
 
 .mc-profile-user-avatar-img {
     filter: brightness(80%);
@@ -42,11 +38,7 @@
     opacity: 0.6;
 }
 
-.settings-edit-avatar:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-    transform: scale(1.4);
-}
+
 
 
 .settings-edit-name {
@@ -57,11 +49,6 @@
     opacity: 0.6;
 }
 
-.settings-edit-name:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-    transform: scale(1.4);
-}
 
 .settings-edit-username {
     transition: all 250ms ease-in-out;
@@ -187,10 +174,6 @@
     bottom: -100%;
 }
 
-.save-container:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-}
 
 .save-container-show {
     bottom: 80px;
@@ -225,10 +208,6 @@
     cursor: pointer;
 }
 
-.logout-button:hover {
-    transition: all 250ms ease-in-out;
-    background-color: #ff5353;
-}
 
 .save-button {
     transition: all 150ms ease-in-out;
@@ -247,10 +226,6 @@
     text-shadow: 0px 0px 15px #00000038;
 }
 
-.save-button:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
 
 
 .edit-profile-info-container {
@@ -312,10 +287,6 @@
     opacity: 0.6;
 }
 
-.epi-input:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 0.8;
-}
 
 .epi-input:focus {
     transition: all 150ms ease-in-out;
@@ -348,10 +319,6 @@
     opacity: 0.8;
 }
 
-.epi-save:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
 
 .custom-scrollbar::-webkit-scrollbar {
     background-color: rgba(221, 221, 221, 0.137);
@@ -369,5 +336,97 @@
 @media (max-width: 595px) {
     .settings-edit-avatar {
         margin: -45px 40px auto;
+    }
+}
+
+
+@media (hover: hover) {
+    .settings-edit-background:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        transform: scale(1.4);
+    }
+
+    .settings-edit-avatar:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        transform: scale(1.4);
+    }
+    
+    .settings-edit-name:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        transform: scale(1.4);
+    }
+
+    .save-container:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .logout-button:hover {
+        transition: all 250ms ease-in-out;
+        background-color: #ff5353;
+    }
+
+    .save-button:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .epi-input:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .epi-save:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+}
+
+
+@media (hover: none) {
+    .settings-edit-background:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        transform: scale(1.4);
+    }
+
+    .settings-edit-avatar:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        transform: scale(1.4);
+    }
+    
+    .settings-edit-name:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        transform: scale(1.4);
+    }
+
+    .save-container:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .logout-button:active {
+        transition: all 250ms ease-in-out;
+        background-color: #ff5353;
+    }
+
+    .save-button:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+
+    .epi-input:active {
+        transition: all 150ms ease-in-out;
+        opacity: 0.8;
+    }
+    
+    .epi-save:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
     }
 }

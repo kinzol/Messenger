@@ -79,11 +79,6 @@
     opacity: 0.8;
 }
 
-.auth-input:hover {
-    transition: all 200ms ease-in-out;
-    border: 2px solid #ffffff8f;
-}
-
 .auth-input:focus {
     transition: all 200ms ease-in-out;
     opacity: 1;
@@ -167,3 +162,20 @@
         padding: 20px;
     }
 }
+
+
+@media (hover: hover) {
+    .auth-input:hover {
+        transition: all 200ms ease-in-out;
+        border: 2px solid #ffffff8f;
+    }
+}
+
+
+@media (hover: none) {
+    .auth-input:active {
+        transition: all 200ms ease-in-out;
+        border: 2px solid #ffffff8f;
+    }
+}
+

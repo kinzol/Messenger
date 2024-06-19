@@ -41,14 +41,6 @@
     z-index: 3;
 }
 
-.camera-top-button-img:hover {
-    transition: all 300ms ease-in-out;
-    background-color: #00000015;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 1;
-}
-
 .camera-video-result,
 .camera-video {
     transition: all 20ms ease-in-out;
@@ -280,17 +272,6 @@
     -webkit-text-fill-color: #fff;
 }
 
-.camera-video-result-publish:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 0.9;
-}
-
-.camera-video-result-reload:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-    background-color: #f43f38;
-}
-
 .live-start {
     transition: all 250ms ease-in-out;
     background-color: #f74f49;
@@ -325,11 +306,6 @@
 .live-start-img {
     height: 60px;
     width: 60px;
-}
-
-.live-start:hover {
-    transition: all 250ms ease-in-out;
-    background-color: #ff625d;
 }
 
 .live-start-show {
@@ -433,11 +409,6 @@
     -webkit-backdrop-filter: blur(14px);
 }
 
-.live-input:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 0.8;
-}
-
 .live-input:focus {
     transition: all 250ms ease-in-out;
     opacity: 1;
@@ -453,11 +424,6 @@
     opacity: 0.6;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-}
-
-.live-input-send:hover {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
 }
 
 
@@ -481,14 +447,6 @@
     cursor: pointer;
     z-index: 3;
     border-radius: 10px;
-}
-
-.live-chat-style:hover {
-    transition: all 300ms ease-in-out;
-    background-color: #00000015;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 1;
 }
 
 .live-chat {
@@ -587,5 +545,95 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: cover;
+    }
+}
+
+
+@media (hover: hover) {
+    .camera-top-button-img:hover {
+        transition: all 300ms ease-in-out;
+        background-color: #00000015;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 1;
+    }
+
+    .camera-video-result-publish:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 0.9;
+    }
+
+    .camera-video-result-reload:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        background-color: #f43f38;
+    }
+
+    .live-start:hover {
+        transition: all 250ms ease-in-out;
+        background-color: #ff625d;
+    }
+
+    .live-input:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .live-input-send:hover {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .live-chat-style:hover {
+        transition: all 300ms ease-in-out;
+        background-color: #00000015;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 1;
+    }
+}
+
+
+@media (hover: none) {
+    .camera-top-button-img:active {
+        transition: all 300ms ease-in-out;
+        background-color: #00000015;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 1;
+    }
+
+    .camera-video-result-publish:active {
+        transition: all 250ms ease-in-out;
+        opacity: 0.9;
+    }
+
+    .camera-video-result-reload:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+        background-color: #f43f38;
+    }
+
+    .live-start:active {
+        transition: all 250ms ease-in-out;
+        background-color: #ff625d;
+    }
+
+    .live-input:active {
+        transition: all 250ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .live-input-send:active {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+
+    .live-chat-style:active {
+        transition: all 300ms ease-in-out;
+        background-color: #00000015;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 1;
     }
 }

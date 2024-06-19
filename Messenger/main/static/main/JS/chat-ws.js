@@ -3,6 +3,14 @@ var chatMessegeDatesTop = {};
 var chatMessagesOffset = {};
 var chatMessagesDataload = {};
 
+const parsedUrl = new URL(window.location.href);
+const params = parsedUrl.searchParams;
+sdfValue = params.get('new_chat');
+
+if (sdfValue) {
+    window.history.pushState({}, '', '/chat/');
+}
+
 function newMessage(message, preload, topload) {
 
         if (userId != message.from_user) {
@@ -482,47 +490,6 @@ function createMessagePlate(message, toBottom, newMessage, toChatId) {
 };
 
 
-function test() {
-ab = newMessage({'type': 'text', 'to': 23, 'from': 'radmir', 'date': '23 jan', 'length': '1m 32s', 'file': testaudio, 'audio': testaudio, 'video': testvideo, 'image': testpicture, 'text': 'да http://127.0.0.1:8000/# https://www.youtube.com/watch?v=d9eSfSACgmI asdasd', 'id': 123, 'read': true, 'time': '13:40', 'reply_text': 'asdasasdasd', 'reply_id': 123})
-};
-
-function testA() {
-    ab = newMessage({'type': 'text', 'to': 'radmir', 'from': 'shamsulinD', 'date': '23 jan', 'length': '1m 32s', 'file': testaudio, 'audio': testaudio, 'video': testvideo, 'image': testpicture, 'text': 'да http://127.0.0.1:8000/# https://www.youtube.com/watch?v=d9eSfSACgmI asdasd', 'id': 123, 'read': true, 'time': '13:40', 'reply_text': 'asdasasdasd', 'reply_id': 123})
-};
-
-function testM() {
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-    test();
-}
-
-
-
-
-
-
 
 
 
@@ -535,7 +502,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         url: '/api/v1/chat/chats/',
         method: 'get',
         dataType: 'json',
-        data: {offset: chatsOffset, get_type: 'chats'},
+        data: {offset: chatsOffset, get_type: 'chats', new_chat: false},
         success: function(data){
             data.chats.forEach((chatInfo) => {
                 appendChat(chatInfo, false);
@@ -546,16 +513,41 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     var chatContactsSection = document.querySelector('.chat-contacts-section');
                     chatContactsSection.innerHTML = '<span class="chat-contacts-section-null">You have no active chat now</span>';
                 }
+                newChatUser(sdfValue);
                 return
             } else {
                 chatsOffset += 10;
                 chatDataLoading = true;
             }
+
+            newChatUser(sdfValue);
         }
     });
    
 });
 
+
+function newChatUser(sdfValuef) {
+    if (sdfValuef) {
+        console.log(sdfValuef);
+
+        $.ajax({
+            url: '/api/v1/chat/chats/',
+            method: 'get',
+            dataType: 'json',
+            data: {get_type: 'chats', offset:0, new_chat: true, chat_user_id: sdfValuef},
+            success: function(data){
+                data.chats.forEach((chatInfo) => {
+                    appendChat(chatInfo, true);
+                });
+
+                if (parseInt(sdfValuef) == parseInt(sdfValue)) {
+                    document.querySelector(`[chat-id='${parseInt(sdfValuef)}'].chat-contacts-section-container`).click();
+                };
+            }
+        });
+    };
+}
 
 function appendChat(chatInfo, prependChat) {
     chatMessagesOffset[chatInfo.pk] = 0;
@@ -629,6 +621,9 @@ function appendChat(chatInfo, prependChat) {
         } else {
             chatsSection.append(chatSectionContainer);
         };
+    } else {
+        chatById.click();
+        sdfValue = null;
     };
 };
 
@@ -658,27 +653,6 @@ function formatDate(dateTimeString) {
     const formattedDate4 = new Intl.DateTimeFormat(undefined, options4).format(date);
 
     return { format1: formattedDate1, format2: formattedDate2, format3: formattedDate3, format4: formattedDate4};
-}
-
-
-function addChat(idchat) {
-    var a = {'story_status': true, 'chat_id': idchat, 'last_activity': 'onlinee', 'online': false, 'unread': 234, 
-             'last_message': 'Hello', 'username': 'Ryan Libre', 'avatar': testpicture, 'verified': false, 'time': '23:40'}
-
-    appendChat(a);
-};
-
-
-function addChatM() {
-    addChat(1);
-    addChat(2);
-    addChat(13);
-    addChat(14);
-    addChat(15);
-    addChat(16);
-    addChat(17);
-    addChat(18);
-    addChat(19);
 }
 
 

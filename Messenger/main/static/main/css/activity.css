@@ -38,11 +38,6 @@
     opacity: 0.8;
 }
 
-.selection-menu-button:hover {
-    transition: all 150ms ease-in-out;
-    opacity: 1;
-}
-
 .selection-menu-button-svg {
     width: 40px;
     height: 40px;
@@ -59,4 +54,19 @@
     font-size: 20px;
     font-weight: 500;
     color: #ffffffb8;
+}
+
+
+@media (hover: hover) {
+    .selection-menu-button:hover {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
+}
+
+@media (hover: none) {
+    .selection-menu-button:active {
+        transition: all 150ms ease-in-out;
+        opacity: 1;
+    }
 }

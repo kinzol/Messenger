@@ -1,0 +1,77 @@
+{% load static %}
+
+<div class="call-border">
+<div class="call-container">
+
+    <div class="call-info">
+        <div class='call-name-info'>
+            <img class="call-info-avatar" src="{% static 'main/images/p1.jpg' %}">
+            <div class="call-name">Robert Shamsulin</div>
+            <div class="call-status">Video call</div>
+        </div>
+
+        <div class="call-buttons">
+            <div class="call-buttons-no" onclick="stop()">
+                <img class="call-buttons-img" src="{% static 'main/svg/call-decline.svg' %}">
+            </div>
+            <div class="call-buttons-yes" onclick="answer()">
+                <img class="call-buttons-img" src="{% static 'main/svg/call-accept.svg' %}">
+            </div>
+        </div>
+    </div>  
+
+
+    <div class="audio-answer">
+        <div class='call-name-info'>
+            <img class="call-info-avatar" src="{% static 'main/images/p1.jpg' %}">
+            <div class="call-name">Robert Shamsulin</div>
+            <div class="call-status-time">0:00</div>
+        </div>
+
+        <div class="call-buttons-answer">
+            <div class="call-buttons-mic" onclick="mic()">
+                <img class="call-buttons-img" src="{% static 'main/svg/mic.svg' %}">
+            </div>
+            <div class="call-buttons-no" onclick="stop()">
+                <img class="call-buttons-img" src="{% static 'main/svg/call-decline.svg' %}">
+            </div>
+        </div>
+    </div>  
+
+
+    <div class="video-answer">
+        <div class='call-name-info'>
+            <div class="call-name">Robert Shamsulin</div>
+            <div class="call-status-time">0:00</div>
+        </div>
+
+        <div id="videos">
+            <video class="call-video-cam" id="localVideo" autoplay muted playsinline></video>
+            <video class="call-video-cam" id="remoteVideo" autoplay playsinline></video>
+        </div>
+
+        <div class="call-buttons-answer">
+            <div class="call-buttons-video" onclick="video()">
+                <img class="call-buttons-img" src="{% static 'main/svg/video-call.svg' %}">
+            </div>
+            <div class="call-buttons-mic" onclick="mic()">
+                <img class="call-buttons-img" src="{% static 'main/svg/mic.svg' %}">
+            </div>
+            <div class="call-buttons-no" onclick="stop()">
+                <img class="call-buttons-img" src="{% static 'main/svg/call-decline.svg' %}">
+            </div>
+        </div>
+
+    </div>  
+
+
+</div>
+</div>
+
+<script>
+    var svgMic = "{% static 'main/svg/mic.svg' %}";
+    var svgMicOff = "{% static 'main/svg/mic-off.svg' %}";
+    var svgVideo = "{% static 'main/svg/video-call.svg' %}";
+    var svgVideoOff = "{% static 'main/svg/video-off.svg' %}";
+    var callFormat = '';
+</script>

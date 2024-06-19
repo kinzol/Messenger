@@ -60,14 +60,23 @@
     var uuid = '{{ user_profile.profile.uuid}}';
     var websocketChat = null
     var chatId = null;
+    var myName = '{{ user_profile.username }}';
+    var myFullName = '{{ user_profile.username }}';
     var userId = parseInt('{{ user_profile.pk}}')
+    var callToUser;
+    var myAvatarUrl = '{{ user_profile.profile.avatar.url }}';
 </script>
 
-<script src="{% static 'main/JS/websocket.js' %}"></script>
+{% if user_profile.profile.uuid %}
+    <script src="{% static 'main/JS/websocket.js' %}"></script>
+{% endif %}
+
 <script src="{% static 'main/JS/base.js' %}"></script>
 <script src="{% static 'main/JS/emoji.js' %}"></script>
 <script src="{% static 'main/JS/notification.js' %}"></script>
 <script src="{% static 'main/JS/dialog.js' %}"></script>
+
+<script src="{% static 'main/JS/presentation.js' %}"></script>
 
 <script>
     // var emoji = emoji;

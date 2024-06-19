@@ -1,0 +1,52 @@
+if (window.location.protocol == 'https:') {
+    var wsStart = 'wss://';
+} else {
+    var wsStart = 'ws://';
+};
+
+function connectWebSocketLive() {
+    var wsEndPoint = wsStart + window.location.host + '/ws/live/' + myUsername + '/';
+    webSocketLive = new WebSocket(wsEndPoint)
+
+    webSocketLive.addEventListener('open', (e) => {
+        console.log('ws open live')
+    });
+
+    webSocketLive.addEventListener('message', (e) => {
+    });
+
+    webSocketLive.addEventListener('close', (e) => {
+        console.log('ws close')
+    });
+
+    webSocketLive.addEventListener('error', (e) => {
+        console.log('ws error')
+    });
+};
+
+document.addEventListener("DOMContentLoaded", (event) => {
+connectWebSocketLive()
+});
+
+function createOfferer(peerUsername, receiver_channel_name) {
+    var peer = new RTCPeerConnection(null);
+
+    var dc = peer.createDataChannel('channel');
+    dc.addEventListener('open', () => {
+        console.log('connect opn');
+    })
+
+    dc.addEventListener('message', () => {
+        console.log('connect message143');
+    })
+
+    setOnTrack(peer, peerUsername)
+}
+
+function addLocalTracks(peer) {
+    liveStream.getTracks().forEach((track) => {
+        peer.addTrack(track, liveStream);
+    });
+
+    return;
+}

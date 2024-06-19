@@ -9,15 +9,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
     webSocketChat = new WebSocket(wsEndPoint)
 
 
-    webSocketChat.addEventListener('open', (e) => {
-        console.log('ws open')
-    });
+    // webSocketChat.addEventListener('open', (e) => {
+    //     console.log('ws open')
+    // });
 
 
     webSocketChat.addEventListener('message', (e) => {
         message = JSON.parse(e.data)
         console.log(message)
         if (message.send_type == 'chat_message') {
+            if (message.new_chat) {
+                if (parseInt(message.from_user) != userId) {
+                    newChatUser(message.from_user);
+                };
+            };
+
             var chatContactsHeader = document.querySelector('.chat-contacts-header');
             if (chatId || chatContactsHeader) {
                 newMessage(message, false, false)
@@ -92,6 +98,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         } else if (message.send_type == 'chat_reaction_remove') {
             messageReactionRemoveData(message.message_id, message.reaction_id);
+
+        } else if (message.send_type == 'chat_message_delete') {
+            deleteMessageData(message.message_id, message.chat_id);
         };
 
     });

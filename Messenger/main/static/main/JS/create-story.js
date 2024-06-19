@@ -8,6 +8,7 @@ var url;
 navigator.mediaDevices.getUserMedia({ video: true, audio: true})
 .then(stream => {
     streamSave = stream;
+    liveStream = stream;
     mediaRecorder = new MediaRecorder(stream);
     var videoCamera = document.querySelector('.camera-video');
     var cameraVideoBackground = document.querySelector('.camera-video-background');
@@ -42,9 +43,6 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true})
     notification(3, 'An error occurred while accessing the camera!');
     setTimeout(() => {window.location.href = window.location.origin}, 2000)
 });
-
-
-
 
 function changeMuted() {
     var cameraVideoResult = document.querySelector('.camera-video-result');

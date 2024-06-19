@@ -19,7 +19,9 @@ function changeStyleArticlesMini() {
     var fullContainer = document.querySelector('.mc-feed-article-container');
 
     miniButton.style.opacity = 1;
+    miniButton.style.backgroundColor = '#ffffff1a';
     fullButton.style.opacity = 0.6;
+    fullButton.style.backgroundColor = '';
 
     fullContainer.classList.remove('mc-feed-article-container-show');
     setTimeout(() => {
@@ -40,7 +42,9 @@ function changeStyleArticlesFull() {
     var fullContainer = document.querySelector('.mc-feed-article-container');
 
     fullButton.style.opacity = 1;
+    fullButton.style.backgroundColor = '#ffffff1a';
     miniButton.style.opacity = 0.6;
+    miniButton.style.backgroundColor = '';
 
     miniContainer.classList.remove('mc-feed-article-container-show');
     setTimeout(() => {

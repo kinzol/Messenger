@@ -226,21 +226,6 @@
     transition: all 250ms linear;
 }
 
-
-.confirm-dialog-buttons-yes:hover {
-    transition: all 250ms linear;
-    background-color: #ff4242;
-    color: #fff;
-    -webkit-text-fill-color: #fff;
-}
-
-.confirm-dialog-buttons-no:hover {
-    transition: all 250ms linear;
-    background-color: #ffffff6c;
-    color: #fff;
-    -webkit-text-fill-color: #fff;
-}
-
 .confirm-dialog-cancel {
     position: absolute;
     height: 100%;
@@ -398,12 +383,6 @@
     outline: none;
 }
 
-
-.share-input:hover {
-    transition: all 150ms ease-in-out;
-    border: 2px solid #ffffff7e;
-}
-
 .share-input:focus {
     transition: all 150ms ease-in-out;
     border: 2px solid #ffffffcb;
@@ -514,5 +493,48 @@
 
     .share-user {
         height: 40px;
+    }
+}
+
+
+@media (hover: hover) {
+    .confirm-dialog-buttons-yes:hover {
+        transition: all 250ms linear;
+        background-color: #ff4242;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+
+    .confirm-dialog-buttons-no:hover {
+        transition: all 250ms linear;
+        background-color: #ffffff6c;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+    
+    .share-input:hover {
+        transition: all 150ms ease-in-out;
+        border: 2px solid #ffffff7e;
+    }
+}
+
+@media (hover: none) {
+    .confirm-dialog-buttons-yes:active {
+        transition: all 250ms linear;
+        background-color: #ff4242;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+
+    .confirm-dialog-buttons-no:active {
+        transition: all 250ms linear;
+        background-color: #ffffff6c;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+    
+    .share-input:active {
+        transition: all 150ms ease-in-out;
+        border: 2px solid #ffffff7e;
     }
 }

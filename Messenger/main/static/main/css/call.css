@@ -1,0 +1,200 @@
+.dialWrapper {
+  width: 300px;
+  background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialNumpadHWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.dialNumber {
+  display: flex;
+  width: 100px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.incomingWrapper {
+  width: 300px;
+  background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+}
+
+.itemWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.actionButton {
+  display: flex;
+  width: 100px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dialActionButton {
+  display: flex;
+  width: 80px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  font-size: larger;
+  cursor: pointer;
+}
+
+#errorMessage {
+  color: red;
+}
+
+.call-container {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 1000px;
+  height: 70%;
+  background-color: #ffffff1c;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0px 0px 20px 0px #11111124;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-answer,
+.audio-answer,
+.call-info {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
+.call-info,
+.video-answer,
+.audio-answer {
+  display: none;
+}
+
+.call-info-avatar {
+  width: 20%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ffffff45;
+}
+
+.call-buttons {
+  display: flex;
+  width: 80%;
+  justify-content: space-evenly;
+}
+
+.call-buttons-video,
+.call-buttons-mic,
+.call-buttons-no,
+.call-buttons-yes {
+  transition: all 250ms ease-in-out;
+  width: 65px;
+  height: 65px;
+  background-color: #4bd964;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.call-buttons-no {
+  background-color: #fe3d30;
+}
+
+.call-buttons-video,
+.call-buttons-mic {
+  background-color: #ffffff3d;
+}
+
+.call-buttons-answer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.call-buttons-img {
+  width: 70%;
+  height: 70%;
+}
+
+.call-name {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  font-size: 30px;
+  font-weight: 500;
+  text-shadow: 0px 0px 4px #00000059;
+}
+
+.call-status-time-video,
+.call-status-time,
+.call-status {
+  color: #ffffffa6;
+  -webkit-text-fill-color: #ffffffa6;
+  font-size: 16px;
+  text-shadow: 0px 0px 4px #00000059;
+}
+
+
+.call-name-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.call-border {
+  transition: all 250ms ease-in-out;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+  top: 0;
+  opacity: 0;
+  display: none;
+}
+
+
+.call-video-cam {
+  background-color: #000000c5;
+  width: 40%;
+  aspect-ratio: 16 / 9;
+  border-radius: 15px;
+}
+
+#videos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}

@@ -30,12 +30,6 @@
     opacity: 0.8;
 }
 
-.post-comments-input:hover {
-    transition: all 150ms ease-in-out;
-    border: 2px solid #ffffff5e;
-    opacity: 1;
-}
-
 .post-comments-input:focus {
     transition: all 150ms ease-in-out;
     border: 2px solid #ffffffaf;
@@ -63,12 +57,6 @@
     background-color: #ffffff1e;
     border-radius: 5px 10px 10px 5px;
     opacity: 0.8;
-}
-
-.post-comments-input-send:hover {
-    transition: all 150ms ease-in-out;
-    border: 2px solid #ffffff5e;
-    opacity: 1;
 }
 
 .post-comment {
@@ -149,12 +137,6 @@
     margin: 0 0 0 5px;
 }
 
-.post-comment-trash:hover {
-    transition: all 150ms linear;
-    opacity: 1;
-    background-color: #ff3b3b;
-}
-
 .mc-feed-article {
     transition: all 150ms ease-in-out;
     background: none;
@@ -176,30 +158,8 @@
     opacity: 0;
 }
 
-/* .post-comment-time:hover {
-    transition: all 250ms ease-in-out;
-    color: #ffffffa6;
-    -webkit-text-fill-color: #ffffffa6;
-} */
-
-.post-comment:hover .post-comment-time {
-    transition: all 250ms ease-in-out;
-    opacity: 0.6;
-}
-
-
-.post-comment:hover .post-comment-trash {
-    transition: all 250ms ease-in-out;
-    opacity: 1;
-}
-
 .mc-feed-article-menu-img {
     opacity: 0;
-}
-
-.mc-feed-article:hover .mc-feed-article-menu-img {
-    transition: all 550ms ease-in-out;
-    opacity: 0.8;
 }
 
 .mc-feed-article-time {
@@ -212,7 +172,85 @@
     font-weight: 500;
 }
 
-.mc-feed-article:hover .mc-feed-article-time {
-    transition: all 550ms ease-in-out;
-    opacity: 0.8;
+
+@media (hover: hover) {
+    .post-comments-input:hover {
+        transition: all 150ms ease-in-out;
+        border: 2px solid #ffffff5e;
+        opacity: 1;
+    }
+
+    .post-comments-input-send:hover {
+        transition: all 150ms ease-in-out;
+        border: 2px solid #ffffff5e;
+        opacity: 1;
+    }
+
+    .post-comment-trash:hover {
+        transition: all 150ms linear;
+        opacity: 1;
+        background-color: #ff3b3b;
+    }
+
+    .post-comment:hover .post-comment-time {
+        transition: all 250ms ease-in-out;
+        opacity: 0.6;
+    }
+    
+    
+    .post-comment:hover .post-comment-trash {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .mc-feed-article:hover .mc-feed-article-menu-img {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .mc-feed-article:hover .mc-feed-article-time {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
+}
+
+@media (hover: none) {
+    .post-comments-input:active {
+        transition: all 150ms ease-in-out;
+        border: 2px solid #ffffff5e;
+        opacity: 1;
+    }
+
+    .post-comments-input-send:active {
+        transition: all 150ms ease-in-out;
+        border: 2px solid #ffffff5e;
+        opacity: 1;
+    }
+
+    .post-comment-trash:active {
+        transition: all 150ms linear;
+        opacity: 1;
+        background-color: #ff3b3b;
+    }
+
+    .post-comment:active .post-comment-time {
+        transition: all 250ms ease-in-out;
+        opacity: 0.6;
+    }
+    
+    
+    .post-comment:active .post-comment-trash {
+        transition: all 250ms ease-in-out;
+        opacity: 1;
+    }
+    
+    .mc-feed-article:active .mc-feed-article-menu-img {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
+
+    .mc-feed-article:active .mc-feed-article-time {
+        transition: all 550ms ease-in-out;
+        opacity: 0.8;
+    }
 }
