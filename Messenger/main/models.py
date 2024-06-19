@@ -102,7 +102,7 @@ class ChatMessage(models.Model):
     reply_id = models.IntegerField(blank=True, null=True)
     reply_message = models.BinaryField(blank=True, null=True)
     file = models.FileField(upload_to=chat_message_file_path, blank=True, null=True)
-    call_time = models.IntegerField(blank=True, null=True, default=0)
+    call_time = models.CharField(blank=True, null=True, max_length=255, default='0')
     forwarded_content = models.CharField(blank=True, null=True, max_length=255)
 
 

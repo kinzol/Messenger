@@ -3,6 +3,7 @@ import base64
 import json
 
 from asgiref.sync import sync_to_async, async_to_sync
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -17,29 +18,28 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Messenger.settings')
 django.setup()
 
+call_state = []
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user_uuid = self.scope['url_route']['kwargs']['user_uuid']
         self.room_group_name = f'chat_{self.user_uuid}'
-        self.user = await sync_to_async(
-            lambda: User.objects.filter(username=self.scope['user']).select_related('profile').first())()
-        chats = await (sync_to_async(list)
-                       (self.user.profile.chats.all().select_related('profile').values('profile__uuid')))
+        self.user = await database_sync_to_async(
+            lambda: User.objects.filter(username=self.scope['user']).select_related('profile').first()
+        )()
+        chats = await database_sync_to_async(
+            lambda: list(self.user.profile.chats.all().select_related('profile').values('profile__uuid'))
+        )()
 
         self.user.profile.online_status = True
-        try:
-            async with transaction.atomic():
-                await sync_to_async(self.user.profile.save)()
-                print("Profile saved:", self.user.profile.online_status)
-        except Exception as e:
-            print("Error saving profile:", e)
+        await database_sync_to_async(self.user.profile.save)()
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
         for chat in chats:
-            await self.channel_layer.group_send(f'chat_{chat['profile__uuid']}', {
+            await self.channel_layer.group_send(f'chat_{chat["profile__uuid"]}', {
                 'send_type': 'chat_online',
                 'type': 'chat.online',
                 'status': 'online',
@@ -50,23 +50,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         self.user.profile.last_online = timezone.now()
         self.user.profile.online_status = False
-        try:
-            async with transaction.atomic():
-                await sync_to_async(self.user.profile.save)()
-                print("Profile saved:", self.user.profile.online_status, self.user.profile.last_online)
-        except Exception as e:
-            print("Error saving profile:", e)
+        await database_sync_to_async(self.user.profile.save)()
 
         await asyncio.sleep(5)
-        user = await sync_to_async(
-            lambda: User.objects.filter(username=self.scope['user']).select_related('profile').first())()
+        user = await database_sync_to_async(
+            lambda: User.objects.filter(username=self.scope['user']).select_related('profile').first()
+        )()
 
         if not user.profile.online_status:
-            chats = await (sync_to_async(list)
-                           (user.profile.chats.all().select_related('profile').values('profile__uuid')))
+            chats = await database_sync_to_async(
+                lambda: list(user.profile.chats.all().select_related('profile').values('profile__uuid'))
+            )()
 
             for chat in chats:
-                await self.channel_layer.group_send(f'chat_{chat['profile__uuid']}', {
+                await self.channel_layer.group_send(f'chat_{chat["profile__uuid"]}', {
                     'send_type': 'chat_online',
                     'type': 'chat.online',
                     'status': 'offline',
@@ -79,12 +76,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         if data['send_type'] == 'chat_message':
-            message, reply_message = None, None
+            message, reply_message, to_user = None, None, None
             target_user_uuid = data.get('target_user_uuid')
 
+            if data['type'] in ['call', 'video-call']:
+                to_user = await sync_to_async(User.objects.select_related('profile').get)(username=data['to_user'])
+                from_user = await sync_to_async(User.objects.select_related('profile').get)(username=data['from_user'])
+
             if data['new_chat']:
-                from_user = await sync_to_async(User.objects.select_related('profile').get)(pk=int(data['from_user']))
-                to_user = await sync_to_async(User.objects.select_related('profile').get)(pk=int(data['to_user']))
+                if not to_user:
+                    to_user = await sync_to_async(User.objects.select_related('profile').get)(pk=int(data['to_user']))
+                    from_user = await (sync_to_async(User.objects.select_related('profile').get)
+                                       (pk=int(data['from_user'])))
 
                 from_user_chats = await sync_to_async(list)(from_user.profile.chats.all())
 
@@ -93,8 +96,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await sync_to_async(to_user.profile.chats.add)(from_user)
 
             else:
-                from_user = await sync_to_async(User.objects.get)(pk=int(data['from_user']))
-                to_user = await sync_to_async(User.objects.get)(pk=int(data['to_user']))
+                if not to_user:
+                    to_user = await sync_to_async(User.objects.get)(pk=int(data['to_user']))
+                    from_user = await sync_to_async(User.objects.get)(pk=int(data['from_user']))
 
             file_data = data['file']
             file_name = data['file_name']
@@ -110,6 +114,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 message=message,
                 reply_id=data['reply_id'],
                 reply_message=reply_message,
+                call_time=data['call_time'],
                 from_user=from_user,
                 to_user=to_user,
                 forwarded_content=data['forwarded_content'],
@@ -139,7 +144,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'reply_id': data['reply_id'],
                     'reply_message': data['reply_message'],
                     'file': new_message.file.url if file_data else None,
-                    'call_time': None,
+                    'call_time': data['call_time'],
                     'forwarded_content': data['forwarded_content'],
                     'from_user': data['from_user'],
                     'to_user': data['to_user'],
@@ -297,7 +302,6 @@ class CallConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
 
-        # response to client, that we are connected.
         self.send(text_data=json.dumps({
             'type': 'connection',
             'data': {
@@ -306,13 +310,14 @@ class CallConsumer(WebsocketConsumer):
         }))
 
     def disconnect(self, close_code):
-        # Leave room group
+        if self.my_name in call_state:
+            call_state.remove(self.my_name)
+
         async_to_sync(self.channel_layer.group_discard)(
             self.my_name,
             self.channel_name
         )
 
-    # Receive message from client WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         eventType = text_data_json['type']
@@ -329,6 +334,31 @@ class CallConsumer(WebsocketConsumer):
         if eventType == 'call':
             name = text_data_json['data']['name']
 
+            if name in call_state:
+                return async_to_sync(self.channel_layer.group_send)(
+                    self.my_name,
+                    {'type': 'call_error', 'error': 'This user is already in a call state!'}
+                )
+
+            call_state.append(name)
+            call_state.append(self.my_name)
+
+            user = User.objects.filter(username=name).select_related('profile').first()
+            profile = User.objects.filter(username=self.my_name).first()
+            is_follower = ProfileFollow.objects.filter(profile=profile, user=user).exists()
+
+            if user.profile.private and not is_follower:
+                return async_to_sync(self.channel_layer.group_send)(
+                    self.my_name,
+                    {'type': 'call_error', 'error': 'This profile is private!'}
+                )
+
+            if not user.profile.online_status:
+                return async_to_sync(self.channel_layer.group_send)(
+                    self.my_name,
+                    {'type': 'call_error', 'error': 'User is not online!'}
+                )
+
             async_to_sync(self.channel_layer.group_send)(
                 name,
                 {
@@ -344,11 +374,7 @@ class CallConsumer(WebsocketConsumer):
             )
 
         if eventType == 'answer_call':
-            # has received call from someone now notify the calling user
-            # we can notify to the group with the caller name
-
             caller = text_data_json['data']['caller']
-            # print(self.my_name, "is answering", caller, "calls.")
 
             async_to_sync(self.channel_layer.group_send)(
                 caller,
@@ -362,6 +388,11 @@ class CallConsumer(WebsocketConsumer):
 
         if eventType == 'call_stop':
             name = text_data_json['data']['name']
+            if name in call_state:
+                call_state.remove(name)
+
+            if self.my_name in call_state:
+                call_state.remove(self.my_name)
 
             async_to_sync(self.channel_layer.group_send)(
                 name,
@@ -401,6 +432,12 @@ class CallConsumer(WebsocketConsumer):
     def call_stop(self, event):
         self.send(text_data=json.dumps({
             'type': 'call_stop',
+        }))
+
+    def call_error(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'call_error',
+            'error': event['error']
         }))
 
     def ICEcandidate(self, event):

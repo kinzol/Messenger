@@ -220,12 +220,17 @@
     var userId = parseInt('{{ user_profile.pk}}');
     var callToUser;
 
-
     var callSourceFullName 
     var callSourceAvatar
 
     var myFullName = '{{ user_profile.profile.full_name }}';
     var myAvatarUrl = '{{ user_profile.profile.avatar.url }}';
+
+    var soundHorn = new Audio("{% static 'main/sounds/horn.mp3' %}");
+    soundHorn.loop = true;
+    var soundCallOff = new Audio("{% static 'main/sounds/calloff.mp3' %}");
+    var soundRingtone = new Audio("{% static 'main/sounds/ringtone.mp3' %}");
+    soundRingtone.loop = true;
 </script>
 
 <script src="{% static 'main/JS/websocket.js' %}"></script>

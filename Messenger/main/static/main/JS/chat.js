@@ -466,6 +466,10 @@ function openChat(element) {
 
     isChatOpen = true;
     chatId = newChatId;
+    callToUser = ccsContainerUsername;
+    callStopUser = ccsContainerUsername;
+    sourceFullName = userName;
+    sourceAvatar = userAvatar;
     userTyping = true;
 
     if (!chatField) {

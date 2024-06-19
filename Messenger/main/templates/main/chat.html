@@ -7,7 +7,7 @@
 
 {% block body %}
 
-<div class="message-actions" onclick="hideMessageActions()">
+<div class="message-actions" onclick="hideMessageActions()">chat-content-header-buttons-img"
     <div class="message-actions-container" onclick="event.stopPropagation()">
         <span class="message-actions-container-span">Actions buttons</span>
         <div class="message-actions-reactions-container">
@@ -109,8 +109,8 @@
             </a>
             <img class="chat-content-header-avatar" src="{% static 'main/images/p1.jpg' %}" alt="user's avatar">
                 <div class="chat-content-header-buttons">
-                    <a href="#"><img class="chat-content-header-buttons-img" src="{% static 'main/svg/audio-call.svg' %}" alt="svg-image"></a>
-                    <a href="#"><img class="chat-content-header-buttons-img" src="{% static 'main/svg/video-call.svg' %}" alt="svg-image"></a>
+                    <img class="chat-content-header-buttons-img" src="{% static 'main/svg/audio-call.svg' %}" onclick="call('Audio call')" alt="svg-image">
+                    <img class="chat-content-header-buttons-img" src="{% static 'main/svg/video-call.svg' %}" onclick="call('Video call')" alt="svg-image">
                 </div>  
         </header>
 
@@ -219,6 +219,9 @@
     var userTyping = true;
     var messageReactionsInfo = {};
     var sdfValue
+
+    var sourceFullName;
+    var sourceAvatar;
 </script>
 <script src="{% static 'main/JS/chat.js' %}"></script>
 <script src="{% static 'main/JS/chat-ws.js' %}"></script>

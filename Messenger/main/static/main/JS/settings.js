@@ -285,6 +285,7 @@ $(document).ready(function(){
     $('#settingsForm').submit(function(event){
         event.preventDefault();
         // Создаем объект FormData
+        webSocketChat.close()
         var formData = new FormData(this);
 
         $.ajax({

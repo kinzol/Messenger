@@ -655,6 +655,7 @@ a {
     width: 35px;
     opacity: 0.6;
     margin-top: 7px;
+    cursor: pointer;
 }
 
 .chat-content-header-buttons {

@@ -357,7 +357,6 @@ var dataLoading = true;
 var offset_stories = 21;
 var isViewedStories = isViewedStr == 'True';
 
-
 storiesContainer.onscroll = function(ev) {
     var scrollPosition = storiesContainer.scrollLeft;
     var maxScrollPosition = storiesContainer.scrollWidth - storiesContainer.clientWidth;

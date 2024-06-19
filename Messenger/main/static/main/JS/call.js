@@ -21,7 +21,11 @@ let callInProgress = false;
 //event from html
 function call(type) {
     let userToCall = callToUser;
+    otherUser = callToUser;
     callFormat = type;
+    soundHorn.currentTime = 0
+    soundHorn.play()
+    callAuthor = myName;
 
     showCallContainer('newCall')
 
@@ -34,6 +38,7 @@ function call(type) {
 //event from html
 function answer() {
     showCallContainer(callFormat);
+    soundRingtone.pause()
     beReady()
         .then(bool => {
             processAccept();
@@ -99,16 +104,25 @@ function connectSocket() {
 
             callStopUser = response.data.caller;
 
+            soundRingtone.currentTime = 0
+            soundRingtone.play()
+
             showCallContainer('ringing');
             onNewCall(response.data)
         }
 
         if(type == 'call_answered') {
+            soundHorn.pause()
             showCallContainer(callFormat);
             onCallAnswered(response.data);
         }
 
         if(type == 'call_stop') {
+            hideCallContainer()
+        }
+
+        if(type == 'call_error') {
+            notification(3, response.error)
             hideCallContainer()
         }
 
@@ -267,7 +281,8 @@ function processAccept() {
         } else {
             console.log("NO Ice candidate in queue");
         }
-
+        
+        callAuthor = otherUser;
         answerCall({
             caller: otherUser,
             rtcMessage: sessionDescription
@@ -301,7 +316,7 @@ function handleIceCandidate(event) {
     if (event.candidate) {
         console.log("Local ICE candidate");
         // console.log(event.candidate.candidate);
-
+        console.warn(otherUser)
         sendICEcandidate({
             user: otherUser,
             rtcMessage: {
@@ -329,24 +344,35 @@ function handleRemoteStreamRemoved(event) {
 }
 
 window.onbeforeunload = function () {
-    if (callInProgress) {
-        stop();
-    }
+    stop();
 };
 
 
 function stop() {
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-    }
+    console.warn(callFormat)
 
-    if (peerConnection) {
-        peerConnection.close();
-    }
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+    var timeString = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 
-    peerConnection = null;
-    callInProgress = false;
-    otherUser = null;
+    if ((seconds > 0) && callAuthor != null) {
+        console.warn('MSG SEND')
+        webSocketChat.send(JSON.stringify({
+            'send_type': 'chat_message',
+            'target_user_uuid': null,
+            'type': callFormat == 'Video call' ? 'video-call' : 'call',
+            'message': callFormat,
+            'reply_id': null,
+            'reply_message': null,
+            'call_time': timeString,
+            'forwarded_content': null,
+            'file': null,
+            'file_name': null,
+            'from_user': callAuthor,
+            'to_user': callAuthor == myName ? callStopUser : myName,
+            'new_chat': false
+        }));
+    }
 
     callSocket.send(JSON.stringify({
         type: 'call_stop',
@@ -465,13 +491,25 @@ function hideCallContainer() {
     var videoAnswer = document.querySelector('.video-answer');
     var audioAnswer = document.querySelector('.audio-answer');
 
+    soundHorn.pause()
+    soundRingtone.pause()
+    if (callBorder.style.display == 'flex') {
+        soundCallOff.play()
+    }
+
     callBorder.style.opacity = '0';
+
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
 
     if (peerConnection) {
         peerConnection.close();
     }
 
     peerConnection = null;
+    callInProgress = false;
+    callAuthor = null;
 
     setTimeout(() => {
         callBorder.style.display = 'none';
