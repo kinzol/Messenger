@@ -70,7 +70,6 @@ let socket;
 let callSocket;
 function connectSocket() {
     let ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
-    console.log(ws_scheme);
 
     callSocket = new WebSocket(
         ws_scheme
@@ -89,13 +88,8 @@ function connectSocket() {
     }
 
     callSocket.onmessage = (e) =>{
-        console.log(e.data)
         let response = JSON.parse(e.data);
         let type = response.type;
-
-        if(type == 'connection') {
-            console.log(response.data.message)
-        }
 
         if(type == 'call_received') {
             callFormat = response.callFormat;
@@ -151,10 +145,8 @@ function connectSocket() {
         });
 
         if (peerConnection) {
-            console.log("ICE candidate Added");
             peerConnection.addIceCandidate(candidate);
         } else {
-            console.log("ICE candidate Pushed");
             iceCandidatesFromCaller.push(candidate);
         }
 
@@ -188,8 +180,6 @@ function sendCall(data) {
  * @param {Object} data.rtcMessage - answer rtc sessionDescription object
  */
 function answerCall(data) {
-    //to answer a call
-    // socket.emit("answerCall", data);
     callSocket.send(JSON.stringify({
         type: 'answer_call',
         data
@@ -204,9 +194,6 @@ function answerCall(data) {
  * @param {Object} data.rtcMessage - iceCandidate data 
  */
 function sendICEcandidate(data) {
-    //send only if we have caller, else no need to
-    console.log("Send ICE candidate");
-    // socket.emit("ICEcandidate", data)
     callSocket.send(JSON.stringify({
         type: 'ICEcandidate',
         data
@@ -221,7 +208,7 @@ function beReady() {
     })
         .then(stream => {
             localStream = stream;
-            localVideo.srcObject = stream;
+            // localVideo.srcObject = stream;
 
             return createConnectionAndAddStream()
         })
@@ -265,7 +252,6 @@ function processAccept() {
             for (let i = 0; i < iceCandidatesFromCaller.length; i++) {
                 //
                 let candidate = iceCandidatesFromCaller[i];
-                console.log("ICE candidate Added From queue");
                 try {
                     peerConnection.addIceCandidate(candidate).then(done => {
                         console.log(done);
@@ -277,9 +263,6 @@ function processAccept() {
                 }
             }
             iceCandidatesFromCaller = [];
-            console.log("ICE candidate queue cleared");
-        } else {
-            console.log("NO Ice candidate in queue");
         }
         
         callAuthor = otherUser;
@@ -302,21 +285,15 @@ function createPeerConnection() {
         peerConnection.onicecandidate = handleIceCandidate;
         peerConnection.onaddstream = handleRemoteStreamAdded;
         peerConnection.onremovestream = handleRemoteStreamRemoved;
-        console.log('Created RTCPeerConnnection');
         return;
     } catch (e) {
-        console.log('Failed to create PeerConnection, exception: ' + e.message);
         alert('Cannot create RTCPeerConnection object.');
         return;
     }
 }
 
 function handleIceCandidate(event) {
-    // console.log('icecandidate event: ', event);
     if (event.candidate) {
-        console.log("Local ICE candidate");
-        // console.log(event.candidate.candidate);
-        console.warn(otherUser)
         sendICEcandidate({
             user: otherUser,
             rtcMessage: {
@@ -326,19 +303,15 @@ function handleIceCandidate(event) {
             }
         })
 
-    } else {
-        console.log('End of candidates.');
     }
 }
 
 function handleRemoteStreamAdded(event) {
-    console.log('Remote stream added.');
     remoteStream = event.stream;
-    remoteVideo.srcObject = remoteStream;
+    // remoteVideo.srcObject = remoteStream;
 }
 
 function handleRemoteStreamRemoved(event) {
-    console.log('Remote stream removed. Event: ', event);
     remoteVideo.srcObject = null;
     localVideo.srcObject = null;
 }
@@ -349,14 +322,11 @@ window.onbeforeunload = function () {
 
 
 function stop() {
-    console.warn(callFormat)
-
-    var minutes = Math.floor(seconds / 60);
-    var remainingSeconds = seconds % 60;
+    var minutes = Math.floor(callSeconds / 60);
+    var remainingSeconds = callSeconds % 60;
     var timeString = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 
-    if ((seconds > 0) && callAuthor != null) {
-        console.warn('MSG SEND')
+    if ((callSeconds > 0) && callAuthor != null) {
         webSocketChat.send(JSON.stringify({
             'send_type': 'chat_message',
             'target_user_uuid': null,
@@ -522,14 +492,14 @@ function hideCallContainer() {
 }
 
 let timerInterval;
-let seconds = 0;
+let callSeconds = 0;
 const divs = document.querySelectorAll('.call-status-time');
 
 function startTimer() {
     if (timerInterval) return; // Предотвращает повторный запуск
 
     timerInterval = setInterval(() => {
-        seconds++;
+        callSeconds++;
         updateDivs();
     }, 1000);
 }
@@ -537,13 +507,13 @@ function startTimer() {
 function resetTimer() {
     clearInterval(timerInterval);
     timerInterval = null; // Устанавливаем в null, чтобы можно было запустить заново
-    seconds = 0;
+    callSeconds = 0;
     updateDivs();
 }
 
 function updateDivs() {
-    let minutes = Math.floor(seconds / 60);
-    let remainingSeconds = seconds % 60;
+    let minutes = Math.floor(callSeconds / 60);
+    let remainingSeconds = callSeconds % 60;
 
     let timeString = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 

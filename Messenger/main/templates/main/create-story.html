@@ -77,19 +77,19 @@
 <script>
     var svgSoundMax = '{% static "main/svg/sound-max.svg" %}';
     var svgSoundMuted = '{% static "main/svg/sound-mute.svg" %}';
+    var livename = '{{ user_profile.username }}';
 </script>
 
 <script src="{% static 'main/JS/create-story-timer.js' %}"></script>
 <script src="{% static 'main/JS/create-story.js' %}"></script>
 <script src="{% static 'main/JS/story.js' %}"></script>
-<!-- <script src="{% static 'main/JS/live-websocket.js' %}"></script> -->
+<script src="{% static 'main/JS/live-websocket.js' %}"></script>
 
 <script>
     var timerStart = timerStart;
     var timerStop = timerStop;
 
     var myUsername = '{{ user_profile.username }}';
-
     var liveStream
 </script>
 {% endblock %}

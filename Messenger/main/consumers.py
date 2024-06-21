@@ -445,3 +445,38 @@ class CallConsumer(WebsocketConsumer):
             'type': 'ICEcandidate',
             'data': event['data']
         }))
+
+
+class LiveConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.user_live = self.scope['url_route']['kwargs']['user_live']
+        self.live_group_name = f'live_{self.user_live}'
+
+        await self.channel_layer.group_add(self.live_group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.live_group_name, self.channel_name)
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        eventType = text_data_json['type']
+
+        if eventType == 'ICEcandidate':
+
+            await self.channel_layer.group_send(
+                self.live_group_name,
+                {
+                    'type': 'ICEcandidate',
+                    'data': {
+                        'rtcMessage': text_data_json['data']['rtcMessage']
+                    }
+                }
+            )
+
+    async def ICEcandidate(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'ICEcandidate',
+            'data': event['data']
+        }))
+

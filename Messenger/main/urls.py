@@ -7,8 +7,6 @@ urlpatterns = [
     path('settings/', SettingsView.as_view(), name='settings'),
     path('search/', SearchView.as_view(), name='search'),
 
-    path('call/', CallView.as_view(), name='call'),
-
     # Profile
     path('profile/<slug:username>/', ProfileView.as_view(), name='profile'),
     path('notifications/', ProfileNotificationView.as_view(), name='profile_notification'),

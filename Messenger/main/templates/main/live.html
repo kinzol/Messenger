@@ -25,9 +25,10 @@
             </div>
         </div>
     </a>
-    <video class="story-video" onclick="startVideo(this)" disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false">
-        <source class="story-video-source" src="{% static 'main/images/v4.mp4' %}">
-    </video>
+
+
+    <video class="story-video" disablepictureinpicture="" webkit-playsinline="" playsinline="" pip="false"></video>
+    <video class="story-video-background" disablepictureinpicture="" webkit-playsinline="" muted playsinline="" pip="false"></video>
 
     <div class="story-menu">
         <div class="story-menu-button" onclick="liveCopyLink()">Copy link</div>
@@ -65,6 +66,11 @@
 
 </main>
 
+<script>
+    var livename = '{{ user.username }}';
+</script>
+
 <script src="{% static 'main/JS/live.js' %}"></script>
 <script src="{% static 'main/JS/story.js' %}"></script>
+<script src="{% static 'main/JS/live-view-websocket.js' %}"></script>
 {% endblock %}

@@ -8,6 +8,7 @@
 >>+ ***Technical Information***
 >>    + Usage of WebSocket
 >>    + Usage of DRF API
+>>    + Usage of WebRTC
 >
 >>+ ***Chat***
 >>    + Chat is one of the most developed parts of the site, supporting various types of messages: text, replies, photos, videos, voice messages, files, posts, and stories.
@@ -15,6 +16,10 @@
 >>    + Reactions: you can express your emotions in conversations by reacting to messages. To do this, click on the three dots next to the message and choose the reaction you want, or double-click the message to automatically send a heart emoji.
 >>    + You can share stories and posts in the chat using the "Share" button.
 >>    + Links in messages become active and clickable. When clicking on a link, the site first confirms with the user if they are sure about their actions before redirecting.
+>
+>>+ ***Calls***
+>>    + Audio calls: Allow real-time communication with users on the site.
+>>    + Video calls: Provide the ability to communicate with users on the site in real time via video connection.
 >
 >>+ ***Recommendation System***
 >>    + The recommendation system individually selects posts for each user.
@@ -56,9 +61,11 @@ To launch the site, open the terminal and navigate to the folder containing the 
 ```
 
 ## Test Account Credentials
-To immediately explore the site's functionality, here are the credentials for a test account:
-+ **Login:** root, root2
-+ **Password**: root, root
+So that you can immediately see the functionality of the site, I will leave the credentials for the main test account here.
++ **Login:** root
++ **Password**: root
+
+*The password on all other accounts is "root"
 ___
 
 <br><br>
@@ -74,6 +81,7 @@ ___
 >>+ ***Техническая информация***
 >>    + Использование WebSocket
 >>    + Использование Api DRF
+>>    + Использование WebRTC
 >
 >>+ ***Чат***
 >>    + Чат — это одна из самых проработанных частей сайта, поддерживающая множество типов сообщений: текстовые, ответы на сообщения, фото, видео, голосовые сообщения, файлы, посты и истории.
@@ -81,6 +89,10 @@ ___
 >>    + Реакции: в переписке вы можете выражать свои эмоции, ставя реакции на сообщения. Для этого нажмите на три точки рядом с сообщением и выберите нужную реакцию, или дважды кликните по сообщению, чтобы автоматически поставить эмодзи сердечка.
 >>    + Вы можете пересылать истории и посты в чат, используя кнопку "Поделиться".
 >>    + Ссылки в сообщениях становятся активными и кликабельными. При нажатии на ссылку сайт сначала уточняет у пользователя, уверен ли он в своих действиях, прежде чем перенаправить его.
+>
+>>+ ***Звонки***
+>>    + Аудио звонки: Позволяют общаться с пользователями на сайте в режиме реального времени.
+>>    + Видео звонки: Обеспечивают возможность общения с пользователями на сайте в режиме реального времени с помощью видеосвязи.
 >
 >>+ ***Система рекомендаций***
 >>    + Система рекомендаций индивидуально подбирает посты для каждого пользователя.
@@ -122,7 +134,9 @@ ___
 ```
 
 ## Данные от тестового аккаунта
-Чтобы сразу можно было увидеть функционал сайта оставлю тут данные от тестового аккаунта.
-+ **Login:** root, root2
-+ **Password**: root, root
+Чтобы сразу можно было увидеть функционал сайта оставлю тут данные от основного тестового аккаунта.
++ **Login:** root
++ **Password**: root
+
+*На всех остальных аккаунтах пароль "root"
 ___

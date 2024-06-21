@@ -76,22 +76,6 @@ function chatChangeSendInputButton() {
     };
 };
 
-// navigator.mediaDevices.getUserMedia({ audio: false})
-// .then(stream => {
-//     let voice = [];
-//     document.querySelector('.chat-content-input-audio').addEventListener('click', function(){
-//         navigator.mediaDevices.getUserMedia({ audio: true})
-//         const mediaRecorder = new MediaRecorder(stream);
-//         mediaRecorder.start();
-//     });
-//     document.querySelector('.chat-content-chat').addEventListener('click', function(){
-//         mediaRecorder.stop();
-//         navigator.mediaDevices.getUserMedia({ audio: false})
-//         console.log(voice)
-//         voice = [];
-//     });
-// });
-
 
 
 let mediaRecorder;
@@ -113,6 +97,7 @@ function startRecordingAudio() {
         mediaRecorder.onstop = function() {
 
             if (voice.length > 0) {
+                console.warn(voice)
                 const blob = new Blob(voice, { type: 'audio/wav' });
 
                 const fileReader = new FileReader();
@@ -126,6 +111,7 @@ function startRecordingAudio() {
                         'message': 'Voice message',
                         'reply_id': null,
                         'reply_message': null,
+                        'call_time': null,
                         'forwarded_content': null,
                         'file': fileContentReader,
                         'file_name': 'voice.wav',
@@ -158,8 +144,12 @@ document.querySelector('.chat-content-audio-record-send-img').addEventListener('
 
 document.querySelector('.chat-content-audio-record-trash-img').addEventListener('click', function() {
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.onstop = function() {
+            voice = [];
+        };
         mediaRecorder.stop();
         offContentAudio();
+    } else {
         voice = [];
     }
     if (stream) {
@@ -1038,6 +1028,7 @@ function onContentSend() {
                 'message': tempMessage ? tempMessage : chatContentInputMessage.value,
                 'reply_id': replyStatus ? replyMessageId : null,
                 'reply_message': replyStatus ? replyMessageContent : null,
+                'call_time': null,
                 'forwarded_content': null,
                 'file': fileContentReader,
                 'file_name': fileName,
@@ -1059,6 +1050,7 @@ function onContentSend() {
             'message': tempMessage ? tempMessage : chatContentInputMessage.value,
             'reply_id': replyStatus ? replyMessageId : null,
             'reply_message': replyStatus ? replyMessageContent : null,
+            'call_time': null,
             'forwarded_content': null,
             'file': null,
             'file_name': null,

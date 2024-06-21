@@ -164,16 +164,6 @@ class ChatView(DataMixin, LoginRequiredMixin, TemplateView):
         return {**context, **c_def}
 
 
-class CallView(DataMixin, LoginRequiredMixin, TemplateView):
-    template_name = 'main/call.html'
-    login_url = 'login'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title=f'Call')
-        return {**context, **c_def}
-
-
 class SettingsView(DataMixin, LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = SettingsForm
